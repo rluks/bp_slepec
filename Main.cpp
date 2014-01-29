@@ -342,8 +342,12 @@ int main(int n_arg_num, const char **p_arg_list)
 	t_wnd_class.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 	t_wnd_class.lpszMenuName = 0;
 	t_wnd_class.lpszClassName = p_s_class_name;
-	t_wnd_class.hIconSm = LoadIcon(0, IDI_APPLICATION);
-	RegisterClassEx(&t_wnd_class);
+	t_wnd_class.hIconSm = LoadIcon(0, IDI_WINLOGO);
+
+	if(!RegisterClassEx(&t_wnd_class)){
+		MessageBox(NULL, "Failed to register window class", NULL, MB_OK);
+		return false;
+	}
 	// registruje tridu okna
 
 	RECT t_rect = {0, 0, n_width, n_height};
