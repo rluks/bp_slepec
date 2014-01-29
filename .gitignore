@@ -179,3 +179,10 @@ Desktop.ini
 
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
+
+
+*.tlog
+*.obj
+Debug/CL.read.1.tlog
+Debug/CL.write.1.tlog
+Debug/link.read.1.tlog
