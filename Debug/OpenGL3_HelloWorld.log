@@ -1,0 +1,23 @@
+﻿Build started 1/29/2014 9:47:57 AM.
+     1>Project "P:\Edu - SPBP\OpenGL3_HelloWorld\OpenGL3_HelloWorld\OpenGL3_HelloWorld.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\include /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Main.cpp OpenGL30Drv.cpp Tga.cpp Transform.cpp Vector.cpp
+         Vector.cpp
+         Transform.cpp
+         Tga.cpp
+         OpenGL30Drv.cpp
+         Main.cpp
+         Generating Code...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"P:\Edu - SPBP\OpenGL3_HelloWorld\Debug\OpenGL3_HelloWorld.exe" /INCREMENTAL /NOLOGO ..\lib\glew32s.lib ..\lib\glew32.lib OpenGL32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"P:\Edu - SPBP\OpenGL3_HelloWorld\Debug\OpenGL3_HelloWorld.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"P:\Edu - SPBP\OpenGL3_HelloWorld\Debug\OpenGL3_HelloWorld.lib" /MACHINE:X86 /SAFESEH Debug\Main.obj
+         Debug\OpenGL30Drv.obj
+         Debug\Tga.obj
+         Debug\Transform.obj
+         Debug\Vector.obj
+     1>Main.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
+         OpenGL3_HelloWorld.vcxproj -> P:\Edu - SPBP\OpenGL3_HelloWorld\Debug\OpenGL3_HelloWorld.exe
+     1>Done Building Project "P:\Edu - SPBP\OpenGL3_HelloWorld\OpenGL3_HelloWorld\OpenGL3_HelloWorld.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:04.12
