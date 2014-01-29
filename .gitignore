@@ -186,3 +186,11 @@ $RECYCLE.BIN/
 Debug/CL.read.1.tlog
 Debug/CL.write.1.tlog
 Debug/link.read.1.tlog
+Debug/Main.obj
+Debug/OpenGL3_HelloWorld.log
+Debug/OpenGL30Drv.obj
+Debug/Tga.obj
+Debug/Transform.obj
+Debug/vc110.idb
+Debug/vc110.pdb
+Debug/Vector.obj
