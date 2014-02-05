@@ -7,6 +7,15 @@
 #include "Transform.h"
 #include "Tga.h"
 
+
+#include <istream>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+
+
+
 static const char *p_s_window_name = "OpenGL 3 window";
 static const char *p_s_class_name = "my_wndclass";
 // jmeno okna
@@ -133,6 +142,32 @@ GLuint n_GLTextureFromBitmap(const TBmp *p_bitmap, GLenum n_internal_format = GL
 	return n_tex;
 }
 
+std::string getTextFileString(std::string name){
+
+	FILE* fp = fopen(name.c_str(), "rt");
+	if(!fp){
+		std::cerr << "Cannot load file" << std::endl;
+		system("PAUSE");
+		return false;
+	}
+
+	//std::vector<std::string> sLines;
+	std::string text;
+	char sLine[255];
+	while(fgets(sLine, 255, fp))text.append(sLine);
+	fclose(fp);
+
+	/*
+	for(std::vector<std::string>::iterator it = sLines.begin(); it != sLines.end(); ++it){
+		std::cout << *it << std::endl;
+	}
+	*/
+
+	//std::cout << text;
+
+	return text;
+}
+
 /**
  *	@brief vraci "pointer" do VBO
  *	@param[in] off je offset v bytech, na ktery ma vraceny pointer ukazovat
@@ -189,45 +224,12 @@ bool InitGLObjects()
 	} // tento blok se "zapamatuje" ve VAO-vertex array objects
 	glBindVertexArray(0); // vratime VAO 0, abychom si nahodne VAO nezmenili (pripadne osetreni proti chybe v ovladacich nvidia kde se VAO poskodi pri volani nekterych wgl funkci)
 	// vytvorime a nastavime vertex array objekt - objekt na GPU, ktery si pamatuje konfiguraci nastaveni VBO. pak pri kresleni volame jen glBindVertexArray() namisto vsech prikazu v bloku vyse
+	
+	std::string vertexString = getTextFileString("vertex.shader");
+	const char *p_s_vertex_shader = vertexString.c_str();
 
-	const char *p_s_vertex_shader =
-		"#version 330\n"
-		"in vec2 v_tex;\n"
-		"in vec3 v_pos;\n" // atributy - vstup z dat vrcholu
-		"\n"
-		"uniform float f_time;\n" // parametr shaderu - cas pro animovani
-		"\n"
-		"uniform mat4 t_modelview_projection_matrix;\n" // parametr shaderu - transformacni matice
-		"\n"
-		"out vec2 v_texcoord;\n" 
-		"out vec2 v_texcoord1;\n" 
-		"out vec2 v_texcoord2;\n" 
-		"out vec2 v_texcoord3;\n" // vystupy - souradnice textury
-		"\n"
-		"void main()\n"
-		"{\n"
-		"    gl_Position = t_modelview_projection_matrix * vec4(v_pos, 1.0);\n" // musime zapsat pozici
-		"    v_texcoord = v_tex;\n" // zkopirujeme souradnice textury pro fragment shader
-		"    v_texcoord1 = v_tex + vec2(sin(f_time), f_time);\n"
-		"    v_texcoord2 = v_tex + vec2(0.0, f_time * 1.5 + 1.0);\n"
-		"    v_texcoord3 = v_tex + vec2(sin(f_time + 1.0), f_time + 2.0);\n" // spocitame dalsi souradnice textury pro animaci ohne
-		"}\n";
-	const char *p_s_fragment_shader =
-		"#version 330\n"
-		"in vec2 v_texcoord, v_texcoord1, v_texcoord2, v_texcoord3;\n" // vstupy z vertex shaderu
-		"\n"
-		"out vec4 frag_color;\n" // vystup do framebufferu
-		"\n"
-		"uniform sampler2D n_box_tex, n_fire_tex;\n"
-		"\n"
-		"void main()\n"
-		"{\n"
-		"    vec4 box_color = texture2D(n_box_tex, v_texcoord);\n" // precte texturu krabice
-		"    vec4 fire_color = texture2D(n_fire_tex, v_texcoord1) +\n"
-		"        texture2D(n_fire_tex, v_texcoord2) +\n"
-		"        texture2D(n_fire_tex, v_texcoord3);\n" // precte tri vrstvy textury ohne (animace vznika vypoctem souradnic textury ve vertex shaderu)
-		"    frag_color = mix(fire_color, box_color, box_color.a);\n" // smicha texturu a krabici podle alfa kanalu krabice (je tam vyznacene co ma byt pruhledne a co ne)
-		"}\n";
+	std::string fragmentString = getTextFileString("fragment.shader");
+	const char *p_s_fragment_shader = fragmentString.c_str();
 	// zdrojove kody pro vertex / fragment shader (OpenGL 3 uz nepouziva specifikator 'verying', jinak je kod stejny)
 
 	n_vertex_shader = glCreateShader(GL_VERTEX_SHADER);
