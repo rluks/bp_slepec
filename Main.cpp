@@ -180,6 +180,25 @@ std::string getTextFileString(std::string name){
  */
 bool InitGLObjects()
 {
+
+		const float p_box_vertices[] = {
+		0, 1, -1, -1, 1, 1, 1, 1, -1, 1, 1, 0, 1, 1, 1, 0, 0, -1, 1, 1/*,
+		1, 1, -1, -1, -1, 1, 0, -1, 1, -1, 0, 0, 1, 1, -1, 0, 1, 1, -1, -1,
+		0, 0, -1, 1, -1, 0, 1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, -1,
+		1, 0, -1, -1, -1, 0, 0, 1, -1, -1, 0, 1, 1, -1, 1, 1, 1, -1, -1, 1,
+		1, 1, 1, -1, -1, 1, 0, 1, 1, -1, 0, 0, 1, 1, 1, 0, 1, 1, -1, 1,
+		0, 1, -1, -1, -1, 1, 1, -1, -1, 1, 1, 0, -1, 1, 1, 0, 0, -1, 1, -1*/};
+	// vrcholy krychle, vzdy 2 souradnice textury, pak 3 souradnice vrcholu; vrcholy jsou usporadane poporade po ctvericich, tvoricich polygony jednotlivych sten
+
+	const unsigned int p_box_indices[] = {	//  0     1
+		0, 1, 2, 0, 2, 3/*,					//  *-----*
+		4, 5, 6, 4, 6, 7,					//  |\    |
+		8, 9, 10, 8, 10, 11,				//  |  \  |
+		12, 13, 14, 12, 14, 15,				//  |    \|
+		16, 17, 18, 16, 18, 19,				//  *-----*
+		20, 21, 22, 20, 22, 23*/};			//  3     2
+
+	/*
 	const float p_box_vertices[] = {
 		0, 1, -1, -1, 1, 1, 1, 1, -1, 1, 1, 0, 1, 1, 1, 0, 0, -1, 1, 1,
 		1, 1, -1, -1, -1, 1, 0, -1, 1, -1, 0, 0, 1, 1, -1, 0, 1, 1, -1, -1,
@@ -197,6 +216,7 @@ bool InitGLObjects()
 		16, 17, 18, 16, 18, 19,				//  *-----*
 		20, 21, 22, 20, 22, 23};			//  3     2
 	// indexy trojuhelniku krychle (kazda stena se sklada ze dvou trojuhelniku, viz. ascii art); v OpenGL 3.0 uz nemame GL_QUADS a tak musime takto kreslit trojuhelniky
+	*/
 
 	glGenBuffers(1, &n_vertex_buffer_object);
 	glBindBuffer(GL_ARRAY_BUFFER, n_vertex_buffer_object);
@@ -225,6 +245,10 @@ bool InitGLObjects()
 	glBindVertexArray(0); // vratime VAO 0, abychom si nahodne VAO nezmenili (pripadne osetreni proti chybe v ovladacich nvidia kde se VAO poskodi pri volani nekterych wgl funkci)
 	// vytvorime a nastavime vertex array objekt - objekt na GPU, ktery si pamatuje konfiguraci nastaveni VBO. pak pri kresleni volame jen glBindVertexArray() namisto vsech prikazu v bloku vyse
 	
+
+
+
+
 	std::string vertexString = getTextFileString("vertex.shader");
 	const char *p_s_vertex_shader = vertexString.c_str();
 
