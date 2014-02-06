@@ -194,3 +194,5 @@ Debug/Transform.obj
 Debug/vc110.idb
 Debug/vc110.pdb
 Debug/Vector.obj
+OpenGL3_HelloWorld.vcxproj
+OpenGL3_HelloWorld.vcxproj.filters

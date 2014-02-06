@@ -513,8 +513,8 @@ void OnIdle(CGL30Driver &driver)
 		Matrix4f t_modelview;
 		t_modelview.Identity();
 		t_modelview.Translate(0, 0, -2.5f);
-		t_modelview.Rotate(sin(f_time / 3), 1, 0, 0);
-		t_modelview.Rotate(f_time / 3, 0, 1, 0);
+		//t_modelview.Rotate(sin(f_time / 3), 1, 0, 0);
+		//t_modelview.Rotate(f_time / 3, 0, 1, 0);
 		// spocitame modelview matici
 
 		t_mvp = t_projection * t_modelview;
@@ -528,8 +528,8 @@ void OnIdle(CGL30Driver &driver)
 		glUniformMatrix4fv(n_mvp_matrix_uniform, 1, GL_FALSE, &t_mvp[0][0]);
 		// nahrajeme matici do OpenGL jako parametr shaderu
 
-		glUniform1i(n_box_sampler_uniform, 0);
-		glUniform1i(n_fire_sampler_uniform, 1);
+		//glUniform1i(n_box_sampler_uniform, 0);
+		//glUniform1i(n_fire_sampler_uniform, 1);
 		// nastavime cisla texturovacich jednotek, odkud si shader bude brat textury
 
 		glUniform1f(n_time_uniform, f_time);
