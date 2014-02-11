@@ -33,9 +33,17 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 // prototypy funkci
 
 static GLuint n_box_texture, n_fire_texture;
+
+
+static GLuint n_surface_texture;//textura hladiny
+
+
 static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_object;
 static GLuint n_vertex_shader, n_fragment_shader, n_program_object, n_mvp_matrix_uniform,
-	n_box_sampler_uniform, n_fire_sampler_uniform, n_time_uniform;
+	n_box_sampler_uniform, n_fire_sampler_uniform, n_time_uniform, 
+
+
+	n_surface_sampler_uniform;
 // OpenGL objekty
 
 /**
@@ -142,6 +150,40 @@ GLuint n_GLTextureFromBitmap(const TBmp *p_bitmap, GLenum n_internal_format = GL
 	return n_tex;
 }
 
+GLuint n_GLTextureFromData()
+{
+	int width, height;
+    BYTE * data;
+	width = 256;
+    height = 256;
+	data = new BYTE(width * height * 3);
+
+	for(int i = 0; i < width * height * 3; i++){
+		//data[i] = 
+	}
+
+
+	GLuint n_tex_surface;
+	glGenTextures(1, &n_tex_surface);
+	glBindTexture(GL_TEXTURE_2D, n_tex_surface);
+
+	// select modulate to mix texture with color for shading
+    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// nastavime filtrovani
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height,
+		0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	// specifikujeme data textury
+
+	glGenerateMipmap(GL_TEXTURE_2D);
+	// nechame OpenGL spocitat jeji mipmapy
+
+	return n_tex_surface;
+}
+
 std::string getTextFileString(std::string name){
 
 	FILE* fp = fopen(name.c_str(), "rt");
@@ -181,22 +223,16 @@ std::string getTextFileString(std::string name){
 bool InitGLObjects()
 {
 
-		const float p_box_vertices[] = {
-		0, 1, -1, -1, 1, 1, 1, 1, -1, 1, 1, 0, 1, 1, 1, 0, 0, -1, 1, 1/*,
-		1, 1, -1, -1, -1, 1, 0, -1, 1, -1, 0, 0, 1, 1, -1, 0, 1, 1, -1, -1,
-		0, 0, -1, 1, -1, 0, 1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, -1,
-		1, 0, -1, -1, -1, 0, 0, 1, -1, -1, 0, 1, 1, -1, 1, 1, 1, -1, -1, 1,
-		1, 1, 1, -1, -1, 1, 0, 1, 1, -1, 0, 0, 1, 1, 1, 0, 1, 1, -1, 1,
-		0, 1, -1, -1, -1, 1, 1, -1, -1, 1, 1, 0, -1, 1, 1, 0, 0, -1, 1, -1*/};
+	const float p_box_vertices[] = {
+		0, 1, -1, -1, 1, /**/1, 1, 1, -1, 1,/**/ 1, 0, 1, 1, 1,/**/ 0, 0, -1, 1, 1};
 	// vrcholy krychle, vzdy 2 souradnice textury, pak 3 souradnice vrcholu; vrcholy jsou usporadane poporade po ctvericich, tvoricich polygony jednotlivych sten
 
-	const unsigned int p_box_indices[] = {	//  0     1
-		0, 1, 2, 0, 2, 3/*,					//  *-----*
-		4, 5, 6, 4, 6, 7,					//  |\    |
-		8, 9, 10, 8, 10, 11,				//  |  \  |
-		12, 13, 14, 12, 14, 15,				//  |    \|
-		16, 17, 18, 16, 18, 19,				//  *-----*
-		20, 21, 22, 20, 22, 23*/};			//  3     2
+	/*const float p_box_vertices[] = {
+		0, 1, -1, -1, 1, 1, 1, 1, -1, 1, 1, 0, 1, 1, 1, 0, 0, -1, 1, 1};
+	// vrcholy krychle, vzdy 2 souradnice textury, pak 3 souradnice vrcholu; vrcholy jsou usporadane poporade po ctvericich, tvoricich polygony jednotlivych sten
+	*/
+	const unsigned int p_box_indices[] = {	
+		0, 1, 2, 0, 2, 3};
 
 	/*
 	const float p_box_vertices[] = {
@@ -244,10 +280,6 @@ bool InitGLObjects()
 	} // tento blok se "zapamatuje" ve VAO-vertex array objects
 	glBindVertexArray(0); // vratime VAO 0, abychom si nahodne VAO nezmenili (pripadne osetreni proti chybe v ovladacich nvidia kde se VAO poskodi pri volani nekterych wgl funkci)
 	// vytvorime a nastavime vertex array objekt - objekt na GPU, ktery si pamatuje konfiguraci nastaveni VBO. pak pri kresleni volame jen glBindVertexArray() namisto vsech prikazu v bloku vyse
-	
-
-
-
 
 	std::string vertexString = getTextFileString("vertex.shader");
 	const char *p_s_vertex_shader = vertexString.c_str();
@@ -271,8 +303,8 @@ bool InitGLObjects()
 	glAttachShader(n_program_object, n_fragment_shader);
 	// zkompiluje vertex / fragment shader, pripoji je k programu
 
-	glBindAttribLocation(n_program_object, 0, "v_tex");
-	glBindAttribLocation(n_program_object, 1, "v_pos");
+	glBindAttribLocation(n_program_object, 0, "v_tex");//2hodnoty vec2
+	glBindAttribLocation(n_program_object, 1, "v_pos");//3hodnoty vec3
 	// nabinduje atributy (propojeni mezi obsahem VBO a vstupem do vertex shaderu)
 
 	glBindFragDataLocation(n_program_object, 0, "frag_color");
@@ -286,6 +318,9 @@ bool InitGLObjects()
 	n_mvp_matrix_uniform = glGetUniformLocation(n_program_object, "t_modelview_projection_matrix");
 	n_box_sampler_uniform = glGetUniformLocation(n_program_object, "n_box_tex");
 	n_fire_sampler_uniform = glGetUniformLocation(n_program_object, "n_fire_tex");
+
+	//n_surface_sampler_uniform = glGetUniformLocation(n_program_object, "n_surface_texture");
+
 	n_time_uniform = glGetUniformLocation(n_program_object, "f_time");
 	// najde cislo parametru shaderu podle jeho jmena
 
@@ -301,7 +336,8 @@ bool InitGLObjects()
 	}
 	// nahraje obrazky
 
-	n_box_texture = n_GLTextureFromBitmap(p_box, GL_RGBA8);
+	n_box_texture = n_GLTextureFromData();
+	//n_box_texture = n_GLTextureFromBitmap(p_box, GL_RGBA8);
 	n_fire_texture = n_GLTextureFromBitmap(p_fire, GL_RGB8);
 	// vyrobi z nich textury
 
@@ -528,8 +564,8 @@ void OnIdle(CGL30Driver &driver)
 		glUniformMatrix4fv(n_mvp_matrix_uniform, 1, GL_FALSE, &t_mvp[0][0]);
 		// nahrajeme matici do OpenGL jako parametr shaderu
 
-		//glUniform1i(n_box_sampler_uniform, 0);
-		//glUniform1i(n_fire_sampler_uniform, 1);
+		glUniform1i(n_box_sampler_uniform, 0);
+		glUniform1i(n_fire_sampler_uniform, 1);
 		// nastavime cisla texturovacich jednotek, odkud si shader bude brat textury
 
 		glUniform1f(n_time_uniform, f_time);
