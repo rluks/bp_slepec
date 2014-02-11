@@ -150,8 +150,19 @@ GLuint n_GLTextureFromBitmap(const TBmp *p_bitmap, GLenum n_internal_format = GL
 	return n_tex;
 }
 
-GLuint n_GLTextureFromData(BYTE **data, int width, int height)
+GLuint n_GLTextureFromData()
 {
+	int width, height;
+	width = 16;
+	height = 16;
+
+	float data[16][16];
+	for(int i = 0; i < width; i++){
+		for(int j = 0; j < height; j++){
+			data[i][j] = 0.5f;//(i*0.3333312323f+j)/(i*j);
+		}
+	}
+
 	GLuint n_tex_surface;
 	glGenTextures(1, &n_tex_surface);
 	glBindTexture(GL_TEXTURE_2D, n_tex_surface);
@@ -160,8 +171,8 @@ GLuint n_GLTextureFromData(BYTE **data, int width, int height)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	// nastavime filtrovani
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, width, height,
-		0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height,
+		0, GL_RGBA, GL_FLOAT, data);
 	// specifikujeme data textury
 
 	glGenerateMipmap(GL_TEXTURE_2D);
@@ -310,48 +321,7 @@ bool InitGLObjects()
 	}
 	// nahraje obrazky
 
-	BYTE **p_surface;
-	int width, height;
-	width = 256;
-    height = 256;
-
-	try{
-		p_surface = new BYTE* [width];
-	}catch(std::bad_alloc e){
-		std::cerr << "Alloc problem w" << std::endl;
-		return -1;
-	}
-
-	for(int i = 0; i < width; i++){
-		try{
-			p_surface[i] = new BYTE[height];
-		}catch(std::bad_alloc e){
-			std::cerr << "Alloc problem h" << std::endl;
-			while(--i > 0){
-				delete[] p_surface[i];
-			}
-			delete[] p_surface;
-			return -1;
-		}
-	}
-
-	
-	for(int i = 0; i < height; i++){
-		for(int j = 0; j < width; j++){
-			p_surface[i][j] = 0x00;
-		}
-	}
-
-	/*
-	for(int i = 0; i < height; i++){
-		for(int j = 0; j < width; j++){
-			std::cout << p_surface[i][j] << std::endl;
-		}
-	}
-	system("PAUSE");*/
-	
-
-	n_box_texture = n_GLTextureFromData(p_surface, width, height);
+	n_box_texture = n_GLTextureFromData();
 	//n_box_texture = n_GLTextureFromBitmap(p_box, GL_RGBA8);
 	n_fire_texture = n_GLTextureFromBitmap(p_fire, GL_RGB8);
 	// vyrobi z nich textury
@@ -359,12 +329,6 @@ bool InitGLObjects()
 	p_box->Delete();
 	p_fire->Delete();
 	// uvolni pamet
-
-	for(int i = 0; i < width; i++){
-		delete[] p_surface[i];
-	}
-	delete[] p_surface;
-
 	return true;
 }
 
