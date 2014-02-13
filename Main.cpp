@@ -14,6 +14,8 @@
 #include <vector>
 #include <string>
 
+#define datawidth 128
+#define dataheight 128
 
 
 static const char *p_s_window_name = "OpenGL 3 window";
@@ -40,10 +42,7 @@ static GLuint n_surface_texture;//textura hladiny
 
 static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_object;
 static GLuint n_vertex_shader, n_fragment_shader, n_program_object, n_mvp_matrix_uniform,
-	n_box_sampler_uniform, n_fire_sampler_uniform, n_time_uniform, 
-
-
-	n_surface_sampler_uniform;
+	n_box_sampler_uniform, n_fire_sampler_uniform, n_time_uniform, n_surface_sampler_uniform;
 // OpenGL objekty
 
 /**
@@ -152,14 +151,38 @@ GLuint n_GLTextureFromBitmap(const TBmp *p_bitmap, GLenum n_internal_format = GL
 
 GLuint n_GLTextureFromData()
 {
-	int width, height;
-	width = 16;
-	height = 16;
 
-	float data[16][16];
-	for(int i = 0; i < width; i++){
-		for(int j = 0; j < height; j++){
-			data[i][j] = 0.5f;//(i*0.3333312323f+j)/(i*j);
+	GLuint n_tex_surface;
+	GLubyte checkImage[dataheight][datawidth][4];
+	 int i, j, c;
+   for (i = 0; i < dataheight; i++) {
+      for (j = 0; j < datawidth; j++) {
+         c = (((i&0x8)==0)^((j&0x8))==0)*255;
+         checkImage[i][j][0] = (GLubyte) c;
+         checkImage[i][j][1] = (GLubyte) c;
+         checkImage[i][j][2] = (GLubyte) c;
+         checkImage[i][j][3] = (GLubyte) 255;
+      }
+   }
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+   glGenTextures(1, &n_tex_surface);
+   glBindTexture(GL_TEXTURE_2D, n_tex_surface);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, 
+                   GL_NEAREST);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, 
+                   GL_NEAREST);
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, datawidth, 
+                dataheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 
+                checkImage);
+
+	/*
+	float data[datawidth][dataheight];
+	for(int i = 0; i < datawidth; i++){
+		for(int j = 0; j < dataheight; j++){
+			data[i][j] = 0.5f;
 		}
 	}
 
@@ -167,16 +190,21 @@ GLuint n_GLTextureFromData()
 	glGenTextures(1, &n_tex_surface);
 	glBindTexture(GL_TEXTURE_2D, n_tex_surface);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); 
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); 
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	// nastavime filtrovani
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height,
-		0, GL_RGBA, GL_FLOAT, data);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, datawidth, dataheight, 0, GL_RGBA, GL_FLOAT, data);
 	// specifikujeme data textury
 
 	glGenerateMipmap(GL_TEXTURE_2D);
 	// nechame OpenGL spocitat jeji mipmapy
+	*/
 
 	return n_tex_surface;
 }
@@ -213,7 +241,7 @@ bool InitGLObjects()
 {
 
 	const float p_box_vertices[] = {
-		0, 1, -1, -1, 1, /**/1, 1, 1, -1, 1,/**/ 1, 0, 1, 1, 1,/**/ 0, 0, -1, 1, 1};
+	0, 1, -1, -1, 1, /**/1, 1, 1, -1, 1,/**/ 1, 0, 1, 1, 1,/**/ 0, 0, -1, 1, 1};
 	// vrcholy krychle, vzdy 2 souradnice textury, pak 3 souradnice vrcholu; vrcholy jsou usporadane poporade po ctvericich, tvoricich polygony jednotlivych sten
 
 	const unsigned int p_box_indices[] = {	
