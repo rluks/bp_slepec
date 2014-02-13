@@ -153,7 +153,11 @@ GLuint n_GLTextureFromData()
 {
 
 	GLuint n_tex_surface;
-	GLubyte checkImage[dataheight][datawidth];
+	GLubyte checkImage[dataheight][datawidth]; //unsigned 8 bit integer, which on most modern platforms is unsigned char
+
+	//float na glubyte
+	//GLubyte ubyteComponent = static_cast<GLubyte>(floatComponent * 255.f); 
+
 	 int i, j, c;
    for (i = 0; i < dataheight; i++) {
       for (j = 0; j < datawidth; j++) {
@@ -168,8 +172,8 @@ GLuint n_GLTextureFromData()
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
    glGenTextures(1, &n_tex_surface);
    glBindTexture(GL_TEXTURE_2D, n_tex_surface);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+   //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+   //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, 
                    GL_NEAREST);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, 
