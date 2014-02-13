@@ -153,15 +153,15 @@ GLuint n_GLTextureFromData()
 {
 
 	GLuint n_tex_surface;
-	GLubyte checkImage[dataheight][datawidth][4];
+	GLubyte checkImage[dataheight][datawidth];
 	 int i, j, c;
    for (i = 0; i < dataheight; i++) {
       for (j = 0; j < datawidth; j++) {
          c = (((i&0x8)==0)^((j&0x8))==0)*255;
-         checkImage[i][j][0] = (GLubyte) c;
-         checkImage[i][j][1] = (GLubyte) c;
-         checkImage[i][j][2] = (GLubyte) c;
-         checkImage[i][j][3] = (GLubyte) 255;
+         checkImage[i][j] = (GLubyte) c;
+         //checkImage[i][j][1] = (GLubyte) c;
+         //checkImage[i][j][2] = (GLubyte) c;
+         //checkImage[i][j][3] = (GLubyte) 255;
       }
    }
 
@@ -174,8 +174,8 @@ GLuint n_GLTextureFromData()
                    GL_NEAREST);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, 
                    GL_NEAREST);
-   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, datawidth, 
-                dataheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, datawidth, 
+                dataheight, 0, GL_RED, GL_UNSIGNED_BYTE, 
                 checkImage);
 
 	/*
