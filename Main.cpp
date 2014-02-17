@@ -14,6 +14,9 @@
 #include <vector>
 #include <string>
 
+#include <cstdlib>
+#include <ctime>
+
 #define datawidth 128
 #define dataheight 128
 
@@ -153,60 +156,31 @@ GLuint n_GLTextureFromData()
 {
 
 	GLuint n_tex_surface;
-	/*GLubyte*/GLfloat checkImage[dataheight][datawidth]; //unsigned 8 bit integer, which on most modern platforms is unsigned char
+	GLfloat checkImage[dataheight][datawidth]; //unsigned 8 bit integer, which on most modern platforms is unsigned char
 
 	//float na glubyte
 	//GLubyte ubyteComponent = static_cast<GLubyte>(floatComponent * 255.f); 
 
-	 int i, j, c;
-   for (i = 0; i < dataheight; i++) {
-      for (j = 0; j < datawidth; j++) {
-         c = (((i&0x8)==0)^((j&0x8))==0)*255;
-         checkImage[i][j] = /*(GLubyte)*/(GLfloat) c;
-         //checkImage[i][j][1] = (GLubyte) c;
-         //checkImage[i][j][2] = (GLubyte) c;
-         //checkImage[i][j][3] = (GLubyte) 255;
-      }
-   }
+	srand (static_cast <unsigned> (time(0)));
 
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-   glGenTextures(1, &n_tex_surface);
-   glBindTexture(GL_TEXTURE_2D, n_tex_surface);
-   //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-   //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, 
-                   GL_NEAREST);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, 
-                   GL_NEAREST);
-   glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, datawidth, dataheight, 0, GL_RED, /*GL_UNSIGNED_BYTE*/GL_FLOAT, checkImage);
-
-	/*
-	float data[datawidth][dataheight];
-	for(int i = 0; i < datawidth; i++){
-		for(int j = 0; j < dataheight; j++){
-			data[i][j] = 0.5f;
+	int i, j, c;
+	float r = 0.0f;
+	for (i = 0; i < dataheight; i++) {
+		for (j = 0; j < datawidth; j++) {
+			c = (((i&0x8)==0)^((j&0x8))==0)*255;
+			//float r3 = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
+			//float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX); = r + 0.01f;
+			r = r + 0.0001f;
+			checkImage[i][j] = (GLfloat) r;
 		}
 	}
 
-	GLuint n_tex_surface;
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &n_tex_surface);
 	glBindTexture(GL_TEXTURE_2D, n_tex_surface);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); 
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	// nastavime filtrovani
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, datawidth, dataheight, 0, GL_RGBA, GL_FLOAT, data);
-	// specifikujeme data textury
-
-	glGenerateMipmap(GL_TEXTURE_2D);
-	// nechame OpenGL spocitat jeji mipmapy
-	*/
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, datawidth, dataheight, 0, GL_RED, GL_FLOAT, checkImage);
 
 	return n_tex_surface;
 }
