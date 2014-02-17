@@ -163,14 +163,12 @@ GLuint n_GLTextureFromData()
 
 	srand (static_cast <unsigned> (time(0)));
 
-	int i, j, c;
-	float r = 0.0f;
-	for (i = 0; i < dataheight; i++) {
-		for (j = 0; j < datawidth; j++) {
-			c = (((i&0x8)==0)^((j&0x8))==0)*255;
+	float r = 1.0f;
+	for (int i = 0; i < dataheight; i++) {
+		for (int j = 0; j < datawidth; j++) {
 			//float r3 = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
 			//float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX); = r + 0.01f;
-			r = r + 0.0001f;
+			//r = r + 0.0001f;
 			checkImage[i][j] = (GLfloat) r;
 		}
 	}
@@ -180,7 +178,7 @@ GLuint n_GLTextureFromData()
 	glBindTexture(GL_TEXTURE_2D, n_tex_surface);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, datawidth, dataheight, 0, GL_RED, GL_FLOAT, checkImage);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, datawidth, dataheight, 0, GL_RED, GL_FLOAT, checkImage);
 
 	return n_tex_surface;
 }
