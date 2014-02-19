@@ -156,18 +156,11 @@ GLuint n_GLTextureFromData()
 {
 
 	GLuint n_tex_surface;
-	GLfloat checkImage[dataheight][datawidth]; //unsigned 8 bit integer, which on most modern platforms is unsigned char
-
-	//float na glubyte
-	//GLubyte ubyteComponent = static_cast<GLubyte>(floatComponent * 255.f); 
-
-	srand (static_cast <unsigned> (time(0)));
+	GLfloat checkImage[dataheight][datawidth];
 
 	float r = 1.0f;
 	for (int i = 0; i < dataheight; i++) {
 		for (int j = 0; j < datawidth; j++) {
-			//float r3 = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
-			//float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX); = r + 0.01f;
 			//r = r + 0.0001f;
 			checkImage[i][j] = (GLfloat) r;
 		}
@@ -176,8 +169,6 @@ GLuint n_GLTextureFromData()
 	for (int i = 0; i < dataheight; i++)
 		for (int j = 0; j < datawidth; j++)
 			checkImage[j][j] = 0.0f;
-
-	checkImage[0][0] = 0.0f;
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &n_tex_surface);
