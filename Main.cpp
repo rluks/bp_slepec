@@ -17,8 +17,8 @@
 #include <cstdlib>
 #include <ctime>
 
-#define datawidth 128
-#define dataheight 128
+#define datawidth 100
+#define dataheight 100
 
 
 static const char *p_s_window_name = "OpenGL 3 window";
@@ -172,6 +172,12 @@ GLuint n_GLTextureFromData()
 			checkImage[i][j] = (GLfloat) r;
 		}
 	}
+
+	for (int i = 0; i < dataheight; i++)
+		for (int j = 0; j < datawidth; j++)
+			checkImage[j][j] = 0.0f;
+
+	checkImage[0][0] = 0.0f;
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &n_tex_surface);
