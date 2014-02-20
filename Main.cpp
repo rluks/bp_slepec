@@ -40,6 +40,8 @@ GLuint fbo[2];
 int currentFbo;
 static GLuint n_box_texture[2];
 static GLuint n_fire_texture;
+//GLuint _colorRenderBuffer;
+GLuint viewFramebuffer;
 
 
 static GLuint n_surface_texture;//textura hladiny
@@ -178,7 +180,7 @@ GLuint n_GLTextureFromData()
 	glBindTexture(GL_TEXTURE_2D, n_tex_surface);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, datawidth, dataheight, 0, GL_RED, GL_FLOAT, checkImage);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, datawidth, dataheight, 0, GL_RED, GL_FLOAT, checkImage);//TODO ...800, 600, 0, GL_...
 
 	return n_tex_surface;
 }
@@ -353,7 +355,21 @@ bool InitGLObjects()
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo[1]);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, n_box_texture[1], 0);
 
+	glGenFramebuffers(1, &viewFramebuffer);
+
 	currentFbo = 0;
+
+	/*
+	//renderbuffer
+	glGenRenderbuffers(1, &_colorRenderBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);               
+    [_context renderbufferStorage:GL_RENDERBUFFER fromDrawable:_eaglLayer];   
+ 
+    glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                              GL_RENDERBUFFER, _colorRenderBuffer);
+							  */
 
 	p_box->Delete();
 	p_fire->Delete();
@@ -554,6 +570,10 @@ void OnIdle(CGL30Driver &driver)
 	// cas pro animaci
 
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo[currentFbo]);
+	glViewport(0,0, dataheight, dataheight);
+
+	glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	//glDrawBuffer(1-currentFbo);
 
 	Matrix4f t_mvp;
 	{
@@ -573,7 +593,16 @@ void OnIdle(CGL30Driver &driver)
 	glUseProgram(n_program_object);
 	// pouzije shader, ktery jsme zkompilovali
 
-	{
+	glActiveTexture(GL_TEXTURE0);
+	std::cout << currentFbo << std::endl;
+	glBindTexture(GL_TEXTURE_2D, n_box_texture[1-currentFbo]);
+	/*if(currentFbo){
+		glBindTexture(GL_TEXTURE_2D, n_box_texture[0]);
+	}else{
+		glBindTexture(GL_TEXTURE_2D, n_box_texture[1]);
+	}*/
+
+	//{
 		glUniformMatrix4fv(n_mvp_matrix_uniform, 1, GL_FALSE, &t_mvp[0][0]);
 		// nahrajeme matici do OpenGL jako parametr shaderu
 
@@ -583,22 +612,27 @@ void OnIdle(CGL30Driver &driver)
 
 		glUniform1f(n_time_uniform, f_time);
 		// nastavime cas pro animaci
-	}
+	//}
 	// nastavime parametry shaderu (musi se delat pokazde kdyz se shader pouzije)
 
-	glActiveTexture(GL_TEXTURE0);
-	std::cout << currentFbo << std::endl;
-	if(currentFbo){
-		glBindTexture(GL_TEXTURE_2D, n_box_texture[0]);
-	}else{
-		glBindTexture(GL_TEXTURE_2D, n_box_texture[1]);
-	}
+	
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, n_fire_texture); // opet - zadne enable / disable GL_TEXTURE_2D
 	// nastavime textury (do prvni texturovaci jednotky da texturu krabice, do druhou da texturu ohne)
 
 	DrawScene();
 	// vykreslime objekt pomoci VBO
+	
+	glUseProgram(0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, viewFramebuffer);
+	glViewport ( 0, 0, dataheight, dataheight );
+
+	[self drawOutputTextureToScreen:texProgram texID:n_box_texture[1-currentFbo]];
+
+	glBindRenderbuffer(GL_RENDERBUFFER, viewRenderbuffer);
+	[context presentRenderbuffer:GL_RENDERBUFFER];
 
 	currentFbo = (currentFbo+1)%2;
 	driver.Blit(); // preklopi buffery, zobrazi co jsme nakreslili
