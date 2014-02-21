@@ -37,15 +37,11 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 // prototypy funkci
 
 GLuint fbo;
-int currentFbo;
+static const GLenum p_draw_buffers[] = {GL_COLOR_ATTACHMENT0};
 static GLuint n_box_texture[2];
 static GLuint n_fire_texture;
-//GLuint _colorRenderBuffer;
-GLuint viewFramebuffer;
-
 
 static GLuint n_surface_texture;//textura hladiny
-
 
 static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_object;
 static GLuint n_vertex_shader, n_fragment_shader, n_program_object, n_mvp_matrix_uniform,
@@ -349,11 +345,8 @@ bool InitGLObjects()
 	//FBO
 	glGenFramebuffers(1, &fbo);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-	static const GLenum p_draw_buffers[] = {GL_COLOR_ATTACHMENT0};
 	glDrawBuffers(1, p_draw_buffers);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-
-	currentFbo = 0;
 
 	p_box->Delete();
 	p_fire->Delete();
@@ -559,8 +552,8 @@ void OnIdle(CGL30Driver &driver)
 	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_box_texture[1 - n_source_tex], 0); // kresleni do nulte urovne textury
 
 	//kresleni do fbo
-	glViewport(0,0, dataheight, dataheight); // viewport na velikost FBO
-	glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	glViewport(0,0, datawidth, dataheight); // viewport na velikost FBO
+	glClear ( GL_COLOR_BUFFER_BIT);
 	glBindTexture(GL_TEXTURE_2D, n_box_texture[n_source_tex]); // ta druha textura
 
 	Matrix4f t_mvp;
@@ -592,6 +585,8 @@ void OnIdle(CGL30Driver &driver)
 		// nastavime cas pro animaci
 	}
 	// nastavime parametry shaderu (musi se delat pokazde kdyz se shader pouzije)
+
+	DrawScene();
 
 	//glActiveTexture(GL_TEXTURE0);
 	//glBindTexture(GL_TEXTURE_2D, n_box_texture);
