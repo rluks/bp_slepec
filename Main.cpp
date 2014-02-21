@@ -176,7 +176,7 @@ GLuint n_GLTextureFromData()
 	glBindTexture(GL_TEXTURE_2D, n_tex_surface);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, datawidth, dataheight, 0, GL_RED, GL_FLOAT, checkImage);//TODO ...800, 600, 0, GL_...
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, datawidth, dataheight, 0, GL_RED, GL_FLOAT, checkImage);
 
 	return n_tex_surface;
 }
@@ -314,6 +314,12 @@ bool InitGLObjects()
 	if(!CheckProgram(n_program_object, "program"))
 		return false;
 	// slinkuje program
+
+	//shadery na ping pong
+	std::string vertexStringPass = getTextFileString("vertex_pass.shader");
+	const char *p_s_vertex_shader_pass = vertexStringPass.c_str();
+	std::string fragmentStringPass = getTextFileString("fragment_pass.shader");
+	const char *p_s_fragment_shader_pass = fragmentStringPass.c_str();
 
 	n_mvp_matrix_uniform = glGetUniformLocation(n_program_object, "t_modelview_projection_matrix");
 	n_box_sampler_uniform = glGetUniformLocation(n_program_object, "n_box_tex");

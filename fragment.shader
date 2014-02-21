@@ -10,8 +10,8 @@ void main()
 {
 	float temp;
 
-	temp =  texture(n_box_tex, v_texcoord).r;
-	temp =  texture(n_box_tex, vec2(0.00,0.02)).r;// 1/datawidth step
+	//temp =  texture(n_box_tex, v_texcoord).r;
+	//temp =  texture(n_box_tex, vec2(0.00,0.02)).r;// 1/datawidth step
 
 
 	temp =  texture(n_box_tex, v_texcoord).r	+ texture(n_box_tex, v_texcoord+vec2(0,0.01)).r
