@@ -52,5 +52,11 @@
     <None Include="vertex.shader">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="fragment_pass.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="vertex_pass.shader">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
