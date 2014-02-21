@@ -36,7 +36,7 @@ void onResize(int n_x, int n_y, int n_new_width, int n_new_height);
 LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_param);
 // prototypy funkci
 
-GLuint fbo[2];
+GLuint fbo;
 int currentFbo;
 static GLuint n_box_texture[2];
 static GLuint n_fire_texture;
@@ -340,36 +340,20 @@ bool InitGLObjects()
 	}
 	// nahraje obrazky
 
-	n_box_texture[0] = n_GLTextureEmpty();
-	n_box_texture[1] = n_GLTextureFromData();
+	n_box_texture[1] = n_GLTextureEmpty();
+	n_box_texture[0] = n_GLTextureFromData();
 
 	n_fire_texture = n_GLTextureFromBitmap(p_fire, GL_RGB8);
 	// vyrobi z nich textury
 
-	//frambuffers
-	glGenFramebuffers(1, &fbo[0]);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo[0]);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, n_box_texture[0], 0);
-
-	glGenFramebuffers(1, &fbo[1]);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo[1]);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, n_box_texture[1], 0);
-
-	glGenFramebuffers(1, &viewFramebuffer);
+	//FBO
+	glGenFramebuffers(1, &fbo);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+	static const GLenum p_draw_buffers[] = {GL_COLOR_ATTACHMENT0};
+	glDrawBuffers(1, p_draw_buffers);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
 	currentFbo = 0;
-
-	/*
-	//renderbuffer
-	glGenRenderbuffers(1, &_colorRenderBuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);               
-    [_context renderbufferStorage:GL_RENDERBUFFER fromDrawable:_eaglLayer];   
- 
-    glGenFramebuffers(1, &framebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                              GL_RENDERBUFFER, _colorRenderBuffer);
-							  */
 
 	p_box->Delete();
 	p_fire->Delete();
@@ -569,11 +553,15 @@ void OnIdle(CGL30Driver &driver)
 	float f_time = clock() / 1000.0f;
 	// cas pro animaci
 
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo[currentFbo]);
-	glViewport(0,0, dataheight, dataheight);
+	int n_source_tex = 0;
 
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_box_texture[1 - n_source_tex], 0); // kresleni do nulte urovne textury
+
+	//kresleni do fbo
+	glViewport(0,0, dataheight, dataheight); // viewport na velikost FBO
 	glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-	//glDrawBuffer(1-currentFbo);
+	glBindTexture(GL_TEXTURE_2D, n_box_texture[n_source_tex]); // ta druha textura
 
 	Matrix4f t_mvp;
 	{
@@ -592,17 +580,7 @@ void OnIdle(CGL30Driver &driver)
 
 	glUseProgram(n_program_object);
 	// pouzije shader, ktery jsme zkompilovali
-
-	glActiveTexture(GL_TEXTURE0);
-	std::cout << currentFbo << std::endl;
-	glBindTexture(GL_TEXTURE_2D, n_box_texture[1-currentFbo]);
-	/*if(currentFbo){
-		glBindTexture(GL_TEXTURE_2D, n_box_texture[0]);
-	}else{
-		glBindTexture(GL_TEXTURE_2D, n_box_texture[1]);
-	}*/
-
-	//{
+	{
 		glUniformMatrix4fv(n_mvp_matrix_uniform, 1, GL_FALSE, &t_mvp[0][0]);
 		// nahrajeme matici do OpenGL jako parametr shaderu
 
@@ -612,28 +590,44 @@ void OnIdle(CGL30Driver &driver)
 
 		glUniform1f(n_time_uniform, f_time);
 		// nastavime cas pro animaci
-	//}
+	}
 	// nastavime parametry shaderu (musi se delat pokazde kdyz se shader pouzije)
 
-	
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, n_fire_texture); // opet - zadne enable / disable GL_TEXTURE_2D
+	//glActiveTexture(GL_TEXTURE0);
+	//glBindTexture(GL_TEXTURE_2D, n_box_texture);
+	//glActiveTexture(GL_TEXTURE1);
+	//glBindTexture(GL_TEXTURE_2D, n_fire_texture); // opet - zadne enable / disable GL_TEXTURE_2D
 	// nastavime textury (do prvni texturovaci jednotky da texturu krabice, do druhou da texturu ohne)
+
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // chcete kresliz do okna
+	glViewport(0, 0, n_width, n_height); // viewport na velikost okna
+
+	glBindTexture(GL_TEXTURE_2D, n_box_texture[1 - n_source_tex]); // textura do ktere se kreslilo
+	glGenerateMipmap(GL_TEXTURE_2D);
+	// musi se pregenerovat mipmapy
+
+	n_source_tex = 1 - n_source_tex; // ping-pong
+	// nova data jsou ted v n_source_tex
+
+	glClear(GL_COLOR_BUFFER_BIT);
+	glBindTexture(GL_TEXTURE_2D, n_box_texture[n_source_tex]); // ta druha textura
+	glUseProgram(n_program_object); // bind shader (jen zobrazuje co je v texture)
+// ted kreslite do okna, chcete videt vysledek
+	// pouzije shader, ktery jsme zkompilovali
+	{
+		glUniformMatrix4fv(n_mvp_matrix_uniform, 1, GL_FALSE, &t_mvp[0][0]);
+		// nahrajeme matici do OpenGL jako parametr shaderu
+
+		glUniform1i(n_box_sampler_uniform, 0);
+		glUniform1i(n_fire_sampler_uniform, 1);
+		// nastavime cisla texturovacich jednotek, odkud si shader bude brat textury
+
+		glUniform1f(n_time_uniform, f_time);
+		// nastavime cas pro animaci
+	}
 
 	DrawScene();
 	// vykreslime objekt pomoci VBO
-	
-	glUseProgram(0);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, viewFramebuffer);
-	glViewport ( 0, 0, dataheight, dataheight );
-
-	[self drawOutputTextureToScreen:texProgram texID:n_box_texture[1-currentFbo]];
-
-	glBindRenderbuffer(GL_RENDERBUFFER, viewRenderbuffer);
-	[context presentRenderbuffer:GL_RENDERBUFFER];
-
-	currentFbo = (currentFbo+1)%2;
 	driver.Blit(); // preklopi buffery, zobrazi co jsme nakreslili
 }

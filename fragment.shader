@@ -4,6 +4,8 @@ out vec4 frag_color; // vystup do framebufferu
 
 uniform sampler2D n_box_tex, n_fire_tex;
 
+//uniform velikostpixelu
+
 void main()
 {
 	float temp;
