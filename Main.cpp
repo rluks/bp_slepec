@@ -637,6 +637,21 @@ void OnIdle(CGL30Driver &driver)
 
 	glClear(GL_COLOR_BUFFER_BIT);
 	//glBindTexture(GL_TEXTURE_2D, n_box_texture[n_source_tex]); // ta druha textura
+
+	{
+		Matrix4f t_projection;
+		CGLTransform::Perspective(t_projection, 90, float(n_width) / n_height, .01f, 1000);
+		// spocitame matici perspektivni projekce
+
+		Matrix4f t_modelview;
+		t_modelview.Identity();
+		t_modelview.Translate(0, 0, -2.5f);
+		// spocitame matici modelview
+
+		t_mvp = t_projection * t_modelview;
+	}
+	// spocitame modelview - projection matici, kterou potrebujeme k transformaci vrcholu
+
 	glUseProgram(n_program_object_pass); // bind shader (jen zobrazuje co je v texture)
 // ted kreslite do okna, chcete videt vysledek
 	{
