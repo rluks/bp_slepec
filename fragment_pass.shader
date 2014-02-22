@@ -1,8 +1,10 @@
 #version 330
-in vec2 v_texcoord; // vstup z vertex shaderu
+in vec2 v_texcoord; // vstupy z vertex shaderu
 out vec4 frag_color; // vystup do framebufferu
 
 uniform sampler2D n_box_tex;
+
+//uniform velikostpixelu
 
 void main()
 {

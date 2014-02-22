@@ -37,16 +37,23 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 // prototypy funkci
 
 GLuint fbo;
+int n_source_tex;
 static const GLenum p_draw_buffers[] = {GL_COLOR_ATTACHMENT0};
 static GLuint n_box_texture[2];
-static GLuint n_fire_texture;
 
 static GLuint n_surface_texture;//textura hladiny
 
 static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_object;
 static GLuint n_vertex_shader, n_fragment_shader, n_program_object, n_mvp_matrix_uniform,
-	n_box_sampler_uniform, n_fire_sampler_uniform, n_time_uniform, n_surface_sampler_uniform;
+	n_box_sampler_uniform, n_time_uniform, n_surface_sampler_uniform;
 // OpenGL objekty
+
+static GLuint n_vertex_shader_pass, n_fragment_shader_pass;
+static GLuint n_program_object_pass;
+static GLuint 
+	n_mvp_matrix_uniform_pass, 
+	n_box_sampler_uniform_pass, 
+	n_time_uniform_pass;
 
 /**
  *	@brief zkontroluje zda byl shader spravne zkompilovan, tiskne chyby do stderr
@@ -170,6 +177,8 @@ GLuint n_GLTextureFromData()
 		for (int j = 0; j < datawidth; j++)
 			checkImage[j][j] = 0.0f;
 
+	//checkImage[0][0] = 0.0f;
+
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &n_tex_surface);
 
@@ -281,6 +290,7 @@ bool InitGLObjects()
 	glBindVertexArray(0); // vratime VAO 0, abychom si nahodne VAO nezmenili (pripadne osetreni proti chybe v ovladacich nvidia kde se VAO poskodi pri volani nekterych wgl funkci)
 	// vytvorime a nastavime vertex array objekt - objekt na GPU, ktery si pamatuje konfiguraci nastaveni VBO. pak pri kresleni volame jen glBindVertexArray() namisto vsech prikazu v bloku vyse
 
+	//shader na processing
 	std::string vertexString = getTextFileString("vertex.shader");
 	const char *p_s_vertex_shader = vertexString.c_str();
 
@@ -315,38 +325,58 @@ bool InitGLObjects()
 		return false;
 	// slinkuje program
 
+	n_mvp_matrix_uniform = glGetUniformLocation(n_program_object, "t_modelview_projection_matrix");
+	n_box_sampler_uniform = glGetUniformLocation(n_program_object, "n_box_tex");
+	n_time_uniform = glGetUniformLocation(n_program_object, "f_time");
+	// najde cislo parametru shaderu podle jeho jmena
+
 	//shadery na ping pong
 	std::string vertexStringPass = getTextFileString("vertex_pass.shader");
 	const char *p_s_vertex_shader_pass = vertexStringPass.c_str();
 	std::string fragmentStringPass = getTextFileString("fragment_pass.shader");
 	const char *p_s_fragment_shader_pass = fragmentStringPass.c_str();
 
-	n_mvp_matrix_uniform = glGetUniformLocation(n_program_object, "t_modelview_projection_matrix");
-	n_box_sampler_uniform = glGetUniformLocation(n_program_object, "n_box_tex");
-	n_fire_sampler_uniform = glGetUniformLocation(n_program_object, "n_fire_tex");
+	n_vertex_shader_pass = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(n_vertex_shader_pass, 1, &p_s_vertex_shader_pass, NULL);
+	glCompileShader(n_vertex_shader_pass);
+	if(!CheckShader(n_vertex_shader_pass, "vertex shader pass"))
+		return false;
+	n_fragment_shader_pass = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(n_fragment_shader_pass, 1, &p_s_fragment_shader_pass, NULL);
+	glCompileShader(n_fragment_shader_pass);
+	if(!CheckShader(n_fragment_shader_pass, "fragment shader pass"))
+		return false;
+	n_program_object_pass = glCreateProgram();
+	glAttachShader(n_program_object_pass, n_vertex_shader_pass);
+	glAttachShader(n_program_object_pass, n_fragment_shader_pass);
+	// zkompiluje vertex / fragment shader, pripoji je k programu
 
-	//n_surface_sampler_uniform = glGetUniformLocation(n_program_object, "n_surface_texture");
+	glBindAttribLocation(n_program_object_pass, 0, "v_tex");//2hodnoty vec2
+	glBindAttribLocation(n_program_object_pass, 1, "v_pos");//3hodnoty vec3
+	// nabinduje atributy (propojeni mezi obsahem VBO a vstupem do vertex shaderu)
 
-	n_time_uniform = glGetUniformLocation(n_program_object, "f_time");
-	// najde cislo parametru shaderu podle jeho jmena
+	glBindFragDataLocation(n_program_object_pass, 0, "frag_color");
+	// nabinduje vystupni promenou (propojeni mezi framebufferem a vystupem fragment shaderu)
 
-	TBmp *p_box, *p_fire;
+	glLinkProgram(n_program_object_pass);
+	if(!CheckProgram(n_program_object_pass, "program pass"))
+		return false;
+	// slinkuje program
+
+	n_mvp_matrix_uniform_pass = glGetUniformLocation(n_program_object_pass, "t_modelview_projection_matrix");
+	n_box_sampler_uniform_pass = glGetUniformLocation(n_program_object_pass, "n_box_tex");
+	n_time_uniform_pass = glGetUniformLocation(n_program_object_pass, "f_time");
+
+	TBmp *p_box;
 	if(!(p_box = CTgaCodec::p_Load_TGA("box.tga"))) {
 		fprintf(stderr, "error: failed to load \'box.tga\'\n");
-		return false;
-	}
-	if(!(p_fire = CTgaCodec::p_Load_TGA("fire.tga"))) {
-		p_box->Delete();
-		fprintf(stderr, "error: failed to load \'fire.tga\'\n");
 		return false;
 	}
 	// nahraje obrazky
 
 	n_box_texture[1] = n_GLTextureEmpty();
 	n_box_texture[0] = n_GLTextureFromData();
-
-	n_fire_texture = n_GLTextureFromBitmap(p_fire, GL_RGB8);
-	// vyrobi z nich textury
+	// vyrobi textury
 
 	//FBO
 	glGenFramebuffers(1, &fbo);
@@ -354,8 +384,9 @@ bool InitGLObjects()
 	glDrawBuffers(1, p_draw_buffers);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
+	n_source_tex = 0;
+
 	p_box->Delete();
-	p_fire->Delete();
 	// uvolni pamet
 	return true;
 }
@@ -378,7 +409,6 @@ void CleanupGLObjects()
 	// smaze shadery
 
 	glDeleteTextures(1, n_box_texture);
-	glDeleteTextures(1, &n_fire_texture);
 	// smaze textury
 }
 
@@ -551,14 +581,13 @@ void OnIdle(CGL30Driver &driver)
 
 	float f_time = clock() / 1000.0f;
 	// cas pro animaci
-
-	int n_source_tex = 0;
+	system("PAUSE");
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_box_texture[1 - n_source_tex], 0); // kresleni do nulte urovne textury
 
 	//kresleni do fbo
-	glViewport(0,0, datawidth, dataheight); // viewport na velikost FBO
+	glViewport(0, 0, datawidth, dataheight); // viewport na velikost FBO
 	glClear ( GL_COLOR_BUFFER_BIT);
 	glBindTexture(GL_TEXTURE_2D, n_box_texture[n_source_tex]); // ta druha textura
 
@@ -582,11 +611,8 @@ void OnIdle(CGL30Driver &driver)
 	{
 		glUniformMatrix4fv(n_mvp_matrix_uniform, 1, GL_FALSE, &t_mvp[0][0]);
 		// nahrajeme matici do OpenGL jako parametr shaderu
-
 		glUniform1i(n_box_sampler_uniform, 0);
-		glUniform1i(n_fire_sampler_uniform, 1);
 		// nastavime cisla texturovacich jednotek, odkud si shader bude brat textury
-
 		glUniform1f(n_time_uniform, f_time);
 		// nastavime cas pro animaci
 	}
@@ -594,37 +620,24 @@ void OnIdle(CGL30Driver &driver)
 
 	DrawScene();
 
-	//glActiveTexture(GL_TEXTURE0);
-	//glBindTexture(GL_TEXTURE_2D, n_box_texture);
-	//glActiveTexture(GL_TEXTURE1);
-	//glBindTexture(GL_TEXTURE_2D, n_fire_texture); // opet - zadne enable / disable GL_TEXTURE_2D
-	// nastavime textury (do prvni texturovaci jednotky da texturu krabice, do druhou da texturu ohne)
-
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // chcete kresliz do okna
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // chcete kreslit do okna
 	glViewport(0, 0, n_width, n_height); // viewport na velikost okna
 
 	glBindTexture(GL_TEXTURE_2D, n_box_texture[1 - n_source_tex]); // textura do ktere se kreslilo
 	glGenerateMipmap(GL_TEXTURE_2D);
 	// musi se pregenerovat mipmapy
 
-	n_source_tex = 1 - n_source_tex; // ping-pong
+		n_source_tex = 1 - n_source_tex; // ping-pong
 	// nova data jsou ted v n_source_tex
 
 	glClear(GL_COLOR_BUFFER_BIT);
-	glBindTexture(GL_TEXTURE_2D, n_box_texture[n_source_tex]); // ta druha textura
-	glUseProgram(n_program_object); // bind shader (jen zobrazuje co je v texture)
+	//glBindTexture(GL_TEXTURE_2D, n_box_texture[n_source_tex]); // ta druha textura
+	glUseProgram(n_program_object_pass); // bind shader (jen zobrazuje co je v texture)
 // ted kreslite do okna, chcete videt vysledek
-	// pouzije shader, ktery jsme zkompilovali
 	{
-		glUniformMatrix4fv(n_mvp_matrix_uniform, 1, GL_FALSE, &t_mvp[0][0]);
-		// nahrajeme matici do OpenGL jako parametr shaderu
-
-		glUniform1i(n_box_sampler_uniform, 0);
-		glUniform1i(n_fire_sampler_uniform, 1);
-		// nastavime cisla texturovacich jednotek, odkud si shader bude brat textury
-
-		glUniform1f(n_time_uniform, f_time);
-		// nastavime cas pro animaci
+		glUniformMatrix4fv(n_mvp_matrix_uniform_pass, 1, GL_FALSE, &t_mvp[0][0]);
+		glUniform1i(n_box_sampler_uniform_pass, 0);
+		glUniform1f(n_time_uniform_pass, f_time);
 	}
 
 	DrawScene();

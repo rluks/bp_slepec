@@ -2,7 +2,7 @@
 in vec2 v_texcoord, v_texcoord1, v_texcoord2, v_texcoord3; // vstupy z vertex shaderu
 out vec4 frag_color; // vystup do framebufferu
 
-uniform sampler2D n_box_tex, n_fire_tex;
+uniform sampler2D n_box_tex;
 
 //uniform velikostpixelu
 
