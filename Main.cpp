@@ -173,11 +173,16 @@ GLuint n_GLTextureFromData()
 		}
 	}
 
+	/*
 	for (int i = 0; i < dataheight; i++)
 		for (int j = 0; j < datawidth; j++)
-			checkImage[j][j] = 0.0f;
+			checkImage[j][j] = 0.0f;*/
 
-	//checkImage[0][0] = 0.0f;
+	for (int i = 0; i < dataheight; i++)
+		checkImage[i][20] = 0.0f;
+
+	for (int j = 0; j < datawidth; j++)
+		checkImage[5][j] = 0.0f;
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &n_tex_surface);
