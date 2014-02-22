@@ -173,16 +173,18 @@ GLuint n_GLTextureFromData()
 		}
 	}
 
-	/*
+	
 	for (int i = 0; i < dataheight; i++)
 		for (int j = 0; j < datawidth; j++)
-			checkImage[j][j] = 0.0f;*/
+			checkImage[j][j] = 0.0f;
+
 
 	for (int i = 0; i < dataheight; i++)
 		checkImage[i][20] = 0.0f;
 
 	for (int j = 0; j < datawidth; j++)
 		checkImage[5][j] = 0.0f;
+
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &n_tex_surface);
@@ -584,8 +586,8 @@ void OnIdle(CGL30Driver &driver)
 	glEnable(GL_DEPTH_TEST);
 	// vycistime framebuffer
 
-	float f_time = clock() / 1000.0f;
-	// cas pro animaci
+	float f_time = clock() / 1000.0f; // cas pro animaci
+	
 	system("PAUSE");
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
@@ -596,32 +598,10 @@ void OnIdle(CGL30Driver &driver)
 	glClear ( GL_COLOR_BUFFER_BIT);
 	glBindTexture(GL_TEXTURE_2D, n_box_texture[n_source_tex]); // ta druha textura
 
-	Matrix4f t_mvp;
-	{
-		Matrix4f t_projection;
-		CGLTransform::Perspective(t_projection, 90, float(n_width) / n_height, .01f, 1000);
-		// spocitame matici perspektivni projekce
-
-		Matrix4f t_modelview;
-		t_modelview.Identity();
-		t_modelview.Translate(0, 0, -2.5f);
-		// spocitame matici modelview
-
-		t_mvp = t_projection * t_modelview;
-	}
-	// spocitame modelview - projection matici, kterou potrebujeme k transformaci vrcholu
-
 	glUseProgram(n_program_object);
-	// pouzije shader, ktery jsme zkompilovali
 	{
-		glUniformMatrix4fv(n_mvp_matrix_uniform, 1, GL_FALSE, &t_mvp[0][0]);
-		// nahrajeme matici do OpenGL jako parametr shaderu
 		glUniform1i(n_box_sampler_uniform, 0);
-		// nastavime cisla texturovacich jednotek, odkud si shader bude brat textury
-		glUniform1f(n_time_uniform, f_time);
-		// nastavime cas pro animaci
 	}
-	// nastavime parametry shaderu (musi se delat pokazde kdyz se shader pouzije)
 
 	DrawScene();
 
@@ -632,12 +612,13 @@ void OnIdle(CGL30Driver &driver)
 	glGenerateMipmap(GL_TEXTURE_2D);
 	// musi se pregenerovat mipmapy
 
-		n_source_tex = 1 - n_source_tex; // ping-pong
+	n_source_tex = 1 - n_source_tex; // ping-pong
 	// nova data jsou ted v n_source_tex
 
 	glClear(GL_COLOR_BUFFER_BIT);
 	//glBindTexture(GL_TEXTURE_2D, n_box_texture[n_source_tex]); // ta druha textura
 
+	Matrix4f t_mvp;
 	{
 		Matrix4f t_projection;
 		CGLTransform::Perspective(t_projection, 90, float(n_width) / n_height, .01f, 1000);
@@ -657,11 +638,9 @@ void OnIdle(CGL30Driver &driver)
 	{
 		glUniformMatrix4fv(n_mvp_matrix_uniform_pass, 1, GL_FALSE, &t_mvp[0][0]);
 		glUniform1i(n_box_sampler_uniform_pass, 0);
-		glUniform1f(n_time_uniform_pass, f_time);
 	}
 
-	DrawScene();
-	// vykreslime objekt pomoci VBO
-
+	DrawScene(); // vykreslime objekt pomoci VBO
+	
 	driver.Blit(); // preklopi buffery, zobrazi co jsme nakreslili
 }

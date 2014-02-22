@@ -2,8 +2,6 @@
 in vec2 v_tex;
 in vec3 v_pos; // atributy - vstup z dat vrcholu
 
-uniform float f_time; // parametr shaderu - cas pro animovani
-
 uniform mat4 t_modelview_projection_matrix; // parametr shaderu - transformacni matice
 
 out vec2 v_texcoord;
