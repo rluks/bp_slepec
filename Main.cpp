@@ -244,7 +244,7 @@ bool InitGLObjects()
 {
 
 	const float p_box_vertices[] = {
-	0, 1, -1, -1, 1, /**/1, 1, 1, -1, 1,/**/ 1, 0, 1, 1, 1,/**/ 0, 0, -1, 1, 1};
+	0, 0, -1, -1, 1, /**/1, 0, 1, -1, 1,/**/ 1, 1, 1, 1, 1,/**/ 0, 1, -1, 1, 1};
 	// vrcholy krychle, vzdy 2 souradnice textury, pak 3 souradnice vrcholu; vrcholy jsou usporadane poporade po ctvericich, tvoricich polygony jednotlivych sten
 
 	const unsigned int p_box_indices[] = {	
