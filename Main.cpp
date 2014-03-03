@@ -163,28 +163,25 @@ GLuint n_GLTextureFromData()
 {
 
 	GLuint n_tex_surface;
-	GLfloat checkImage[dataheight][datawidth];
-
-	float r = 1.0f;
-	for (int i = 0; i < dataheight; i++) {
-		for (int j = 0; j < datawidth; j++) {
-			//r = r + 0.0001f;
-			checkImage[i][j] = (GLfloat) r;
-		}
+	GLfloat *checkImage;
+	
+	//alokace pameti
+	try {
+		checkImage = new GLfloat [datawidth * dataheight];
+	} catch (std::bad_alloc e){
+		std::cerr << "Alokace pameti selhala" << std::endl;
+		return -1;
 	}
 
-	
-	for (int i = 0; i < dataheight; i++)
-		for (int j = 0; j < datawidth; j++)
-			checkImage[j][j] = 0.0f;
+	float r = 1.0f;
+	for (int i = 0; i < datawidth * dataheight; i++) {
+			//r = r + 0.0001f;
+			checkImage[i] = (GLfloat) r;
+	}
 
-
-	for (int i = 0; i < dataheight; i++)
-		checkImage[i][20] = 0.0f;
-
-	for (int j = 0; j < datawidth; j++)
-		checkImage[5][j] = 0.0f;
-
+	int x = datawidth/2;
+	int y = dataheight/2;
+	checkImage[x + datawidth * y] = 0.0f;
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &n_tex_surface);
