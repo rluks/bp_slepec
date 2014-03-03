@@ -17,8 +17,8 @@
 #include <cstdlib>
 #include <ctime>
 
-#define datawidth 100
-#define dataheight 100
+#define datawidth 800
+#define dataheight 600
 
 static const char *p_s_window_name = "OpenGL 3 window";
 static const char *p_s_class_name = "my_wndclass";
@@ -161,30 +161,27 @@ GLuint n_GLTextureFromBitmap(const TBmp *p_bitmap, GLenum n_internal_format = GL
 
 GLuint n_GLTextureFromData()
 {
-
 	GLuint n_tex_surface;
-	GLfloat checkImage[dataheight][datawidth];
+	GLfloat *checkImage;
 
-	float r = 1.0f;
-	for (int i = 0; i < dataheight; i++) {
-		for (int j = 0; j < datawidth; j++) {
-			//r = r + 0.0001f;
-			checkImage[i][j] = (GLfloat) r;
-		}
+	//alokace pameti
+	try {
+		checkImage = new GLfloat [datawidth * dataheight];
+	} catch (std::bad_alloc e){
+		std::cerr << "Alokace pameti selhala" << std::endl;
+		return -1;
 	}
 
-	
-	for (int i = 0; i < dataheight; i++)
-		for (int j = 0; j < datawidth; j++)
-			checkImage[j][j] = 0.0f;
+	//pocatecni data
+	float r = 1.0f;
+	for (int i = 0; i < dataheight * datawidth; i++) {
+			//r = r + 0.0001f;
+			checkImage[i] = (GLfloat) r;
+	}
 
-
-	for (int i = 0; i < dataheight; i++)
-		checkImage[i][20] = 0.0f;
-
-	for (int j = 0; j < datawidth; j++)
-		checkImage[5][j] = 0.0f;
-
+	int x = datawidth/2;
+	int y = dataheight/2;
+	checkImage[x + datawidth * y] = 0.0f;
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &n_tex_surface);
@@ -193,6 +190,9 @@ GLuint n_GLTextureFromData()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, datawidth, dataheight, 0, GL_RED, GL_FLOAT, checkImage);
+
+	//uvolneni pameti
+	delete[] checkImage;
 
 	return n_tex_surface;
 }
