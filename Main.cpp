@@ -17,8 +17,8 @@
 #include <cstdlib>
 #include <ctime>
 
-#define datawidth 100
-#define dataheight 100
+#define datawidth 800
+#define dataheight 600
 
 static const char *p_s_window_name = "OpenGL 3 window";
 static const char *p_s_class_name = "my_wndclass";
@@ -47,6 +47,9 @@ static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_obje
 static GLuint n_vertex_shader, n_fragment_shader, n_program_object, n_mvp_matrix_uniform,
 	n_box_sampler_uniform, n_time_uniform, n_surface_sampler_uniform;
 // OpenGL objekty
+
+static GLuint pixel_size_x, pixel_size_y;
+static GLfloat pixel_size_x_value = 1/datawidth, pixel_size_y_value = 1/dataheight;
 
 static GLuint n_vertex_shader_pass, n_fragment_shader_pass;
 static GLuint n_program_object_pass;
@@ -173,6 +176,20 @@ GLuint n_GLTextureFromData()
 		return -1;
 	}
 
+	for (int i = 0; i < dataheight; i++){
+		try {
+			checkImage[i] = new GLfloat[datawidth];
+		} catch (std::bad_alloc e){
+			std::cerr << "Alokace pameti selhala 2" << std::endl;
+			while(--i > 0)
+				delete[] checkImage[i];
+
+			delete[] checkImage;
+			return -1;
+		}
+	}
+
+	//pocatecni data
 	float r = 1.0f;
 	for (int i = 0; i < datawidth * dataheight; i++) {
 			//r = r + 0.0001f;
@@ -182,7 +199,6 @@ GLuint n_GLTextureFromData()
 	int x = datawidth/2;
 	int y = dataheight/2;
 	checkImage[x + datawidth * y] = 0.0f;
-
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &n_tex_surface);
 
@@ -190,6 +206,12 @@ GLuint n_GLTextureFromData()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, datawidth, dataheight, 0, GL_RED, GL_FLOAT, checkImage);
+
+	//uvolneni pameti
+	for (int i = 0; i < dataheight; i++)
+		delete[] checkImage[i];
+
+	delete[] checkImage;
 
 	return n_tex_surface;
 }
@@ -332,6 +354,8 @@ bool InitGLObjects()
 	n_mvp_matrix_uniform = glGetUniformLocation(n_program_object, "t_modelview_projection_matrix");
 	n_box_sampler_uniform = glGetUniformLocation(n_program_object, "n_box_tex");
 	n_time_uniform = glGetUniformLocation(n_program_object, "f_time");
+	pixel_size_x = glGetUniformLocation(n_program_object, "pixel_size_x_value");
+	pixel_size_y = glGetUniformLocation(n_program_object, "pixel_size_y_value");
 	// najde cislo parametru shaderu podle jeho jmena
 
 	//shadery na ping pong
@@ -598,6 +622,8 @@ void OnIdle(CGL30Driver &driver)
 	glUseProgram(n_program_object);
 	{
 		glUniform1i(n_box_sampler_uniform, 0);
+		glUniform1f(pixel_size_x, pixel_size_x_value);
+		glUniform1f(pixel_size_y, pixel_size_y_value);
 	}
 
 	DrawScene();
