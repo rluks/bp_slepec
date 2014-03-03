@@ -187,6 +187,17 @@ GLuint n_GLTextureFromData()
 	int y = dataheight/2;
 	checkImage[x + datawidth * y] = 0.0f;
 
+	for(int x = 0; x < datawidth; x++){
+		for(int y = 0; y < dataheight; y++){
+			if((x % 10 == 0) && (y % 7 == 1)){
+				checkImage[x + datawidth * y] = 0.0f;
+				checkImage[x-1 + datawidth * y] = 0.0f;
+				checkImage[x+1 + datawidth * y] = 0.0f;
+			}
+		}
+	}
+
+
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &n_tex_surface);
 
