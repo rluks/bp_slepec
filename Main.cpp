@@ -48,6 +48,10 @@ static GLuint n_vertex_shader, n_fragment_shader, n_program_object, n_mvp_matrix
 	n_box_sampler_uniform, n_time_uniform, n_surface_sampler_uniform;
 // OpenGL objekty
 
+static GLuint pixel_size_x, pixel_size_y;
+static GLfloat pixel_size_x_value = 1.0f/datawidth;
+static GLfloat pixel_size_y_value = 1.0f/dataheight;
+
 static GLuint n_vertex_shader_pass, n_fragment_shader_pass;
 static GLuint n_program_object_pass;
 static GLuint 
@@ -335,6 +339,8 @@ bool InitGLObjects()
 	n_mvp_matrix_uniform = glGetUniformLocation(n_program_object, "t_modelview_projection_matrix");
 	n_box_sampler_uniform = glGetUniformLocation(n_program_object, "n_box_tex");
 	n_time_uniform = glGetUniformLocation(n_program_object, "f_time");
+	pixel_size_x = glGetUniformLocation(n_program_object, "pixel_size_x_value");
+	pixel_size_y = glGetUniformLocation(n_program_object, "pixel_size_y_value");
 	// najde cislo parametru shaderu podle jeho jmena
 
 	//shadery na ping pong
@@ -601,6 +607,8 @@ void OnIdle(CGL30Driver &driver)
 	glUseProgram(n_program_object);
 	{
 		glUniform1i(n_box_sampler_uniform, 0);
+		glUniform1f(pixel_size_x, pixel_size_x_value);
+		glUniform1f(pixel_size_y, pixel_size_y_value);
 	}
 
 	DrawScene();
