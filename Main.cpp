@@ -189,6 +189,16 @@ GLuint n_GLTextureFromData()
 
 	for(int x = 0; x < datawidth; x++){
 		for(int y = 0; y < dataheight; y++){
+			if(x > datawidth/3)
+				checkImage[x + datawidth * y] = 0.5f;
+			if(y == dataheight/5)
+				checkImage[x + datawidth * y] = 0.0f;
+		}
+	}
+
+	/*
+	for(int x = 0; x < datawidth; x++){
+		for(int y = 0; y < dataheight; y++){
 			if((x % 10 == 0) && (y % 7 == 1)){
 				checkImage[x + datawidth * y] = 0.0f;
 				checkImage[x-1 + datawidth * y] = 0.0f;
@@ -196,6 +206,7 @@ GLuint n_GLTextureFromData()
 			}
 		}
 	}
+	*/
 
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -605,7 +616,7 @@ void OnIdle(CGL30Driver &driver)
 
 	float f_time = clock() / 1000.0f; // cas pro animaci
 	
-	system("PAUSE");
+	//system("PAUSE");
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_box_texture[1 - n_source_tex], 0); // kresleni do nulte urovne textury
