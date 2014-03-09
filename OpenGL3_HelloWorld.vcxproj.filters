@@ -58,5 +58,17 @@
     <None Include="vertex_pass.shader">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="height_fragment.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="height_vertex.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="velocity_fragment.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="velocity_vertex.shader">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

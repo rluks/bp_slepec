@@ -40,6 +40,7 @@ GLuint fbo;
 int n_source_tex;
 static const GLenum p_draw_buffers[] = {GL_COLOR_ATTACHMENT0};
 static GLuint n_box_texture[2];
+static GLuint velocitymap[2];
 
 static GLuint n_surface_texture;//textura hladiny
 
@@ -52,12 +53,16 @@ static GLuint pixel_size_x, pixel_size_y;
 static GLfloat pixel_size_x_value = 1.0f/datawidth;
 static GLfloat pixel_size_y_value = 1.0f/dataheight;
 
-static GLuint n_vertex_shader_pass, n_fragment_shader_pass;
-static GLuint n_program_object_pass;
+//pass shader
+static GLuint n_vertex_shader_pass, n_fragment_shader_pass, n_program_object_pass;
 static GLuint 
 	n_mvp_matrix_uniform_pass, 
 	n_box_sampler_uniform_pass, 
 	n_time_uniform_pass;
+
+//velocity shader
+static GLuint n_vertex_shader_velocity, n_fragment_shader_velocity, n_program_object_velocity;
+static GLuint n_box_sampler_uniform_velocity, n_velocitymap_sampler_uniform;
 
 /**
  *	@brief zkontroluje zda byl shader spravne zkompilovan, tiskne chyby do stderr
@@ -238,6 +243,21 @@ GLuint n_GLTextureEmpty()
 	return n_tex_surface;
 }
 
+GLuint n_GLTextureRG()
+{
+	GLuint n_tex_surface;
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glGenTextures(1, &n_tex_surface);
+
+	glBindTexture(GL_TEXTURE_2D, n_tex_surface);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, datawidth, dataheight, 0, GL_RG, GL_FLOAT, NULL);//null
+
+	return n_tex_surface;
+}
+
 std::string getTextFileString(std::string name){
 
 	FILE* fp = fopen(name.c_str(), "rt");
@@ -402,6 +422,45 @@ bool InitGLObjects()
 	n_box_sampler_uniform_pass = glGetUniformLocation(n_program_object_pass, "n_box_tex");
 	n_time_uniform_pass = glGetUniformLocation(n_program_object_pass, "f_time");
 
+
+	//velocity shader
+	std::string vertexStringVelocity = getTextFileString("velocity_vertex.shader");
+	const char *p_s_vertex_shader_velocity = vertexStringVelocity.c_str();
+	std::string fragmentStringVelocity = getTextFileString("velocity_fragment.shader");
+	const char *p_s_fragment_shader_velocity = fragmentStringVelocity.c_str();
+
+	n_vertex_shader_velocity = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(n_vertex_shader_velocity, 1, &p_s_vertex_shader_velocity, NULL);
+	glCompileShader(n_vertex_shader_velocity);
+	if(!CheckShader(n_vertex_shader_velocity, "vertex shader velocity")){
+		std::cerr << "Check vertex shader failed" << std::endl;
+		return false;
+	}
+	n_fragment_shader_velocity = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(n_fragment_shader_velocity, 1, &p_s_fragment_shader_velocity, NULL);
+	glCompileShader(n_fragment_shader_velocity);
+	if(!CheckShader(n_fragment_shader_velocity, "fragment shader velocity")){
+		std::cerr << "Check fragment shader failed" << std::endl;
+		return false;
+	}
+	n_program_object_velocity = glCreateProgram();
+	glAttachShader(n_program_object_velocity, n_vertex_shader_velocity);
+	glAttachShader(n_program_object_velocity, n_fragment_shader_velocity);
+
+	glBindAttribLocation(n_program_object_velocity, 0, "v_tex");
+	glBindAttribLocation(n_program_object_velocity, 1, "v_pos");
+
+	glBindFragDataLocation(n_program_object_velocity, 0, "frag_color");
+
+	glLinkProgram(n_program_object_velocity);
+	if(!CheckProgram(n_program_object_velocity, "program pass")){
+		std::cerr << "Check program failed" << std::endl;
+		return false;
+	}
+	n_box_sampler_uniform_velocity = glGetUniformLocation(n_program_object_velocity, "n_box_tex");
+	n_velocitymap_sampler_uniform = glGetUniformLocation(n_program_object_velocity, "velocitymap");
+
+
 	TBmp *p_box;
 	if(!(p_box = CTgaCodec::p_Load_TGA("box.tga"))) {
 		fprintf(stderr, "error: failed to load \'box.tga\'\n");
@@ -411,6 +470,8 @@ bool InitGLObjects()
 
 	n_box_texture[1] = n_GLTextureEmpty();
 	n_box_texture[0] = n_GLTextureFromData();
+	velocitymap[1] = n_GLTextureRG();
+	velocitymap[0] = n_GLTextureRG();
 	// vyrobi textury
 
 	//FBO
