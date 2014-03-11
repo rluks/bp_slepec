@@ -107,14 +107,14 @@
     <ClInclude Include="Vector.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="fragment.shader" />
-    <None Include="fragment_pass.shader" />
+    <None Include="blur.fr.shader" />
+    <None Include="blur.vx.shader" />
     <None Include="height_fragment.shader" />
     <None Include="height_vertex.shader" />
+    <None Include="pass.fr.shader" />
+    <None Include="pass.vx.shader" />
     <None Include="velocity_fragment.shader" />
     <None Include="velocity_vertex.shader" />
-    <None Include="vertex.shader" />
-    <None Include="vertex_pass.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

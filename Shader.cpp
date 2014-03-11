@@ -134,8 +134,8 @@ bool Shader::compile(GLuint * n_vertex_shader, GLuint * n_fragment_shader, GLuin
 }
 
 bool ShaderBlur::compile(){
-	vertexpath  = "vertex.shader";
-	fragmentpath = "fragment.shader";
+	vertexpath  = "blur.vx.shader";
+	fragmentpath = "blur.fr.shader";
 	return Shader::compile(&n_vertex_shader, &n_fragment_shader, &n_program_object);
 }
 
@@ -157,8 +157,8 @@ void ShaderBlur::use(int width, int height){
 
 //pass
 bool ShaderPass::compile(){
-	vertexpath  = "vertex_pass.shader";
-	fragmentpath = "fragment_pass.shader";
+	vertexpath  = "pass.vx.shader";
+	fragmentpath = "pass.fr.shader";
 	return Shader::compile(&n_vertex_shader_pass, &n_fragment_shader_pass, &n_program_object_pass);
 }
 

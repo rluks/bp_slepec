@@ -52,18 +52,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="fragment.shader">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="vertex.shader">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="fragment_pass.shader">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="vertex_pass.shader">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="height_fragment.shader">
       <Filter>Resource Files</Filter>
     </None>
@@ -74,6 +62,18 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="velocity_vertex.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="blur.fr.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="blur.vx.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="pass.fr.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="pass.vx.shader">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
