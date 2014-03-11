@@ -54,11 +54,14 @@ static GLuint n_vertex_shader, n_fragment_shader, n_program_object;
 static GLuint n_mvp_matrix_uniform, n_texture_sampler_uniform, n_time_uniform, pixel_size;*/
 
 //pass shader
+ShaderPass pass;
+/*
 static GLuint n_vertex_shader_pass, n_fragment_shader_pass, n_program_object_pass;
 static GLuint 
 	n_mvp_matrix_uniform_pass, 
 	n_texture_sampler_uniform_pass, 
 	n_time_uniform_pass;
+*/
 
 //velocity shader
 static GLuint n_vertex_shader_velocity, n_fragment_shader_velocity, n_program_object_velocity;
@@ -347,48 +350,11 @@ bool InitGLObjects()
 
 	blur.compile();
 	blur.bind();
+
+	pass.compile();
+	pass.bind();
+
 	/*
-	//shader na processing
-	std::string vertexString = getTextFileString("vertex.shader");
-	const char *p_s_vertex_shader = vertexString.c_str();
-
-	std::string fragmentString = getTextFileString("fragment.shader");
-	const char *p_s_fragment_shader = fragmentString.c_str();
-	// zdrojove kody pro vertex / fragment shader (OpenGL 3 uz nepouziva specifikator 'verying', jinak je kod stejny)
-
-	n_vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(n_vertex_shader, 1, &p_s_vertex_shader, NULL);
-	glCompileShader(n_vertex_shader);
-	if(!CheckShader(n_vertex_shader, "vertex shader"))
-		return false;
-	n_fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(n_fragment_shader, 1, &p_s_fragment_shader, NULL);
-	glCompileShader(n_fragment_shader);
-	if(!CheckShader(n_fragment_shader, "fragment shader"))
-		return false;
-	n_program_object = glCreateProgram();
-	glAttachShader(n_program_object, n_vertex_shader);
-	glAttachShader(n_program_object, n_fragment_shader);
-	// zkompiluje vertex / fragment shader, pripoji je k programu
-
-	glBindAttribLocation(n_program_object, 0, "v_tex");//2hodnoty vec2
-	glBindAttribLocation(n_program_object, 1, "v_pos");//3hodnoty vec3
-	// nabinduje atributy (propojeni mezi obsahem VBO a vstupem do vertex shaderu)
-
-	glBindFragDataLocation(n_program_object, 0, "frag_color");
-	// nabinduje vystupni promenou (propojeni mezi framebufferem a vystupem fragment shaderu)
-
-	glLinkProgram(n_program_object);
-	if(!CheckProgram(n_program_object, "program"))
-		return false;
-	// slinkuje program
-
-	n_mvp_matrix_uniform = glGetUniformLocation(n_program_object, "t_modelview_projection_matrix");
-	n_texture_sampler_uniform = glGetUniformLocation(n_program_object, "n_tex");
-	n_time_uniform = glGetUniformLocation(n_program_object, "f_time");
-	pixel_size = glGetUniformLocation(n_program_object, "pixel_size");
-	// najde cislo parametru shaderu podle jeho jmena
-	*/
 	//shadery na ping pong
 	std::string vertexStringPass = getTextFileString("vertex_pass.shader");
 	const char *p_s_vertex_shader_pass = vertexStringPass.c_str();
@@ -425,6 +391,7 @@ bool InitGLObjects()
 	n_mvp_matrix_uniform_pass = glGetUniformLocation(n_program_object_pass, "t_modelview_projection_matrix");
 	n_texture_sampler_uniform_pass = glGetUniformLocation(n_program_object_pass, "n_tex");
 	n_time_uniform_pass = glGetUniformLocation(n_program_object_pass, "f_time");
+	*/
 
 	/*
 	//velocity shader
@@ -730,12 +697,14 @@ void OnIdle(CGL30Driver &driver)
 	}
 	// spocitame modelview - projection matici, kterou potrebujeme k transformaci vrcholu
 
+	pass.use(t_mvp);
+	/*
 	glUseProgram(n_program_object_pass); // bind shader (jen zobrazuje co je v texture)
 // ted kreslite do okna, chcete videt vysledek
 	{
 		glUniformMatrix4fv(n_mvp_matrix_uniform_pass, 1, GL_FALSE, &t_mvp[0][0]);
 		glUniform1i(n_texture_sampler_uniform_pass, 0);
-	}
+	}*/
 
 	DrawScene(); // vykreslime objekt pomoci VBO
 	
