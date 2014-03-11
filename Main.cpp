@@ -3,22 +3,23 @@
 #include <string.h>
 #include <stdio.h>
 #include <time.h>
-#include "OpenGL30Drv.h"
-#include "Transform.h"
-#include "Tga.h"
-
 
 #include <istream>
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <string>
-
 #include <cstdlib>
 #include <ctime>
 
+#include "OpenGL30Drv.h"
+#include "Transform.h"
+#include "Tga.h"
+#include "Shader.h"
+
 #define datawidth 800
 #define dataheight 600
+// velikost dat
 
 static const char *p_s_window_name = "OpenGL 3 window";
 static const char *p_s_class_name = "my_wndclass";
@@ -45,29 +46,30 @@ static GLuint velocitymap[2];
 static GLuint n_surface_texture;//textura hladiny
 
 static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_object;
-static GLuint n_vertex_shader, n_fragment_shader, n_program_object, n_mvp_matrix_uniform,
-	n_box_sampler_uniform, n_time_uniform, n_surface_sampler_uniform;
-// OpenGL objekty
 
-static GLuint pixel_size;
+//blur shader
+ShaderBlur blur;
+/*
+static GLuint n_vertex_shader, n_fragment_shader, n_program_object;
+static GLuint n_mvp_matrix_uniform, n_texture_sampler_uniform, n_time_uniform, pixel_size;*/
 
 //pass shader
 static GLuint n_vertex_shader_pass, n_fragment_shader_pass, n_program_object_pass;
 static GLuint 
 	n_mvp_matrix_uniform_pass, 
-	n_box_sampler_uniform_pass, 
+	n_texture_sampler_uniform_pass, 
 	n_time_uniform_pass;
 
 //velocity shader
 static GLuint n_vertex_shader_velocity, n_fragment_shader_velocity, n_program_object_velocity;
-static GLuint n_box_sampler_uniform_velocity, n_velocitymap_sampler_uniform;
+static GLuint n_texture_sampler_uniform_velocity, n_velocitymap_sampler_uniform;
 
-/**
+/*
  *	@brief zkontroluje zda byl shader spravne zkompilovan, tiskne chyby do stderr
  *	@param[in] n_shader_object je id shaderu
  *	@param[in] p_s_shader_name je jmeno shaderu (jen pro uzivatele - aby vedel o ktery shader se jedna pokud se vytiskne nejaka chyba)
  *	@return vraci true pro uspesne zkompilovane shadery, jinak false
- */
+ *
 bool CheckShader(GLuint n_shader_object, const char *p_s_shader_name)
 {
 	bool b_compiled;
@@ -100,12 +102,12 @@ bool CheckShader(GLuint n_shader_object, const char *p_s_shader_name)
 	return b_compiled;
 }
 
-/**
+/*
  *	@brief zkontroluje zda byl program spravne slinkovan, tiskne chyby do stderr
  *	@param[in] n_program_object je id programu
  *	@param[in] p_s_program_name je jmeno programu (jen pro uzivatele - aby vedel o ktery program se jedna pokud se vytiskne nejaka chyba)
  *	@return vraci true pro uspesne slinkovne programy, jinak false
- */
+ *
 bool CheckProgram(GLuint n_program_object, const char *p_s_program_name)
 {
 	bool b_linked;
@@ -136,7 +138,7 @@ bool CheckProgram(GLuint n_program_object, const char *p_s_program_name)
 	// get info-log
 
 	return b_linked;
-}
+}*/
 
 /**
  *	@brief vyrobi OpenGL texturu z bitmapy
@@ -256,6 +258,8 @@ GLuint n_GLTextureRG()
 	return n_tex_surface;
 }
 
+/*
+//TODO presunuto do shader.cpp?
 std::string getTextFileString(std::string name){
 
 	FILE* fp = fopen(name.c_str(), "rt");
@@ -272,7 +276,7 @@ std::string getTextFileString(std::string name){
 	fclose(fp);
 
 	return text;
-}
+}*/
 
 /**
  *	@brief vraci "pointer" do VBO
@@ -341,6 +345,9 @@ bool InitGLObjects()
 	glBindVertexArray(0); // vratime VAO 0, abychom si nahodne VAO nezmenili (pripadne osetreni proti chybe v ovladacich nvidia kde se VAO poskodi pri volani nekterych wgl funkci)
 	// vytvorime a nastavime vertex array objekt - objekt na GPU, ktery si pamatuje konfiguraci nastaveni VBO. pak pri kresleni volame jen glBindVertexArray() namisto vsech prikazu v bloku vyse
 
+	blur.compile();
+	blur.bind();
+	/*
 	//shader na processing
 	std::string vertexString = getTextFileString("vertex.shader");
 	const char *p_s_vertex_shader = vertexString.c_str();
@@ -377,11 +384,11 @@ bool InitGLObjects()
 	// slinkuje program
 
 	n_mvp_matrix_uniform = glGetUniformLocation(n_program_object, "t_modelview_projection_matrix");
-	n_box_sampler_uniform = glGetUniformLocation(n_program_object, "n_tex");
+	n_texture_sampler_uniform = glGetUniformLocation(n_program_object, "n_tex");
 	n_time_uniform = glGetUniformLocation(n_program_object, "f_time");
 	pixel_size = glGetUniformLocation(n_program_object, "pixel_size");
 	// najde cislo parametru shaderu podle jeho jmena
-
+	*/
 	//shadery na ping pong
 	std::string vertexStringPass = getTextFileString("vertex_pass.shader");
 	const char *p_s_vertex_shader_pass = vertexStringPass.c_str();
@@ -416,10 +423,10 @@ bool InitGLObjects()
 	// slinkuje program
 
 	n_mvp_matrix_uniform_pass = glGetUniformLocation(n_program_object_pass, "t_modelview_projection_matrix");
-	n_box_sampler_uniform_pass = glGetUniformLocation(n_program_object_pass, "n_tex");
+	n_texture_sampler_uniform_pass = glGetUniformLocation(n_program_object_pass, "n_tex");
 	n_time_uniform_pass = glGetUniformLocation(n_program_object_pass, "f_time");
 
-
+	/*
 	//velocity shader
 	std::string vertexStringVelocity = getTextFileString("velocity_vertex.shader");
 	const char *p_s_vertex_shader_velocity = vertexStringVelocity.c_str();
@@ -454,8 +461,9 @@ bool InitGLObjects()
 		std::cerr << "Check program failed" << std::endl;
 		return false;
 	}
-	n_box_sampler_uniform_velocity = glGetUniformLocation(n_program_object_velocity, "n_tex");
+	n_texture_sampler_uniform_velocity = glGetUniformLocation(n_program_object_velocity, "n_tex");
 	n_velocitymap_sampler_uniform = glGetUniformLocation(n_program_object_velocity, "velocitymap");
+	*/
 
 
 	TBmp *p_box;
@@ -496,9 +504,9 @@ void CleanupGLObjects()
 	glDeleteVertexArrays(1, &n_vertex_array_object);
 	// smaze vertex array objekt
 
-	glDeleteShader(n_vertex_shader);
-	glDeleteShader(n_fragment_shader);
-	glDeleteProgram(n_program_object);
+	//glDeleteShader(n_vertex_shader);//TODO
+	//glDeleteShader(n_fragment_shader);
+	//glDeleteProgram(n_program_object);
 	// smaze shadery
 
 	glDeleteTextures(1, n_texture);
@@ -684,11 +692,13 @@ void OnIdle(CGL30Driver &driver)
 	glClear ( GL_COLOR_BUFFER_BIT);
 	glBindTexture(GL_TEXTURE_2D, n_texture[n_source_tex]); // ta druha textura
 
+	blur.use(datawidth, dataheight);
+	/*
 	glUseProgram(n_program_object);
 	{
-		glUniform1i(n_box_sampler_uniform, 0);
-		glUniform3f(pixel_size, 1.0f/datawidth, 1.0f/dataheight, 0.0f);
-	}
+		glUniform1i(ShaderBlur.n_texture_sampler_uniform, 0);
+		glUniform3f(ShaderBlur::pixel_size, 1.0f/datawidth, 1.0f/dataheight, 0.0f);
+	}*/
 
 	DrawScene();
 
@@ -724,7 +734,7 @@ void OnIdle(CGL30Driver &driver)
 // ted kreslite do okna, chcete videt vysledek
 	{
 		glUniformMatrix4fv(n_mvp_matrix_uniform_pass, 1, GL_FALSE, &t_mvp[0][0]);
-		glUniform1i(n_box_sampler_uniform_pass, 0);
+		glUniform1i(n_texture_sampler_uniform_pass, 0);
 	}
 
 	DrawScene(); // vykreslime objekt pomoci VBO
