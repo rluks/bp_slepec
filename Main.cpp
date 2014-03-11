@@ -43,105 +43,15 @@ static const GLenum p_draw_buffers[] = {GL_COLOR_ATTACHMENT0};
 static GLuint n_texture[2];
 static GLuint velocitymap[2];
 
-static GLuint n_surface_texture;//textura hladiny
-
 static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_object;
 
-//blur shader
+//shadery
 ShaderBlur blur;
-/*
-static GLuint n_vertex_shader, n_fragment_shader, n_program_object;
-static GLuint n_mvp_matrix_uniform, n_texture_sampler_uniform, n_time_uniform, pixel_size;*/
-
-//pass shader
 ShaderPass pass;
-/*
-static GLuint n_vertex_shader_pass, n_fragment_shader_pass, n_program_object_pass;
-static GLuint 
-	n_mvp_matrix_uniform_pass, 
-	n_texture_sampler_uniform_pass, 
-	n_time_uniform_pass;
-*/
 
 //velocity shader
 static GLuint n_vertex_shader_velocity, n_fragment_shader_velocity, n_program_object_velocity;
 static GLuint n_texture_sampler_uniform_velocity, n_velocitymap_sampler_uniform;
-
-/*
- *	@brief zkontroluje zda byl shader spravne zkompilovan, tiskne chyby do stderr
- *	@param[in] n_shader_object je id shaderu
- *	@param[in] p_s_shader_name je jmeno shaderu (jen pro uzivatele - aby vedel o ktery shader se jedna pokud se vytiskne nejaka chyba)
- *	@return vraci true pro uspesne zkompilovane shadery, jinak false
- *
-bool CheckShader(GLuint n_shader_object, const char *p_s_shader_name)
-{
-	bool b_compiled;
-	{
-		int n_tmp;
-		glGetShaderiv(n_shader_object, GL_COMPILE_STATUS, &n_tmp);
-		b_compiled = n_tmp == GL_TRUE;
-	}
-	int n_log_length;
-	glGetShaderiv(n_shader_object, GL_INFO_LOG_LENGTH, &n_log_length);
-	// query status ...
-
-	if(n_log_length > 1) {
-		char *p_s_info_log;
-		if(!(p_s_info_log = new(std::nothrow) char[n_log_length + 1]))
-			return false;
-		// alloc temp storage for log string
-
-		glGetShaderInfoLog(n_shader_object, n_log_length, &n_log_length, p_s_info_log);
-		// get log string
-
-		printf("GLSL compiler (%s): %s\n", p_s_shader_name, p_s_info_log);
-		// print info log
-
-		delete[] p_s_info_log;
-		// delete temp storage
-	}
-	// get info-log
-
-	return b_compiled;
-}
-
-/*
- *	@brief zkontroluje zda byl program spravne slinkovan, tiskne chyby do stderr
- *	@param[in] n_program_object je id programu
- *	@param[in] p_s_program_name je jmeno programu (jen pro uzivatele - aby vedel o ktery program se jedna pokud se vytiskne nejaka chyba)
- *	@return vraci true pro uspesne slinkovne programy, jinak false
- *
-bool CheckProgram(GLuint n_program_object, const char *p_s_program_name)
-{
-	bool b_linked;
-	{
-		int n_tmp;
-		glGetProgramiv(n_program_object, GL_LINK_STATUS, &n_tmp);
-		b_linked = n_tmp == GL_TRUE;
-	}
-	int n_length;
-	glGetProgramiv(n_program_object, GL_INFO_LOG_LENGTH, &n_length);
-	// query status ...
-
-	if(n_length > 1) {
-		char *p_s_info_log;
-		if(!(p_s_info_log = new(std::nothrow) char[n_length + 1]))
-			return false;
-		// alloc temp log
-
-		glGetProgramInfoLog(n_program_object, n_length, &n_length, p_s_info_log);
-		// get info log
-
-		printf("GLSL linker (%s): %s\n", p_s_program_name, p_s_info_log);
-		// print info log
-
-		delete[] p_s_info_log;
-		// release temp log
-	}
-	// get info-log
-
-	return b_linked;
-}*/
 
 /**
  *	@brief vyrobi OpenGL texturu z bitmapy
@@ -261,26 +171,6 @@ GLuint n_GLTextureRG()
 	return n_tex_surface;
 }
 
-/*
-//TODO presunuto do shader.cpp?
-std::string getTextFileString(std::string name){
-
-	FILE* fp = fopen(name.c_str(), "rt");
-	if(!fp){
-		std::cerr << "Cannot load file" << std::endl;
-		system("PAUSE");
-		return false;
-	}
-
-	//std::vector<std::string> sLines;
-	std::string text;
-	char sLine[255];
-	while(fgets(sLine, 255, fp))text.append(sLine);
-	fclose(fp);
-
-	return text;
-}*/
-
 /**
  *	@brief vraci "pointer" do VBO
  *	@param[in] off je offset v bytech, na ktery ma vraceny pointer ukazovat
@@ -355,90 +245,13 @@ bool InitGLObjects()
 	pass.bind();
 
 	/*
-	//shadery na ping pong
-	std::string vertexStringPass = getTextFileString("vertex_pass.shader");
-	const char *p_s_vertex_shader_pass = vertexStringPass.c_str();
-	std::string fragmentStringPass = getTextFileString("fragment_pass.shader");
-	const char *p_s_fragment_shader_pass = fragmentStringPass.c_str();
-
-	n_vertex_shader_pass = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(n_vertex_shader_pass, 1, &p_s_vertex_shader_pass, NULL);
-	glCompileShader(n_vertex_shader_pass);
-	if(!CheckShader(n_vertex_shader_pass, "vertex shader pass"))
-		return false;
-	n_fragment_shader_pass = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(n_fragment_shader_pass, 1, &p_s_fragment_shader_pass, NULL);
-	glCompileShader(n_fragment_shader_pass);
-	if(!CheckShader(n_fragment_shader_pass, "fragment shader pass"))
-		return false;
-	n_program_object_pass = glCreateProgram();
-	glAttachShader(n_program_object_pass, n_vertex_shader_pass);
-	glAttachShader(n_program_object_pass, n_fragment_shader_pass);
-	// zkompiluje vertex / fragment shader, pripoji je k programu
-
-	glBindAttribLocation(n_program_object_pass, 0, "v_tex");//2hodnoty vec2
-	glBindAttribLocation(n_program_object_pass, 1, "v_pos");//3hodnoty vec3
-	// nabinduje atributy (propojeni mezi obsahem VBO a vstupem do vertex shaderu)
-
-	glBindFragDataLocation(n_program_object_pass, 0, "frag_color");
-	// nabinduje vystupni promenou (propojeni mezi framebufferem a vystupem fragment shaderu)
-
-	glLinkProgram(n_program_object_pass);
-	if(!CheckProgram(n_program_object_pass, "program pass"))
-		return false;
-	// slinkuje program
-
-	n_mvp_matrix_uniform_pass = glGetUniformLocation(n_program_object_pass, "t_modelview_projection_matrix");
-	n_texture_sampler_uniform_pass = glGetUniformLocation(n_program_object_pass, "n_tex");
-	n_time_uniform_pass = glGetUniformLocation(n_program_object_pass, "f_time");
-	*/
-
-	/*
-	//velocity shader
-	std::string vertexStringVelocity = getTextFileString("velocity_vertex.shader");
-	const char *p_s_vertex_shader_velocity = vertexStringVelocity.c_str();
-	std::string fragmentStringVelocity = getTextFileString("velocity_fragment.shader");
-	const char *p_s_fragment_shader_velocity = fragmentStringVelocity.c_str();
-
-	n_vertex_shader_velocity = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(n_vertex_shader_velocity, 1, &p_s_vertex_shader_velocity, NULL);
-	glCompileShader(n_vertex_shader_velocity);
-	if(!CheckShader(n_vertex_shader_velocity, "vertex shader velocity")){
-		std::cerr << "Check vertex shader failed" << std::endl;
-		return false;
-	}
-	n_fragment_shader_velocity = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(n_fragment_shader_velocity, 1, &p_s_fragment_shader_velocity, NULL);
-	glCompileShader(n_fragment_shader_velocity);
-	if(!CheckShader(n_fragment_shader_velocity, "fragment shader velocity")){
-		std::cerr << "Check fragment shader failed" << std::endl;
-		return false;
-	}
-	n_program_object_velocity = glCreateProgram();
-	glAttachShader(n_program_object_velocity, n_vertex_shader_velocity);
-	glAttachShader(n_program_object_velocity, n_fragment_shader_velocity);
-
-	glBindAttribLocation(n_program_object_velocity, 0, "v_tex");
-	glBindAttribLocation(n_program_object_velocity, 1, "v_pos");
-
-	glBindFragDataLocation(n_program_object_velocity, 0, "frag_color");
-
-	glLinkProgram(n_program_object_velocity);
-	if(!CheckProgram(n_program_object_velocity, "program pass")){
-		std::cerr << "Check program failed" << std::endl;
-		return false;
-	}
-	n_texture_sampler_uniform_velocity = glGetUniformLocation(n_program_object_velocity, "n_tex");
-	n_velocitymap_sampler_uniform = glGetUniformLocation(n_program_object_velocity, "velocitymap");
-	*/
-
-
 	TBmp *p_box;
 	if(!(p_box = CTgaCodec::p_Load_TGA("box.tga"))) {
 		fprintf(stderr, "error: failed to load \'box.tga\'\n");
 		return false;
 	}
 	// nahraje obrazky
+	*/
 
 	n_texture[1] = n_GLTextureEmpty();
 	n_texture[0] = n_GLTextureFromData();
@@ -454,7 +267,7 @@ bool InitGLObjects()
 
 	n_source_tex = 0;
 
-	p_box->Delete();
+	//p_box->Delete();
 	// uvolni pamet
 	return true;
 }
@@ -660,12 +473,6 @@ void OnIdle(CGL30Driver &driver)
 	glBindTexture(GL_TEXTURE_2D, n_texture[n_source_tex]); // ta druha textura
 
 	blur.use(datawidth, dataheight);
-	/*
-	glUseProgram(n_program_object);
-	{
-		glUniform1i(ShaderBlur.n_texture_sampler_uniform, 0);
-		glUniform3f(ShaderBlur::pixel_size, 1.0f/datawidth, 1.0f/dataheight, 0.0f);
-	}*/
 
 	DrawScene();
 
@@ -697,14 +504,7 @@ void OnIdle(CGL30Driver &driver)
 	}
 	// spocitame modelview - projection matici, kterou potrebujeme k transformaci vrcholu
 
-	pass.use(t_mvp);
-	/*
-	glUseProgram(n_program_object_pass); // bind shader (jen zobrazuje co je v texture)
-// ted kreslite do okna, chcete videt vysledek
-	{
-		glUniformMatrix4fv(n_mvp_matrix_uniform_pass, 1, GL_FALSE, &t_mvp[0][0]);
-		glUniform1i(n_texture_sampler_uniform_pass, 0);
-	}*/
+	pass.use(t_mvp); // ted kreslite do okna, chcete videt vysledek
 
 	DrawScene(); // vykreslime objekt pomoci VBO
 	
