@@ -39,7 +39,7 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 GLuint fbo;
 int n_source_tex;
 static const GLenum p_draw_buffers[] = {GL_COLOR_ATTACHMENT0};
-static GLuint n_box_texture[2];
+static GLuint n_texture[2];
 static GLuint velocitymap[2];
 
 static GLuint n_surface_texture;//textura hladiny
@@ -377,7 +377,7 @@ bool InitGLObjects()
 	// slinkuje program
 
 	n_mvp_matrix_uniform = glGetUniformLocation(n_program_object, "t_modelview_projection_matrix");
-	n_box_sampler_uniform = glGetUniformLocation(n_program_object, "n_box_tex");
+	n_box_sampler_uniform = glGetUniformLocation(n_program_object, "n_tex");
 	n_time_uniform = glGetUniformLocation(n_program_object, "f_time");
 	pixel_size = glGetUniformLocation(n_program_object, "pixel_size");
 	// najde cislo parametru shaderu podle jeho jmena
@@ -416,7 +416,7 @@ bool InitGLObjects()
 	// slinkuje program
 
 	n_mvp_matrix_uniform_pass = glGetUniformLocation(n_program_object_pass, "t_modelview_projection_matrix");
-	n_box_sampler_uniform_pass = glGetUniformLocation(n_program_object_pass, "n_box_tex");
+	n_box_sampler_uniform_pass = glGetUniformLocation(n_program_object_pass, "n_tex");
 	n_time_uniform_pass = glGetUniformLocation(n_program_object_pass, "f_time");
 
 
@@ -454,7 +454,7 @@ bool InitGLObjects()
 		std::cerr << "Check program failed" << std::endl;
 		return false;
 	}
-	n_box_sampler_uniform_velocity = glGetUniformLocation(n_program_object_velocity, "n_box_tex");
+	n_box_sampler_uniform_velocity = glGetUniformLocation(n_program_object_velocity, "n_tex");
 	n_velocitymap_sampler_uniform = glGetUniformLocation(n_program_object_velocity, "velocitymap");
 
 
@@ -465,8 +465,8 @@ bool InitGLObjects()
 	}
 	// nahraje obrazky
 
-	n_box_texture[1] = n_GLTextureEmpty();
-	n_box_texture[0] = n_GLTextureFromData();
+	n_texture[1] = n_GLTextureEmpty();
+	n_texture[0] = n_GLTextureFromData();
 	velocitymap[1] = n_GLTextureRG();
 	velocitymap[0] = n_GLTextureRG();
 	// vyrobi textury
@@ -501,7 +501,7 @@ void CleanupGLObjects()
 	glDeleteProgram(n_program_object);
 	// smaze shadery
 
-	glDeleteTextures(1, n_box_texture);
+	glDeleteTextures(1, n_texture);
 	// smaze textury
 }
 
@@ -677,12 +677,12 @@ void OnIdle(CGL30Driver &driver)
 	//system("PAUSE");
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_box_texture[1 - n_source_tex], 0); // kresleni do nulte urovne textury
+	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[1 - n_source_tex], 0); // kresleni do nulte urovne textury
 
 	//kresleni do fbo
 	glViewport(0, 0, datawidth, dataheight); // viewport na velikost FBO
 	glClear ( GL_COLOR_BUFFER_BIT);
-	glBindTexture(GL_TEXTURE_2D, n_box_texture[n_source_tex]); // ta druha textura
+	glBindTexture(GL_TEXTURE_2D, n_texture[n_source_tex]); // ta druha textura
 
 	glUseProgram(n_program_object);
 	{
@@ -695,7 +695,7 @@ void OnIdle(CGL30Driver &driver)
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // chcete kreslit do okna
 	glViewport(0, 0, n_width, n_height); // viewport na velikost okna
 
-	glBindTexture(GL_TEXTURE_2D, n_box_texture[1 - n_source_tex]); // textura do ktere se kreslilo
+	glBindTexture(GL_TEXTURE_2D, n_texture[1 - n_source_tex]); // textura do ktere se kreslilo
 	glGenerateMipmap(GL_TEXTURE_2D);
 	// musi se pregenerovat mipmapy
 
@@ -703,7 +703,7 @@ void OnIdle(CGL30Driver &driver)
 	// nova data jsou ted v n_source_tex
 
 	glClear(GL_COLOR_BUFFER_BIT);
-	//glBindTexture(GL_TEXTURE_2D, n_box_texture[n_source_tex]); // ta druha textura
+	//glBindTexture(GL_TEXTURE_2D, n_texture[n_source_tex]); // ta druha textura
 
 	Matrix4f t_mvp;
 	{

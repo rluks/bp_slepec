@@ -3,7 +3,7 @@ in vec2 v_texcoord;
 out vec4 frag_color;
 
 //uniform sampler2D heightmap;
-uniform sampler2D n_box_tex;
+uniform sampler2D n_tex;
 uniform sampler2D velocitymap;
 uniform sampler2D depthmap;
 
@@ -31,11 +31,11 @@ void main()
 	else
 	{
 		// Height
-		float dhdx = texture(n_box_tex, v_texcoord.xy + vec2(1,0)).r -
-			texture(n_box_tex, v_texcoord.xy).r;
+		float dhdx = texture(n_tex, v_texcoord.xy + vec2(1,0)).r -
+			texture(n_tex, v_texcoord.xy).r;
 
-		float dhdy = texture(n_box_tex, v_texcoord.xy + vec2(0,1)).r -
-			texture(n_box_tex, v_texcoord.xy).r;
+		float dhdy = texture(n_tex, v_texcoord.xy + vec2(0,1)).r -
+			texture(n_tex, v_texcoord.xy).r;
 
 		float dudxx = texture(velocitymap, v_texcoord.xy + vec2(1,0)).r -
 			2.0 * texture(velocitymap, v_texcoord.xy).r +
