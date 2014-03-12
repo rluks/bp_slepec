@@ -186,8 +186,7 @@ bool ShaderVelocity::compile(){
 
 void ShaderVelocity::bind(){
 
-	n_texture_sampler_uniform_velocity = glGetUniformLocation(n_program_object_velocity, "n_tex");
-	n_velocitymap_sampler_uniform = glGetUniformLocation(n_program_object_velocity, "velocitymap");
+	n_texture_sampler_uniform_velocity = glGetUniformLocation(n_program_object_velocity, "n_tex");//r-height,g-y velocity,b-x velocity
 	n_depthmap_sampler_uniform = glGetUniformLocation(n_program_object_velocity, "depthmap");
 }
 
@@ -195,6 +194,25 @@ void ShaderVelocity::use(){
 	glUseProgram(n_program_object_velocity);
 	{
 		glUniform1i(n_texture_sampler_uniform_velocity, 0);
-		glUniform1i(n_velocitymap_sampler_uniform, 0);
+	}
+}
+
+//height
+bool ShaderHeight::compile(){
+	vertexpath  = "height.vx.shader";
+	fragmentpath = "height.fr.shader";
+	return Shader::compile(&n_vertex_shader_height, &n_fragment_shader_height, &n_program_object_height);
+}
+
+void ShaderHeight::bind(){
+
+	n_texture_sampler_uniform_height = glGetUniformLocation(n_program_object_height, "n_tex");//r-height,g-y velocity,b-x velocity
+	n_depthmap_sampler_uniform_height = glGetUniformLocation(n_program_object_height, "depthmap");
+}
+
+void ShaderHeight::use(){
+	glUseProgram(n_program_object_height);
+	{
+		glUniform1i(n_texture_sampler_uniform_height, 0);
 	}
 }

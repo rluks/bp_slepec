@@ -1,34 +1,35 @@
-// FRAGMENT PROGRAM
+#version 330
+in vec2 v_texcoord; // vstupy z vertex shaderu
+out vec4 frag_color; // vystup do framebufferu
 
-uniform samplerRect heightmap;
-uniform samplerRect velocitymap;
-uniform samplerRect depthmap;
+uniform sampler2D n_tex;//r-height,g-y velocity v,b-x velocity u
+uniform sampler2D depthmap;
 
 const float delta_t = 0.01;
-const float delta_x = 30.0/512.0;
-const float delta_y = 30.0/512.0;
+const float delta_x = 30.0/800.0;//TODO posilat
+const float delta_y = 30.0/600.0;
 
 void main()
 {
-	float depth = textureRect(depthmap, gl_TexCoord[0].xy).r;
+	float depth = texture(depthmap, v_texcoord.xy).r;
 
 	if (depth <= 0.0)
 	{
-		gl_FragColor.r = 0.0;
-		gl_FragColor.g = 0.0;
+		frag_color.r = 0.0;
+		frag_color.g = 0.0;
 	}
 	else
 	{
-		float dudx = textureRect(velocitymap, gl_TexCoord[0].xy).r -
-		textureRect(velocitymap, gl_TexCoord[0].xy - vec2(1,0)).r;
+		float dudx = texture(n_tex, v_texcoord.xy).b -
+			texture(n_tex, v_texcoord.xy - vec2(1,0)).b;
 
-		float dvdy = textureRect(velocitymap, gl_TexCoord[0].xy).g -
-		textureRect(velocitymap, gl_TexCoord[0].xy - vec2(0,1)).g;
+		float dvdy = texture(n_tex, v_texcoord.xy).g -
+			texture(n_tex, v_texcoord.xy - vec2(0,1)).g;
 
-		float h = textureRect(heightmap, gl_TexCoord[0].xy).r;
+		float h = texture(n_tex, v_texcoord.xy).r;
 
 		h = h - delta_t*depth*((dudx)/delta_x + (dvdy)/delta_y);
 
-		gl_FragColor.r = h;
+		frag_color.r = h;
 	}
 }

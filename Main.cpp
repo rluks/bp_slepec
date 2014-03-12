@@ -48,8 +48,7 @@ static GLuint depthmap;
 ShaderBlur blur;
 ShaderPass pass;
 ShaderVelocity velocity;
-
-
+ShaderHeight height;
 
 /**
  *	@brief vraci "pointer" do VBO
@@ -128,6 +127,9 @@ bool InitGLObjects()
 	velocity.compile();
 	velocity.bind();
 
+	height.compile();
+	height.bind();
+
 	/*
 	TBmp *p_box;
 	if(!(p_box = CTgaCodec::p_Load_TGA("box.tga"))) {
@@ -140,7 +142,7 @@ bool InitGLObjects()
 	//textury
 	n_texture[1] = n_GLTextureRGBFloat();
 	n_texture[0] = n_GLTextureRGBFloatFromData();
-	depthmap = n_GLTextureRFloat();
+	depthmap = n_GLTextureRFloatDepthTest();
 
 	//FBO
 	glGenFramebuffers(1, &fbo);
@@ -159,11 +161,12 @@ bool InitGLObjects()
 	glBindTexture(GL_TEXTURE_2D, depthmap);*/
 
 	//cisteni textury depthmap - jiny zpusob
+	/*
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, depthmap, 0);
 	glDrawBuffer(GL_COLOR_ATTACHMENT0);
 	GLuint clearColor[4] = {1, 0, 0, 0};
-	glClearBufferuiv(GL_COLOR, 0, clearColor);
+	glClearBufferuiv(GL_COLOR, 0, clearColor);*/
 	
 
 	n_source_tex = 0;
@@ -363,7 +366,7 @@ void OnIdle(CGL30Driver &driver)
 
 	float f_time = clock() / 1000.0f; // cas pro animaci
 	
-	//system("PAUSE");
+	system("PAUSE");
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[1 - n_source_tex], 0); // kresleni do nulte urovne textury
@@ -373,7 +376,8 @@ void OnIdle(CGL30Driver &driver)
 	glClear ( GL_COLOR_BUFFER_BIT);
 	glBindTexture(GL_TEXTURE_2D, n_texture[n_source_tex]); // ta druha textura
 
-	blur.use(datawidth, dataheight);
+	//blur.use(datawidth, dataheight);
+	velocity.use();
 
 	DrawScene();
 
