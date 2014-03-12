@@ -18,8 +18,16 @@
 
 #include "Common.h"
 
+//from bmp
 GLuint n_GLTextureFromBitmap(const TBmp *, GLenum n_internal_format);
+
+//red
 GLuint n_GLTextureRFloatFromData();
 GLuint n_GLTextureRFloat();
+
+//red-green
 GLuint n_GLTextureRGFloat();
+
+//rgb
 GLuint n_GLTextureRGBFloat();
+GLuint n_GLTextureRGBFloatFromData();

@@ -137,8 +137,12 @@ bool InitGLObjects()
 	// nahraje obrazky
 	*/
 
-	n_texture[1] = n_GLTextureRFloat();
-	n_texture[0] = n_GLTextureRFloatFromData();
+	//n_texture[1] = n_GLTextureRFloat();
+	//n_texture[0] = n_GLTextureRFloatFromData();
+
+	n_texture[1] = n_GLTextureRGBFloat();
+	n_texture[0] = n_GLTextureRGBFloatFromData();
+
 	//velocitymap[1] = n_GLTextureRG();
 	//velocitymap[0] = n_GLTextureRG();
 	depthmap = n_GLTextureRFloat();
