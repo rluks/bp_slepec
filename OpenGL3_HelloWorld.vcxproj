@@ -109,8 +109,8 @@
   <ItemGroup>
     <None Include="blur.fr.shader" />
     <None Include="blur.vx.shader" />
-    <None Include="height_fragment.shader" />
-    <None Include="height_vertex.shader" />
+    <None Include="height.fr.shader" />
+    <None Include="height.vx.shader" />
     <None Include="pass.fr.shader" />
     <None Include="pass.vx.shader" />
     <None Include="velocity.fr.shader" />

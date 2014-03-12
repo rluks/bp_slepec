@@ -52,12 +52,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="height_fragment.shader">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="height_vertex.shader">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="blur.fr.shader">
       <Filter>Resource Files</Filter>
     </None>
@@ -74,6 +68,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="velocity.vx.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="height.fr.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="height.vx.shader">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
