@@ -24,6 +24,7 @@ GLuint n_GLTextureFromBitmap(const TBmp *, GLenum n_internal_format);
 //red
 GLuint n_GLTextureRFloatFromData();
 GLuint n_GLTextureRFloat();
+GLuint n_GLTextureRFloatDepthTest();
 
 //red-green
 GLuint n_GLTextureRGFloat();

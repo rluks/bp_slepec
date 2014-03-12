@@ -75,6 +75,54 @@ GLuint n_GLTextureRFloatFromData()
 	return n_tex_surface;
 }
 
+GLuint n_GLTextureRFloatDepthTest()
+{
+	GLuint n_tex_surface;
+	GLfloat *checkImage;
+
+	//alokace pameti
+	try {
+		checkImage = new GLfloat [datawidth * dataheight];
+	} catch (std::bad_alloc e){
+		std::cerr << "Alokace pameti selhala" << std::endl;
+		return -1;
+	}
+
+	//pocatecni data
+	float r = 1.0f;
+	for (int i = 0; i < dataheight * datawidth; i++) {
+			//r = r + 0.0001f;
+			checkImage[i] = (GLfloat) r;
+	}
+
+	/*
+	int x = datawidth/2;
+	int y = dataheight/2;
+	checkImage[x + datawidth * y] = 0.0f;
+
+	for(int x = 0; x < datawidth; x++){
+		for(int y = 0; y < dataheight; y++){
+			if(x > datawidth/3)
+				checkImage[x + datawidth * y] = 0.5f;
+			if(y == dataheight/5)
+				checkImage[x + datawidth * y] = 0.0f;
+		}
+	}*/
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glGenTextures(1, &n_tex_surface);
+
+	glBindTexture(GL_TEXTURE_2D, n_tex_surface);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, datawidth, dataheight, 0, GL_RED, GL_FLOAT, checkImage);
+
+	//uvolneni pameti
+	delete[] checkImage;
+
+	return n_tex_surface;
+}
+
 GLuint n_GLTextureRFloat()
 {
 	GLuint n_tex_surface;
