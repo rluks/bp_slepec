@@ -2,9 +2,7 @@
 in vec2 v_texcoord;
 out vec4 frag_color;
 
-//uniform sampler2D heightmap;
-uniform sampler2D n_tex;
-uniform sampler2D velocitymap;
+uniform sampler2D n_tex;//r-height,g-y velocity v,b-x velocity u
 uniform sampler2D depthmap;
 
 const float delta_t = 0.01;
@@ -25,6 +23,11 @@ void main()
 
 	if(depth <= 0.0)
 	{
+		
+		//test
+		//frag_color.r = 0.7;
+		//frag_color.g = 0.7;
+		
 		frag_color.r = 0.0;
 		frag_color.g = 0.0;
 	}
@@ -37,13 +40,13 @@ void main()
 		float dhdy = texture(n_tex, v_texcoord.xy + vec2(0,1)).r -
 			texture(n_tex, v_texcoord.xy).r;
 
-		float dudxx = texture(velocitymap, v_texcoord.xy + vec2(1,0)).r -
-			2.0 * texture(velocitymap, v_texcoord.xy).r +
-			texture(velocitymap, v_texcoord.xy - vec2(1,0)).r;
+		float dudxx = texture(n_tex, v_texcoord.xy + vec2(1,0)).b -
+			2.0 * texture(n_tex, v_texcoord.xy).b +
+			texture(n_tex, v_texcoord.xy - vec2(1,0)).b;
 
-		float dvdyy = texture(velocitymap, v_texcoord.xy + vec2(0,1)).g -
-			2.0 * texture(velocitymap, v_texcoord.xy).g +
-			texture(velocitymap, v_texcoord.xy - vec2(0,1)).g;
+		float dvdyy = texture(n_tex, v_texcoord.xy + vec2(0,1)).g -
+			2.0 * texture(n_tex, v_texcoord.xy).g +
+			texture(n_tex, v_texcoord.xy - vec2(0,1)).g;
 
 		float hx = 0.0;
 		float hy = 0.0;
@@ -51,13 +54,21 @@ void main()
 		hx += (delta_t/delta_x) * (c*delta_t*dudxx-g*dhdx);
 		hy += (delta_t/delta_y) * (c*delta_t*dvdyy-g*dhdy);
 
-		float next_u = texture(velocitymap, v_texcoord.xy).r;
-		float next_v = texture(velocitymap, v_texcoord.xy).g;
+		float next_u = texture(n_tex, v_texcoord.xy).b;
+		float next_v = texture(n_tex, v_texcoord.xy).g;
 
 		next_u += hx;
 		next_v += hy;
 
 		frag_color.r = next_u;
 		frag_color.g = next_v;
+
+		//test
+		//frag_color.r = 0.2;
+		//frag_color.g = 0.2;
 	}
+
+	//test
+	//frag_color.r = 0.5;
+	//frag_color.g = 0.5;
 }
