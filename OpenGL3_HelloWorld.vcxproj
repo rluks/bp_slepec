@@ -113,8 +113,8 @@
     <None Include="height_vertex.shader" />
     <None Include="pass.fr.shader" />
     <None Include="pass.vx.shader" />
-    <None Include="velocity_fragment.shader" />
-    <None Include="velocity_vertex.shader" />
+    <None Include="velocity.fr.shader" />
+    <None Include="velocity.vx.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
