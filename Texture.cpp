@@ -134,24 +134,39 @@ GLuint n_GLTextureRGBFloatFromData()
 	}
 
 	//pocatecni data
-	float r = 0.3f;
+	/*
+	float r = 1.0f;
 	for (int i = 0; i < dataheight * datawidth * 3; i++) {
-			//r = r + 0.0001f;
-			checkImage[i] = (GLfloat) r;
+		checkImage[i] = (GLfloat) r;
+	}*/
+
+	//rgbrgbrgbrgb...
+	float r = 1.0f;
+	for (int i = 0; i < dataheight * datawidth * 3; i++) {
+		checkImage[i] = (GLfloat) r;
+
+		if(r == 1.0f)
+			r = 0.5f;
+		else if(r == 0.5f)
+			r = 0.0f;
+		else
+			r = 1.0f;
 	}
+
+	/* vlajka >:->
+	for (int i = 0; i < dataheight * datawidth; i++)
+		checkImage[i] = 1.0f;
+
+	for (int i = dataheight * datawidth; i < dataheight * datawidth * 2; i++)
+		checkImage[i] = 0.5f;
+
+	for (int i = dataheight * datawidth * 2; i < dataheight * datawidth * 3; i++)
+		checkImage[i] = 0.1f;
+	*/
 
 	int x = datawidth/2;
 	int y = dataheight/2;
-	checkImage[x + datawidth * y] = 0.0f;
-
-	for(int x = 0; x < datawidth; x++){
-		for(int y = 0; y < dataheight; y++){
-			if(x > datawidth/3)
-				checkImage[x + datawidth * y] = 0.5f;
-			if(y == dataheight/5)
-				checkImage[x + datawidth * y] = 0.0f;
-		}
-	}
+	checkImage[x + datawidth * y] = 5.0f;
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &n_tex_surface);
