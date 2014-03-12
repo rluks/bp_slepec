@@ -45,6 +45,7 @@ static GLuint velocitymap[2];
 
 static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_object;
 
+static GLuint depthmap;
 //shadery
 ShaderBlur blur;
 ShaderPass pass;
@@ -272,6 +273,7 @@ bool InitGLObjects()
 	n_texture[0] = n_GLTextureFromData();
 	velocitymap[1] = n_GLTextureRG();
 	velocitymap[0] = n_GLTextureRG();
+	depthmap = n_GLTextureEmpty();
 	// vyrobi textury
 
 	//FBO
