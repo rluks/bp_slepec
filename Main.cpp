@@ -16,10 +16,8 @@
 #include "Transform.h"
 #include "Tga.h"
 #include "Shader.h"
-
-#define datawidth 800
-#define dataheight 600
-// velikost dat
+#include "Texture.h"
+#include "Common.h"
 
 static const char *p_s_window_name = "OpenGL 3 window";
 static const char *p_s_class_name = "my_wndclass";
@@ -40,150 +38,20 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 GLuint fbo;
 int n_source_tex;
 static const GLenum p_draw_buffers[] = {GL_COLOR_ATTACHMENT0};
-static GLuint n_texture[2];
-static GLuint velocitymap[2];
+static GLuint n_texture[2];//TODO r-height,g-y velocity,b-x velocity
+//static GLuint velocitymap[2];
+static GLuint depthmap;
 
 static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_object;
 
-static GLuint depthmap;
+
 //shadery
 ShaderBlur blur;
 ShaderPass pass;
 ShaderVelocity velocity;
 
 
-/**
- *	@brief vyrobi OpenGL texturu z bitmapy
- *	@param[in] p_bitmap je obrazek textury
- *	@param[in] n_internal_format je pozadovany format ulozeni textury na graficke karte (format obrazku je v typu TBmp vzdy GL_RGBA)
- *	@return vraci id textury (neuvazuje neuspech)
- */
-GLuint n_GLTextureFromBitmap(const TBmp *p_bitmap, GLenum n_internal_format = GL_RGBA8)
-{
-	GLuint n_tex;
-	glGenTextures(1, &n_tex);
-	glBindTexture(GL_TEXTURE_2D, n_tex);
-	//glEnable(GL_TEXTURE_2D); !! OpenGL 3 uz nema enable / disable textur, shader si sam cte textury ktere potrebuje !!
-	// vyrobi a nastavi novou 2D texturu, zatim nema zadne data
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// nastavime filtrovani
-
-	glTexImage2D(GL_TEXTURE_2D, 0, n_internal_format, p_bitmap->n_width, p_bitmap->n_height,
-		0, GL_RGBA, GL_UNSIGNED_BYTE, p_bitmap->p_buffer);
-	// specifikujeme data textury
-
-	glGenerateMipmap(GL_TEXTURE_2D);
-	// nechame OpenGL spocitat jeji mipmapy
-
-	return n_tex;
-}
-
-GLuint n_GLTextureFromData()
-{
-	GLuint n_tex_surface;
-	GLfloat *checkImage;
-
-	//alokace pameti
-	try {
-		checkImage = new GLfloat [datawidth * dataheight];
-	} catch (std::bad_alloc e){
-		std::cerr << "Alokace pameti selhala" << std::endl;
-		return -1;
-	}
-
-	//pocatecni data
-	float r = 1.0f;
-	for (int i = 0; i < dataheight * datawidth; i++) {
-			//r = r + 0.0001f;
-			checkImage[i] = (GLfloat) r;
-	}
-
-	int x = datawidth/2;
-	int y = dataheight/2;
-	checkImage[x + datawidth * y] = 0.0f;
-
-	for(int x = 0; x < datawidth; x++){
-		for(int y = 0; y < dataheight; y++){
-			if(x > datawidth/3)
-				checkImage[x + datawidth * y] = 0.5f;
-			if(y == dataheight/5)
-				checkImage[x + datawidth * y] = 0.0f;
-		}
-	}
-
-	/*
-	for(int x = 0; x < datawidth; x++){
-		for(int y = 0; y < dataheight; y++){
-			if((x % 10 == 0) && (y % 7 == 1)){
-				checkImage[x + datawidth * y] = 0.0f;
-				checkImage[x-1 + datawidth * y] = 0.0f;
-				checkImage[x+1 + datawidth * y] = 0.0f;
-			}
-		}
-	}
-	*/
-
-
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glGenTextures(1, &n_tex_surface);
-
-	glBindTexture(GL_TEXTURE_2D, n_tex_surface);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, datawidth, dataheight, 0, GL_RED, GL_FLOAT, checkImage);
-
-	//uvolneni pameti
-	delete[] checkImage;
-
-	return n_tex_surface;
-}
-
-GLuint n_GLTextureEmpty()
-{
-	GLuint n_tex_surface;
-
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glGenTextures(1, &n_tex_surface);
-
-	glBindTexture(GL_TEXTURE_2D, n_tex_surface);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, datawidth, dataheight, 0, GL_RED, GL_FLOAT, NULL);//null
-
-	return n_tex_surface;
-}
-
-GLuint n_GLTextureRG()
-{
-	GLuint n_tex_surface;
-
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glGenTextures(1, &n_tex_surface);
-
-	glBindTexture(GL_TEXTURE_2D, n_tex_surface);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, datawidth, dataheight, 0, GL_RG, GL_FLOAT, NULL);//null
-
-	return n_tex_surface;
-}
-
-GLuint n_GLTextureEmptyRGB()
-{
-	GLuint n_tex_surface;
-
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glGenTextures(1, &n_tex_surface);
-
-	glBindTexture(GL_TEXTURE_2D, n_tex_surface);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, datawidth, dataheight, 0, GL_RGB, GL_FLOAT, NULL);//null
-
-	return n_tex_surface;
-}
 /**
  *	@brief vraci "pointer" do VBO
  *	@param[in] off je offset v bytech, na ktery ma vraceny pointer ukazovat
@@ -269,11 +137,11 @@ bool InitGLObjects()
 	// nahraje obrazky
 	*/
 
-	n_texture[1] = n_GLTextureEmpty();
-	n_texture[0] = n_GLTextureFromData();
-	velocitymap[1] = n_GLTextureRG();
-	velocitymap[0] = n_GLTextureRG();
-	depthmap = n_GLTextureEmpty();
+	n_texture[1] = n_GLTextureRFloat();
+	n_texture[0] = n_GLTextureRFloatFromData();
+	//velocitymap[1] = n_GLTextureRG();
+	//velocitymap[0] = n_GLTextureRG();
+	depthmap = n_GLTextureRFloat();
 	// vyrobi textury
 
 	//FBO
