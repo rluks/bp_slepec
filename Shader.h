@@ -45,7 +45,7 @@ public:
 struct ShaderVelocity : public Shader {
 public:
 	GLuint n_vertex_shader_velocity, n_fragment_shader_velocity, n_program_object_velocity;
-	GLuint n_texture_sampler_uniform_velocity, n_velocitymap_sampler_uniform;
+	GLuint n_texture_sampler_uniform_velocity, n_velocitymap_sampler_uniform, n_depthmap_sampler_uniform;
 	bool compile();
 	void bind();
 	void use();

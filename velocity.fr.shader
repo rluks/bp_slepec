@@ -8,11 +8,11 @@ uniform sampler2D velocitymap;
 uniform sampler2D depthmap;
 
 const float delta_t = 0.01;
-const float delta_x = 30.0/512.0;
-const float delta_y = 30.0/512.0;
+const float delta_x = 30.0/800.0;//TODO posilat
+const float delta_y = 30.0/600.0;
 
 const float g = 1.0;
-const float c = 2.0;
+const float c = 2.0;//dissipation const.
 
 void main()
 {

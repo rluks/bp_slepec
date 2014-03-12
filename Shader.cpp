@@ -188,6 +188,7 @@ void ShaderVelocity::bind(){
 
 	n_texture_sampler_uniform_velocity = glGetUniformLocation(n_program_object_velocity, "n_tex");
 	n_velocitymap_sampler_uniform = glGetUniformLocation(n_program_object_velocity, "velocitymap");
+	n_depthmap_sampler_uniform = glGetUniformLocation(n_program_object_velocity, "depthmap");
 }
 
 void ShaderVelocity::use(){
