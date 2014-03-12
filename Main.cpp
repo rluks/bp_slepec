@@ -266,6 +266,24 @@ bool InitGLObjects()
 	glDrawBuffers(1, p_draw_buffers);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
+	/*
+	//cisteni textury depthmap - meni barvu pozadi WTF?
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, depthmap, 0);
+	glViewport(0, 0, datawidth, dataheight);
+	glClearColor(1.0, 1.0, 0, 0); // jen na prvn� hodnot� z�le�� - meni rgb barvu pozadi 
+	//glClear ( GL_COLOR_BUFFER_BIT);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, depthmap);*/
+
+	//cisteni textury depthmap - jiny zpusob
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, depthmap, 0);
+	glDrawBuffer(GL_COLOR_ATTACHMENT0);
+	GLuint clearColor[4] = {1, 0, 0, 0};
+	glClearBufferuiv(GL_COLOR, 0, clearColor);
+	
+
 	n_source_tex = 0;
 
 	//p_box->Delete();
