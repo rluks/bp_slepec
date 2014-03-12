@@ -48,10 +48,8 @@ static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_obje
 //shadery
 ShaderBlur blur;
 ShaderPass pass;
+ShaderVelocity velocity;
 
-//velocity shader
-static GLuint n_vertex_shader_velocity, n_fragment_shader_velocity, n_program_object_velocity;
-static GLuint n_texture_sampler_uniform_velocity, n_velocitymap_sampler_uniform;
 
 /**
  *	@brief vyrobi OpenGL texturu z bitmapy
@@ -243,6 +241,9 @@ bool InitGLObjects()
 
 	pass.compile();
 	pass.bind();
+
+	velocity.compile();
+	velocity.bind();
 
 	/*
 	TBmp *p_box;

@@ -166,7 +166,7 @@ void ShaderPass::bind(){
 	
 	n_mvp_matrix_uniform_pass = glGetUniformLocation(n_program_object_pass, "t_modelview_projection_matrix");
 	n_texture_sampler_uniform_pass = glGetUniformLocation(n_program_object_pass, "n_tex");
-	n_time_uniform_pass = glGetUniformLocation(n_program_object_pass, "f_time");
+	//n_time_uniform_pass = glGetUniformLocation(n_program_object_pass, "f_time");
 }
 
 void ShaderPass::use(Matrix4f t_mvp){
@@ -174,5 +174,26 @@ void ShaderPass::use(Matrix4f t_mvp){
 	{
 		glUniformMatrix4fv(n_mvp_matrix_uniform_pass, 1, GL_FALSE, &t_mvp[0][0]);
 		glUniform1i(n_texture_sampler_uniform_pass, 0);
+	}
+}
+
+//velocity
+bool ShaderVelocity::compile(){
+	vertexpath  = "velocity.vx.shader";
+	fragmentpath = "velocity.fr.shader";
+	return Shader::compile(&n_vertex_shader_velocity, &n_fragment_shader_velocity, &n_program_object_velocity);
+}
+
+void ShaderVelocity::bind(){
+
+	n_texture_sampler_uniform_velocity = glGetUniformLocation(n_program_object_velocity, "n_tex");
+	n_velocitymap_sampler_uniform = glGetUniformLocation(n_program_object_velocity, "velocitymap");
+}
+
+void ShaderVelocity::use(){
+	glUseProgram(n_program_object_velocity);
+	{
+		glUniform1i(n_texture_sampler_uniform_velocity, 0);
+		glUniform1i(n_velocitymap_sampler_uniform, 0);
 	}
 }

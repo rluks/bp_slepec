@@ -32,9 +32,18 @@ struct ShaderPass : public Shader {
 public:
 	GLuint n_vertex_shader_pass, n_fragment_shader_pass, n_program_object_pass;
 	GLuint n_mvp_matrix_uniform_pass, 
-	n_texture_sampler_uniform_pass, 
-	n_time_uniform_pass;
+	n_texture_sampler_uniform_pass;
+	//n_time_uniform_pass;
 	bool compile();
 	void bind();
 	void use(Matrix4f);
+};
+
+struct ShaderVelocity : public Shader {
+public:
+	GLuint n_vertex_shader_velocity, n_fragment_shader_velocity, n_program_object_velocity;
+	GLuint n_texture_sampler_uniform_velocity, n_velocitymap_sampler_uniform;
+	bool compile();
+	void bind();
+	void use();
 };
