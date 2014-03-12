@@ -169,6 +169,20 @@ GLuint n_GLTextureRG()
 	return n_tex_surface;
 }
 
+GLuint n_GLTextureEmptyRGB()
+{
+	GLuint n_tex_surface;
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glGenTextures(1, &n_tex_surface);
+
+	glBindTexture(GL_TEXTURE_2D, n_tex_surface);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, datawidth, dataheight, 0, GL_RGB, GL_FLOAT, NULL);//null
+
+	return n_tex_surface;
+}
 /**
  *	@brief vraci "pointer" do VBO
  *	@param[in] off je offset v bytech, na ktery ma vraceny pointer ukazovat
