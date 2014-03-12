@@ -38,12 +38,11 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 GLuint fbo;
 int n_source_tex;
 static const GLenum p_draw_buffers[] = {GL_COLOR_ATTACHMENT0};
-static GLuint n_texture[2];//TODO r-height,g-y velocity,b-x velocity
-//static GLuint velocitymap[2];
-static GLuint depthmap;
-
 static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_object;
 
+//textury
+static GLuint n_texture[2];//r-height,g-y velocity,b-x velocity
+static GLuint depthmap;
 
 //shadery
 ShaderBlur blur;
@@ -119,6 +118,7 @@ bool InitGLObjects()
 	glBindVertexArray(0); // vratime VAO 0, abychom si nahodne VAO nezmenili (pripadne osetreni proti chybe v ovladacich nvidia kde se VAO poskodi pri volani nekterych wgl funkci)
 	// vytvorime a nastavime vertex array objekt - objekt na GPU, ktery si pamatuje konfiguraci nastaveni VBO. pak pri kresleni volame jen glBindVertexArray() namisto vsech prikazu v bloku vyse
 
+	//shadery
 	blur.compile();
 	blur.bind();
 
@@ -137,16 +137,10 @@ bool InitGLObjects()
 	// nahraje obrazky
 	*/
 
-	//n_texture[1] = n_GLTextureRFloat();
-	//n_texture[0] = n_GLTextureRFloatFromData();
-
+	//textury
 	n_texture[1] = n_GLTextureRGBFloat();
 	n_texture[0] = n_GLTextureRGBFloatFromData();
-
-	//velocitymap[1] = n_GLTextureRG();
-	//velocitymap[0] = n_GLTextureRG();
 	depthmap = n_GLTextureRFloat();
-	// vyrobi textury
 
 	//FBO
 	glGenFramebuffers(1, &fbo);

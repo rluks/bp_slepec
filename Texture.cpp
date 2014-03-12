@@ -142,6 +142,26 @@ GLuint n_GLTextureRGBFloatFromData()
 
 	//rgbrgbrgbrgb...
 	float r = 1.0f;
+	int cnt = 0;
+	for (int i = 0; i < dataheight * datawidth * 3; i++) {
+		checkImage[i] = (GLfloat) r;
+
+		if(r == 1.0f){
+			r = 0.5f;
+			if(cnt % 100 == 0)
+				checkImage[i] = 0.2f;;
+		}
+		else if(r == 0.5f)
+			r = 0.0f;
+		else
+			r = 1.0f;
+
+		cnt++;
+	}
+
+	/*
+	//rgbrgbrgbrgb...
+	float r = 1.0f;
 	for (int i = 0; i < dataheight * datawidth * 3; i++) {
 		checkImage[i] = (GLfloat) r;
 
@@ -151,7 +171,7 @@ GLuint n_GLTextureRGBFloatFromData()
 			r = 0.0f;
 		else
 			r = 1.0f;
-	}
+	}*/
 
 	/* vlajka >:->
 	for (int i = 0; i < dataheight * datawidth; i++)
