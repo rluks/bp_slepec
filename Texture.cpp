@@ -89,10 +89,16 @@ GLuint n_GLTextureRFloatDepthTest()
 	}
 
 	//pocatecni data
+	/*
 	float r = 1.0f;
 	for (int i = 0; i < dataheight * datawidth; i++) {
 			//r = r + 0.0001f;
 			checkImage[i] = (GLfloat) r;
+	}*/
+
+	srand (static_cast <unsigned> (time(0)));
+	for (int i = 0; i < dataheight * datawidth; i++) {
+		checkImage[i] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 	}
 
 	/*
@@ -188,6 +194,12 @@ GLuint n_GLTextureRGBFloatFromData()
 		checkImage[i] = (GLfloat) r;
 	}*/
 
+	srand (static_cast <unsigned> (time(0)));
+	for (int i = 0; i < dataheight * datawidth * 3; i++) {
+		checkImage[i] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	}
+
+	/*
 	//rgbrgbrgbrgb...
 	float r = 1.0f;
 	int cnt = 0;
@@ -205,7 +217,7 @@ GLuint n_GLTextureRGBFloatFromData()
 			r = 1.0f;
 
 		cnt++;
-	}
+	}*/
 
 	/*
 	//rgbrgbrgbrgb...
