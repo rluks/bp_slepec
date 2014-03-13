@@ -119,16 +119,12 @@ bool InitGLObjects()
 
 	//shadery
 	blur.compile();
-	blur.bind();
 
 	pass.compile();
-	pass.bind();
 
 	velocity.compile();
-	velocity.bind();
 
 	height.compile();
-	height.bind();
 
 	/*
 	TBmp *p_box;
@@ -376,8 +372,8 @@ void OnIdle(CGL30Driver &driver)
 	glClear ( GL_COLOR_BUFFER_BIT);
 	glBindTexture(GL_TEXTURE_2D, n_texture[n_source_tex]); // ta druha textura
 
-	//blur.use(datawidth, dataheight);
-	velocity.use();
+	blur.bind(datawidth, dataheight);
+	//velocity.bind();
 
 	DrawScene();
 
@@ -388,8 +384,7 @@ void OnIdle(CGL30Driver &driver)
 	glGenerateMipmap(GL_TEXTURE_2D);
 	// musi se pregenerovat mipmapy
 
-	n_source_tex = 1 - n_source_tex; // ping-pong
-	// nova data jsou ted v n_source_tex
+	n_source_tex = 1 - n_source_tex; // ping-pong, nova data jsou ted v n_source_tex
 
 	glClear(GL_COLOR_BUFFER_BIT);
 	//glBindTexture(GL_TEXTURE_2D, n_texture[n_source_tex]); // ta druha textura
@@ -409,7 +404,7 @@ void OnIdle(CGL30Driver &driver)
 	}
 	// spocitame modelview - projection matici, kterou potrebujeme k transformaci vrcholu
 
-	pass.use(t_mvp); // ted kreslite do okna, chcete videt vysledek
+	pass.bind(t_mvp); // ted kreslite do okna, chcete videt vysledek
 
 	DrawScene(); // vykreslime objekt pomoci VBO
 	

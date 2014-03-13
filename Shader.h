@@ -27,8 +27,7 @@ public:
 	GLuint n_vertex_shader, n_fragment_shader, n_program_object;
 	GLuint n_mvp_matrix_uniform, n_texture_sampler_uniform, n_time_uniform, pixel_size;
 	bool compile();
-	void bind();
-	void use(int, int);
+	void bind(int, int);
 };
 
 struct ShaderPass : public Shader {
@@ -36,10 +35,8 @@ public:
 	GLuint n_vertex_shader_pass, n_fragment_shader_pass, n_program_object_pass;
 	GLuint n_mvp_matrix_uniform_pass, 
 	n_texture_sampler_uniform_pass;
-	//n_time_uniform_pass;
 	bool compile();
-	void bind();
-	void use(Matrix4f);
+	void bind(Matrix4f);
 };
 
 struct ShaderVelocity : public Shader {
@@ -48,7 +45,6 @@ public:
 	GLuint n_texture_sampler_uniform_velocity, n_depthmap_sampler_uniform;
 	bool compile();
 	void bind();
-	void use();
 };
 
 struct ShaderHeight : public Shader {
@@ -57,5 +53,4 @@ public:
 	GLuint n_texture_sampler_uniform_height, n_depthmap_sampler_uniform_height;
 	bool compile();
 	void bind();
-	void use();
 };

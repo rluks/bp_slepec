@@ -136,18 +136,19 @@ bool Shader::compile(GLuint * n_vertex_shader, GLuint * n_fragment_shader, GLuin
 bool ShaderBlur::compile(){
 	vertexpath  = "blur.vx.shader";
 	fragmentpath = "blur.fr.shader";
-	return Shader::compile(&n_vertex_shader, &n_fragment_shader, &n_program_object);
-}
 
-void ShaderBlur::bind(){
-	
+	if(!Shader::compile(&n_vertex_shader, &n_fragment_shader, &n_program_object))
+		return false;//TODO asi spis vyjimka
+
 	n_mvp_matrix_uniform = glGetUniformLocation(n_program_object, "t_modelview_projection_matrix");
 	n_texture_sampler_uniform = glGetUniformLocation(n_program_object, "n_tex");
 	n_time_uniform = glGetUniformLocation(n_program_object, "f_time");
 	pixel_size = glGetUniformLocation(n_program_object, "pixel_size");
+
+	return true;
 }
 
-void ShaderBlur::use(int width, int height){
+void ShaderBlur::bind(int width, int height){
 	glUseProgram(n_program_object);
 	{
 		glUniform1i(n_texture_sampler_uniform, 0);
@@ -159,17 +160,16 @@ void ShaderBlur::use(int width, int height){
 bool ShaderPass::compile(){
 	vertexpath  = "pass.vx.shader";
 	fragmentpath = "pass.fr.shader";
-	return Shader::compile(&n_vertex_shader_pass, &n_fragment_shader_pass, &n_program_object_pass);
-}
+	if(!Shader::compile(&n_vertex_shader_pass, &n_fragment_shader_pass, &n_program_object_pass))
+		return false;
 
-void ShaderPass::bind(){
-	
 	n_mvp_matrix_uniform_pass = glGetUniformLocation(n_program_object_pass, "t_modelview_projection_matrix");
 	n_texture_sampler_uniform_pass = glGetUniformLocation(n_program_object_pass, "n_tex");
-	//n_time_uniform_pass = glGetUniformLocation(n_program_object_pass, "f_time");
+
+	return true;
 }
 
-void ShaderPass::use(Matrix4f t_mvp){
+void ShaderPass::bind(Matrix4f t_mvp){
 	glUseProgram(n_program_object_pass);
 	{
 		glUniformMatrix4fv(n_mvp_matrix_uniform_pass, 1, GL_FALSE, &t_mvp[0][0]);
@@ -181,16 +181,16 @@ void ShaderPass::use(Matrix4f t_mvp){
 bool ShaderVelocity::compile(){
 	vertexpath  = "velocity.vx.shader";
 	fragmentpath = "velocity.fr.shader";
-	return Shader::compile(&n_vertex_shader_velocity, &n_fragment_shader_velocity, &n_program_object_velocity);
-}
-
-void ShaderVelocity::bind(){
+	if(!Shader::compile(&n_vertex_shader_velocity, &n_fragment_shader_velocity, &n_program_object_velocity))
+		return false;
 
 	n_texture_sampler_uniform_velocity = glGetUniformLocation(n_program_object_velocity, "n_tex");//r-height,g-y velocity,b-x velocity
 	n_depthmap_sampler_uniform = glGetUniformLocation(n_program_object_velocity, "depthmap");
+
+	return true;
 }
 
-void ShaderVelocity::use(){
+void ShaderVelocity::bind(){
 	glUseProgram(n_program_object_velocity);
 	{
 		glUniform1i(n_texture_sampler_uniform_velocity, 0);
@@ -201,16 +201,16 @@ void ShaderVelocity::use(){
 bool ShaderHeight::compile(){
 	vertexpath  = "height.vx.shader";
 	fragmentpath = "height.fr.shader";
-	return Shader::compile(&n_vertex_shader_height, &n_fragment_shader_height, &n_program_object_height);
-}
-
-void ShaderHeight::bind(){
+	if(!Shader::compile(&n_vertex_shader_height, &n_fragment_shader_height, &n_program_object_height))
+		return false;
 
 	n_texture_sampler_uniform_height = glGetUniformLocation(n_program_object_height, "n_tex");//r-height,g-y velocity,b-x velocity
 	n_depthmap_sampler_uniform_height = glGetUniformLocation(n_program_object_height, "depthmap");
+
+	return true;
 }
 
-void ShaderHeight::use(){
+void ShaderHeight::bind(){
 	glUseProgram(n_program_object_height);
 	{
 		glUniform1i(n_texture_sampler_uniform_height, 0);
