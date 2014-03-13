@@ -380,11 +380,11 @@ void OnIdle(CGL30Driver &driver)
 
 	float f_time = clock() / 1000.0f; // cas pro animaci
 	
-	system("PAUSE");
+	//system("PAUSE");
 
 	//volani shaderu
-	blur.bind(datawidth, dataheight);	drawPingPong();
-	//velocity.bind();	drawPingPong();
+	//blur.bind(datawidth, dataheight);	drawPingPong();
+	velocity.bind();	drawPingPong();
 	//height.bind();	drawPingPong();
 
 	glViewport(0, 0, n_width, n_height); // viewport na velikost okna

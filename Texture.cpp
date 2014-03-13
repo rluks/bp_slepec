@@ -89,17 +89,17 @@ GLuint n_GLTextureRFloatDepthTest()
 	}
 
 	//pocatecni data
-	/*
-	float r = 1.0f;
+	float r = 0.5f;
 	for (int i = 0; i < dataheight * datawidth; i++) {
 			//r = r + 0.0001f;
 			checkImage[i] = (GLfloat) r;
-	}*/
+	}
 
+	/*
 	srand (static_cast <unsigned> (time(0)));
 	for (int i = 0; i < dataheight * datawidth; i++) {
 		checkImage[i] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-	}
+	}*/
 
 	/*
 	int x = datawidth/2;
@@ -125,6 +125,8 @@ GLuint n_GLTextureRFloatDepthTest()
 
 	//uvolneni pameti
 	delete[] checkImage;
+
+	//glBindTexture(GL_TEXTURE_2D,0);
 
 	return n_tex_surface;
 }

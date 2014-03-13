@@ -14,6 +14,8 @@ const float c = 2.0;//dissipation const.
 
 void main()
 {
+	frag_color = texture(n_tex, v_texcoord);
+	/*
 	float depth = texture(depthmap, v_texcoord.xy).r +
 		texture(depthmap, v_texcoord.xy+vec2(0,1)).r +
 		texture(depthmap, v_texcoord.xy+vec2(1,1)).r +
@@ -72,4 +74,5 @@ void main()
 	//test
 	//frag_color.r = 0.5;
 	//frag_color.g = 0.5;
+	*/
 }
