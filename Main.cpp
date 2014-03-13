@@ -347,6 +347,27 @@ void onResize(int n_x, int n_y, int n_new_width, int n_new_height)
 	glViewport(n_x, n_y, n_new_width, n_new_height);
 }
 
+
+
+void drawPingPong(){
+
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[1 - n_source_tex], 0); // kresleni do nulte urovne textury
+
+	glViewport(0, 0, datawidth, dataheight); // viewport na velikost FBO
+	glClear ( GL_COLOR_BUFFER_BIT);
+	glBindTexture(GL_TEXTURE_2D, n_texture[n_source_tex]);
+
+	DrawScene();
+
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, n_texture[1 - n_source_tex]);
+
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	n_source_tex = 1 - n_source_tex; // ping-pong
+}
+
 /**
  *	@brief tato funkce se vola ve smycce pokazde kdyz nejsou zadne nove zpravy; lze vyuzit ke kresleni animace
  *	@param[in] driver je reference na OpenGL driver
@@ -359,22 +380,12 @@ void OnIdle(CGL30Driver &driver)
 
 	float f_time = clock() / 1000.0f; // cas pro animaci
 	
-	//system("PAUSE");
+	system("PAUSE");
 
-	blur.bind(datawidth, dataheight);
-	//velocity.bind();
-
-	//KresliPingPong
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[1 - n_source_tex], 0); // kresleni do nulte urovne textury
-	glViewport(0, 0, datawidth, dataheight); // viewport na velikost FBO
-	glClear ( GL_COLOR_BUFFER_BIT);
-	glBindTexture(GL_TEXTURE_2D, n_texture[n_source_tex]);
-	DrawScene();
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, n_texture[1 - n_source_tex]);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	n_source_tex = 1 - n_source_tex; // ping-pong
+	//volani shaderu
+	blur.bind(datawidth, dataheight);	drawPingPong();
+	//velocity.bind();	drawPingPong();
+	//height.bind();	drawPingPong();
 
 	glViewport(0, 0, n_width, n_height); // viewport na velikost okna
 	glClear ( GL_COLOR_BUFFER_BIT);
