@@ -40,6 +40,7 @@ void main()
 		float dhdy = texture(n_tex, v_texcoord.xy + vec2(0,1)).r -
 			texture(n_tex, v_texcoord.xy).r;
 
+		// Velocity
 		float dudxx = texture(n_tex, v_texcoord.xy + vec2(1,0)).b -
 			2.0 * texture(n_tex, v_texcoord.xy).b +
 			texture(n_tex, v_texcoord.xy - vec2(1,0)).b;
