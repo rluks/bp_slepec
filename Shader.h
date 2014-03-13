@@ -25,7 +25,8 @@ public:
 struct ShaderBlur : public Shader {
 public:
 	GLuint n_vertex_shader, n_fragment_shader, n_program_object;
-	GLuint n_mvp_matrix_uniform, n_texture_sampler_uniform, n_time_uniform, pixel_size;
+	GLuint n_texture_sampler_uniform, pixel_size;
+	//GLuint n_mvp_matrix_uniform, n_time_uniform;
 	bool compile();
 	void bind(int, int);
 };

@@ -140,9 +140,9 @@ bool ShaderBlur::compile(){
 	if(!Shader::compile(&n_vertex_shader, &n_fragment_shader, &n_program_object))
 		return false;//TODO asi spis vyjimka
 
-	n_mvp_matrix_uniform = glGetUniformLocation(n_program_object, "t_modelview_projection_matrix");
+	//n_mvp_matrix_uniform = glGetUniformLocation(n_program_object, "t_modelview_projection_matrix");
 	n_texture_sampler_uniform = glGetUniformLocation(n_program_object, "n_tex");
-	n_time_uniform = glGetUniformLocation(n_program_object, "f_time");
+	//n_time_uniform = glGetUniformLocation(n_program_object, "f_time");
 	pixel_size = glGetUniformLocation(n_program_object, "pixel_size");
 
 	return true;
@@ -204,7 +204,7 @@ bool ShaderHeight::compile(){
 	if(!Shader::compile(&n_vertex_shader_height, &n_fragment_shader_height, &n_program_object_height))
 		return false;
 
-	n_texture_sampler_uniform_height = glGetUniformLocation(n_program_object_height, "n_tex");//r-height,g-y velocity,b-x velocity
+	n_texture_sampler_uniform_height = glGetUniformLocation(n_program_object_height, "n_tex");//r-height,g-y velocity v,b-x velocity u
 	n_depthmap_sampler_uniform_height = glGetUniformLocation(n_program_object_height, "depthmap");
 
 	return true;
