@@ -119,11 +119,8 @@ bool InitGLObjects()
 
 	//shadery
 	blur.compile();
-
 	pass.compile();
-
 	velocity.compile();
-
 	height.compile();
 
 	/*
@@ -362,51 +359,38 @@ void OnIdle(CGL30Driver &driver)
 
 	float f_time = clock() / 1000.0f; // cas pro animaci
 	
-	system("PAUSE");
-
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[1 - n_source_tex], 0); // kresleni do nulte urovne textury
-
-	//kresleni do fbo
-	glViewport(0, 0, datawidth, dataheight); // viewport na velikost FBO
-	glClear ( GL_COLOR_BUFFER_BIT);
-	glBindTexture(GL_TEXTURE_2D, n_texture[n_source_tex]); // ta druha textura
+	//system("PAUSE");
 
 	blur.bind(datawidth, dataheight);
 	//velocity.bind();
 
+	//KresliPingPong
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[1 - n_source_tex], 0); // kresleni do nulte urovne textury
+	glViewport(0, 0, datawidth, dataheight); // viewport na velikost FBO
+	glClear ( GL_COLOR_BUFFER_BIT);
+	glBindTexture(GL_TEXTURE_2D, n_texture[n_source_tex]);
 	DrawScene();
-
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // chcete kreslit do okna
-	glViewport(0, 0, n_width, n_height); // viewport na velikost okna
-
-	glBindTexture(GL_TEXTURE_2D, n_texture[1 - n_source_tex]); // textura do ktere se kreslilo
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, n_texture[1 - n_source_tex]);
 	glGenerateMipmap(GL_TEXTURE_2D);
-	// musi se pregenerovat mipmapy
+	n_source_tex = 1 - n_source_tex; // ping-pong
 
-	n_source_tex = 1 - n_source_tex; // ping-pong, nova data jsou ted v n_source_tex
-
-	glClear(GL_COLOR_BUFFER_BIT);
-	//glBindTexture(GL_TEXTURE_2D, n_texture[n_source_tex]); // ta druha textura
+	glViewport(0, 0, n_width, n_height); // viewport na velikost okna
+	glClear ( GL_COLOR_BUFFER_BIT);
 
 	Matrix4f t_mvp;
 	{
 		Matrix4f t_projection;
 		CGLTransform::Perspective(t_projection, 90, float(n_width) / n_height, .01f, 1000);
-		// spocitame matici perspektivni projekce
-
 		Matrix4f t_modelview;
 		t_modelview.Identity();
 		t_modelview.Translate(0, 0, -2.5f);
-		// spocitame matici modelview
-
 		t_mvp = t_projection * t_modelview;
 	}
-	// spocitame modelview - projection matici, kterou potrebujeme k transformaci vrcholu
 
 	pass.bind(t_mvp); // ted kreslite do okna, chcete videt vysledek
+	DrawScene();
 
-	DrawScene(); // vykreslime objekt pomoci VBO
-	
 	driver.Blit(); // preklopi buffery, zobrazi co jsme nakreslili
 }
