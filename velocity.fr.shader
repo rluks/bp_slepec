@@ -14,7 +14,13 @@ const float c = 2.0;//dissipation const.
 
 void main()
 {
-	frag_color = texture(n_tex, v_texcoord);
+	//tohle se chova ocekavane, nahodna data se meni  - zrneni
+	//frag_color.rgb = texture(n_tex, v_texcoord).brg;
+
+	//s depthmap jsou problemy
+	frag_color.r = texture(depthmap, v_texcoord).r;//tohle se zda nic nedela, stejne se vykresli nahodna data z tex
+	frag_color.r = texture(depthmap, v_texcoord).g;//depthmap ma jen r kanal, proc tohle neni error?
+
 	/*
 	float depth = texture(depthmap, v_texcoord.xy).r +
 		texture(depthmap, v_texcoord.xy+vec2(0,1)).r +
@@ -24,12 +30,7 @@ void main()
 	depth /= 4.0;
 
 	if(depth <= 0.0)
-	{
-		
-		//test
-		//frag_color.r = 0.7;
-		//frag_color.g = 0.7;
-		
+	{	
 		frag_color.r = 0.0;
 		frag_color.g = 0.0;
 	}
@@ -65,14 +66,6 @@ void main()
 
 		frag_color.r = next_u;
 		frag_color.g = next_v;
-
-		//test
-		//frag_color.r = 0.2;
-		//frag_color.g = 0.2;
 	}
-
-	//test
-	//frag_color.r = 0.5;
-	//frag_color.g = 0.5;
 	*/
 }

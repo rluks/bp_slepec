@@ -143,15 +143,17 @@ bool InitGLObjects()
 	glDrawBuffers(1, p_draw_buffers);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
-	/*
+	
 	//cisteni textury depthmap - meni barvu pozadi WTF?
+	/*
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, depthmap, 0);
 	glViewport(0, 0, datawidth, dataheight);
-	glClearColor(1.0, 1.0, 0, 0); // jen na prvn� hodnot� z�le�� - meni rgb barvu pozadi 
+	glClearColor(1.0, 1.0, 0, 0); // jen na prvni hodnote zalezi - meni rgb barvu pozadi 
 	//glClear ( GL_COLOR_BUFFER_BIT);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, depthmap);*/
+	glBindTexture(GL_TEXTURE_2D, depthmap);
+	*/
 
 	//cisteni textury depthmap - jiny zpusob
 	/*
@@ -378,9 +380,11 @@ void OnIdle(CGL30Driver &driver)
 	glEnable(GL_DEPTH_TEST);
 	// vycistime framebuffer
 
+	glBindTexture(GL_TEXTURE_2D, 0);//nechci omylem vykreslovat posledni bind. texturu
+
 	float f_time = clock() / 1000.0f; // cas pro animaci
 	
-	//system("PAUSE");
+	system("PAUSE");
 
 	//volani shaderu
 	//blur.bind(datawidth, dataheight);	drawPingPong();

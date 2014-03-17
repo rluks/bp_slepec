@@ -89,31 +89,15 @@ GLuint n_GLTextureRFloatDepthTest()
 	}
 
 	//pocatecni data
-	float r = 0.5f;
+	float r = 1.0f;
 	for (int i = 0; i < dataheight * datawidth; i++) {
 			//r = r + 0.0001f;
 			checkImage[i] = (GLfloat) r;
 	}
 
-	/*
-	srand (static_cast <unsigned> (time(0)));
-	for (int i = 0; i < dataheight * datawidth; i++) {
-		checkImage[i] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-	}*/
-
-	/*
-	int x = datawidth/2;
-	int y = dataheight/2;
-	checkImage[x + datawidth * y] = 0.0f;
-
-	for(int x = 0; x < datawidth; x++){
-		for(int y = 0; y < dataheight; y++){
-			if(x > datawidth/3)
-				checkImage[x + datawidth * y] = 0.5f;
-			if(y == dataheight/5)
-				checkImage[x + datawidth * y] = 0.0f;
-		}
-	}*/
+	for (int i = 0; i < 200000; i++) {
+			checkImage[i] = 0.1;
+	}
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &n_tex_surface);
