@@ -95,9 +95,10 @@ GLuint n_GLTextureRFloatDepthTest()
 			checkImage[i] = (GLfloat) r;
 	}
 
+	/*
 	for (int i = 0; i < 200000; i++) {
 			checkImage[i] = 0.1;
-	}
+	}*/
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &n_tex_surface);
