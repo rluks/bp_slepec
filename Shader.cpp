@@ -194,7 +194,7 @@ void ShaderVelocity::bind(){
 	glUseProgram(n_program_object_velocity);
 	{
 		glUniform1i(n_texture_sampler_uniform_velocity, 0);
-		glUniform1i(n_depthmap_sampler_uniform, 0);
+		glUniform1i(n_depthmap_sampler_uniform, 1);
 	}
 }
 

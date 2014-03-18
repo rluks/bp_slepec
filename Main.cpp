@@ -389,8 +389,12 @@ void OnIdle(CGL30Driver &driver)
 	//volani shaderu
 	//blur.bind(datawidth, dataheight);	drawPingPong();
 
+	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, depthmap);
-	velocity.bind();	drawPingPong();
+	glActiveTexture(GL_TEXTURE0);
+
+	velocity.bind();	
+	drawPingPong();
 
 	//height.bind();	drawPingPong();
 
