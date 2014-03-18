@@ -149,11 +149,13 @@ bool InitGLObjects()
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, depthmap, 0);
 	glViewport(0, 0, datawidth, dataheight);
-	glClearColor(1.0, 1.0, 0, 0); // jen na prvni hodnote zalezi - meni rgb barvu pozadi 
+	glClearColor(1.0, 1.0, 0, 0); // jen na prvni hodnote zalezi - meni rgb barvu pozadi / opengl je stavovy
 	//glClear ( GL_COLOR_BUFFER_BIT);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, depthmap);
-	*/
+	glBindTexture(GL_TEXTURE_2D, depthmap);*/
+
+	
+	
 
 	//cisteni textury depthmap - jiny zpusob
 	/*
@@ -376,6 +378,7 @@ void drawPingPong(){
  */
 void OnIdle(CGL30Driver &driver)
 {
+	glClearColor(0, 0, 0, 0); //barva pozadi
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 	// vycistime framebuffer
@@ -384,7 +387,7 @@ void OnIdle(CGL30Driver &driver)
 
 	float f_time = clock() / 1000.0f; // cas pro animaci
 	
-	//system("PAUSE");
+	system("PAUSE");
 
 	//volani shaderu
 	//blur.bind(datawidth, dataheight);	drawPingPong();
@@ -393,10 +396,8 @@ void OnIdle(CGL30Driver &driver)
 	glBindTexture(GL_TEXTURE_2D, depthmap);
 	glActiveTexture(GL_TEXTURE0);
 
-	velocity.bind();	
-	drawPingPong();
-
-	//height.bind();	drawPingPong();
+	velocity.bind(datawidth, dataheight);	drawPingPong();
+	height.bind(datawidth, dataheight);	drawPingPong();
 
 	glViewport(0, 0, n_width, n_height); // viewport na velikost okna
 	glClear ( GL_COLOR_BUFFER_BIT);

@@ -43,15 +43,15 @@ public:
 struct ShaderVelocity : public Shader {
 public:
 	GLuint n_vertex_shader_velocity, n_fragment_shader_velocity, n_program_object_velocity;
-	GLuint n_texture_sampler_uniform_velocity, n_depthmap_sampler_uniform;
+	GLuint n_texture_sampler_uniform_velocity, n_depthmap_sampler_uniform, pixel_size;
 	bool compile();
-	void bind();
+	void bind(int, int);
 };
 
 struct ShaderHeight : public Shader {
 public:
 	GLuint n_vertex_shader_height, n_fragment_shader_height, n_program_object_height;
-	GLuint n_texture_sampler_uniform_height, n_depthmap_sampler_uniform_height;
+	GLuint n_texture_sampler_uniform_height, n_depthmap_sampler_uniform_height, pixel_size;
 	bool compile();
-	void bind();
+	void bind(int, int);
 };

@@ -95,10 +95,10 @@ GLuint n_GLTextureRFloatDepthTest()
 			checkImage[i] = (GLfloat) r;
 	}
 
-	/*
+	
 	for (int i = 0; i < 200000; i++) {
-			checkImage[i] = 0.1;
-	}*/
+			checkImage[i] = 0.0;
+	}
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &n_tex_surface);
@@ -179,12 +179,17 @@ GLuint n_GLTextureRGBFloatFromData()
 	float r = 1.0f;
 	for (int i = 0; i < dataheight * datawidth * 3; i++) {
 		checkImage[i] = (GLfloat) r;
-	}*/
+	}
 
+	
 	srand (static_cast <unsigned> (time(0)));
 	for (int i = 0; i < dataheight * datawidth * 3; i++) {
 		checkImage[i] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 	}
+
+	for (int i = 400; i < dataheight * datawidth; i++) {
+		checkImage[i] = 0.7;
+	}*/
 
 	/*
 	//rgbrgbrgbrgb...
@@ -220,7 +225,7 @@ GLuint n_GLTextureRGBFloatFromData()
 			r = 1.0f;
 	}*/
 
-	/* vlajka >:->
+	// vlajka >:->
 	for (int i = 0; i < dataheight * datawidth; i++)
 		checkImage[i] = 1.0f;
 
@@ -229,7 +234,7 @@ GLuint n_GLTextureRGBFloatFromData()
 
 	for (int i = dataheight * datawidth * 2; i < dataheight * datawidth * 3; i++)
 		checkImage[i] = 0.1f;
-	*/
+	
 
 	int x = datawidth/2;
 	int y = dataheight/2;

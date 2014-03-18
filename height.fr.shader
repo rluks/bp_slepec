@@ -5,14 +5,17 @@ out vec4 frag_color; // vystup do framebufferu
 uniform sampler2D n_tex;//r-height,g-y velocity v,b-x velocity u
 uniform sampler2D depthmap;
 
+uniform vec3 pixel_size; // pixel_size.z = 0
+
 const float delta_t = 0.01;
 const float delta_x = 30.0/800.0;//TODO posilat
 const float delta_y = 30.0/600.0;
 
 void main()
 {
-	frag_color = texture(n_tex, v_texcoord);
-	/*
+	//frag_color = texture(n_tex, v_texcoord);
+	
+	
 	float depth = texture(depthmap, v_texcoord.xy).r;
 
 	if (depth <= 0.0)
@@ -23,10 +26,10 @@ void main()
 	else
 	{
 		float dudx = texture(n_tex, v_texcoord.xy).b -
-			texture(n_tex, v_texcoord.xy - vec2(1,0)).b;
+			texture(n_tex, v_texcoord.xy - vec2(pixel_size.x,0)).b;//velikostli
 
 		float dvdy = texture(n_tex, v_texcoord.xy).g -
-			texture(n_tex, v_texcoord.xy - vec2(0,1)).g;
+			texture(n_tex, v_texcoord.xy - vec2(0,pixel_size.y)).g;
 
 		float h = texture(n_tex, v_texcoord.xy).r;
 
@@ -34,5 +37,5 @@ void main()
 
 		frag_color.r = h;
 	}
-	*/
+	
 }

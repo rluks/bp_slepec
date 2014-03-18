@@ -186,15 +186,17 @@ bool ShaderVelocity::compile(){
 
 	n_texture_sampler_uniform_velocity = glGetUniformLocation(n_program_object_velocity, "n_tex");//r-height,g-y velocity,b-x velocity
 	n_depthmap_sampler_uniform = glGetUniformLocation(n_program_object_velocity, "depthmap");
+	pixel_size = glGetUniformLocation(n_program_object_velocity, "pixel_size");
 
 	return true;
 }
 
-void ShaderVelocity::bind(){
+void ShaderVelocity::bind(int width, int height){
 	glUseProgram(n_program_object_velocity);
 	{
 		glUniform1i(n_texture_sampler_uniform_velocity, 0);
 		glUniform1i(n_depthmap_sampler_uniform, 1);
+		glUniform3f(pixel_size, 1.0f/width, 1.0f/height, 0.0f);
 	}
 }
 
@@ -207,13 +209,16 @@ bool ShaderHeight::compile(){
 
 	n_texture_sampler_uniform_height = glGetUniformLocation(n_program_object_height, "n_tex");//r-height,g-y velocity v,b-x velocity u
 	n_depthmap_sampler_uniform_height = glGetUniformLocation(n_program_object_height, "depthmap");
+	pixel_size = glGetUniformLocation(n_program_object_height, "pixel_size");
 
 	return true;
 }
 
-void ShaderHeight::bind(){
+void ShaderHeight::bind(int width, int height){
 	glUseProgram(n_program_object_height);
 	{
 		glUniform1i(n_texture_sampler_uniform_height, 0);
+		glUniform1i(n_depthmap_sampler_uniform_height, 1);
+		glUniform3f(pixel_size, 1.0f/width, 1.0f/height, 0.0f);
 	}
 }
