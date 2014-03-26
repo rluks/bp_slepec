@@ -95,10 +95,10 @@ GLuint n_GLTextureRFloatDepthTest()
 			checkImage[i] = (GLfloat) r;
 	}
 
-	
+	/*
 	for (int i = 0; i < 200000; i++) {
 			checkImage[i] = 0.0;
-	}
+	}*/
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &n_tex_surface);
@@ -179,14 +179,15 @@ GLuint n_GLTextureRGBFloatFromData()
 	float r = 1.0f;
 	for (int i = 0; i < dataheight * datawidth * 3; i++) {
 		checkImage[i] = (GLfloat) r;
-	}
+	}*/
 
-	
+	/*
 	srand (static_cast <unsigned> (time(0)));
 	for (int i = 0; i < dataheight * datawidth * 3; i++) {
 		checkImage[i] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-	}
+	}*/
 
+	/*
 	for (int i = 400; i < dataheight * datawidth; i++) {
 		checkImage[i] = 0.7;
 	}*/
@@ -225,6 +226,7 @@ GLuint n_GLTextureRGBFloatFromData()
 			r = 1.0f;
 	}*/
 
+	/*
 	// vlajka >:->
 	for (int i = 0; i < dataheight * datawidth; i++)
 		checkImage[i] = 1.0f;
@@ -234,11 +236,104 @@ GLuint n_GLTextureRGBFloatFromData()
 
 	for (int i = dataheight * datawidth * 2; i < dataheight * datawidth * 3; i++)
 		checkImage[i] = 0.1f;
+		*/
 	
+	
+	
+	for (int y = 0; y < dataheight; y++) {
+		for (int x = 0; x < datawidth * 3; x+=3) {
+			float r = 1.0;
+			checkImage[x + datawidth * 3 * y] = (GLfloat) r;
+		}
+	}
 
+	int dropletRadius = 40;
+	float da = (float)0.7;
+	const int dim = 161;//4*dropletRadius+1;
+    float xd[dim][dim];
+    float yd[dim][dim];
+    for(int i=0; i<dim; i++) {
+		for(int j=-2*dropletRadius; j<=2*dropletRadius; j++){
+			xd[i][j+2*dropletRadius] = j;
+			yd[j+2*dropletRadius][i] = j;
+        }
+    }
+    float m_Zd[dim][dim];
+    for(int i=0; i<dim; i++) {
+		for(int j=0; j<dim; j++) {
+			// Calculate Gaussian centered on zero
+			m_Zd[i][j] = -da*exp(-pow(xd[i][j]/dropletRadius,2)-pow(yd[i][j]/dropletRadius,2));
+			}
+    }
+
+	for(int i=0; i<dim; i++) {
+        for(int j=0; j<dim; j++) {
+			checkImage[(300+i) + datawidth * 3 * (0+j)] += m_Zd[i][j];
+		}
+	}
+
+	/* do jedne datawidth pruh dole
+	for (int i = 0; i < datawidth * 3; i+=3) {
+		float r = 0.2;
+		checkImage[i] = (GLfloat) r;	
+	}*/
+
+	/* funguje
+	for (int y = 0; y < dataheight; y++) {
+		for (int x = 0; x < datawidth; x++) {
+			float r = 0.2;
+			checkImage[(x + datawidth * y)*3] = (GLfloat) r;
+		}
+	}*/
+
+	/* taky funguje
+	for (int y = 0; y < dataheight; y++) {
+		for (int x = 0; x < datawidth * 3; x+=3) {
+			float r = 0.2;
+			checkImage[x + datawidth * 3 * y] = (GLfloat) r;
+		}
+	}*/
+	
+	/*
+	srand (static_cast <unsigned> (time(0)));
+	for (int i = 0; i < dataheight * datawidth * 3; i+=3) {
+		float r;
+		//red
+		r= static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+		checkImage[i] = (GLfloat) r;	
+		//green
+		r=0.0;
+		checkImage[i+1] = (GLfloat) r;
+		//blue
+		r=0.0;
+		checkImage[i+2] = (GLfloat) r;
+	}*/
+
+	/*
+	for (int i = 0; i < dataheight * datawidth * 3; i+=3) {
+		float r=0.8;;
+		//red
+		checkImage[i] = (GLfloat) r;	
+		//green
+		checkImage[i+1] = (GLfloat) r;
+		//blue
+		checkImage[i+2] = (GLfloat) r;
+	}*/
+
+	/*
 	int x = datawidth/2;
 	int y = dataheight/2;
-	checkImage[x + datawidth * y] = 5.0f;
+	for(int i = 0; i < 50; i++){
+		checkImage[x + datawidth * y] = 5.0f;
+		checkImage[x+1 + datawidth * y] = 5.0f;
+		checkImage[x+1 + datawidth * y+1] = 5.0f;
+		checkImage[x+1 + datawidth * y-1] = 5.0f;
+		checkImage[x-1 + datawidth * y] = 5.0f;
+		checkImage[x-1 + datawidth * y+1] = 5.0f;
+		checkImage[x-1 + datawidth * y-1] = 5.0f;
+		checkImage[x + datawidth * y+1] = 5.0f;
+		checkImage[x + datawidth * y-1] = 5.0f;
+	}*/
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &n_tex_surface);
@@ -246,7 +341,7 @@ GLuint n_GLTextureRGBFloatFromData()
 	glBindTexture(GL_TEXTURE_2D, n_tex_surface);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, datawidth, dataheight, 0, GL_RGB, GL_FLOAT, checkImage);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, datawidth, dataheight, 0, GL_RGB, GL_FLOAT, /*NULL*/checkImage);
 
 	//uvolneni pameti
 	delete[] checkImage;

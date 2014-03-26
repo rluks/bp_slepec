@@ -143,6 +143,18 @@ bool InitGLObjects()
 	glDrawBuffers(1, p_draw_buffers);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
+	//init dat v texture
+	/*
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[0], 0);
+	glViewport(0, 0, datawidth, dataheight);
+	glClearColor(0.8, 0.8, 0.4, 0.0);
+	glClear ( GL_COLOR_BUFFER_BIT);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, n_texture[0]);
+	*/
+
+	n_source_tex = 0;
 	
 	//cisteni textury depthmap - meni barvu pozadi WTF?
 	/*
@@ -153,6 +165,7 @@ bool InitGLObjects()
 	//glClear ( GL_COLOR_BUFFER_BIT);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, depthmap);*/
+
 
 	
 	
@@ -166,7 +179,7 @@ bool InitGLObjects()
 	glClearBufferuiv(GL_COLOR, 0, clearColor);*/
 	
 
-	n_source_tex = 0;
+	
 
 	//p_box->Delete();
 	// uvolni pamet
@@ -386,12 +399,11 @@ void OnIdle(CGL30Driver &driver)
 	glBindTexture(GL_TEXTURE_2D, 0);//nechci omylem vykreslovat posledni bind. texturu
 
 	float f_time = clock() / 1000.0f; // cas pro animaci
-	
-	system("PAUSE");
 
 	//volani shaderu
 	//blur.bind(datawidth, dataheight);	drawPingPong();
 
+	
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, depthmap);
 	glActiveTexture(GL_TEXTURE0);
@@ -416,4 +428,6 @@ void OnIdle(CGL30Driver &driver)
 	DrawScene();
 
 	driver.Blit(); // preklopi buffery, zobrazi co jsme nakreslili
+
+	//system("PAUSE");
 }

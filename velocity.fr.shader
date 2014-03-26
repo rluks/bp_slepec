@@ -19,6 +19,12 @@ const float c = 1.0;//dissipation const.
 
 void main()
 {
+frag_color.rgb = texture(n_tex, v_texcoord).rgb;
+
+	////////////////
+
+	////////////////
+
 	//tohle se chova ocekavane, nahodna data se meni (3x)
 	//frag_color.rgb = texture(n_tex, v_texcoord).brg;
 
@@ -26,7 +32,7 @@ void main()
 	//frag_color = texture(depthmap, v_texcoord).r *  vec4(1.0, 1.0, 1.0, 1.0);//tohle se zda nic nedela, stejne se vykresli nahodna data z tex
 	//frag_color.r = texture(depthmap, v_texcoord).g;//depthmap ma jen r kanal, proc tohle neni error? tohle vraci nula
 
-	
+	/*
 	float depth = texture(depthmap, v_texcoord.xy).r +
 		texture(depthmap, v_texcoord.xy+vec2(pixel_size.z,pixel_size.y)).r +
 		texture(depthmap, v_texcoord.xy+vec2(pixel_size.x,pixel_size.y)).r +
@@ -74,6 +80,6 @@ void main()
 
 
 		//frag_color.r = 0.7;
-	}
+	}*/
 	
 }
