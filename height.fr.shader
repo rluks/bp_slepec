@@ -14,6 +14,7 @@ const float delta_y = 30.0/600.0;
 void main()
 {
 	//frag_color = texture(n_tex, v_texcoord);
+	//frag_color.r = texture(n_tex, v_texcoord).r;
 	//frag_color.rgb = texture(n_tex, v_texcoord).brg;
 	frag_color.rgb = texture(n_tex, v_texcoord).rgb;
 	/*

@@ -238,12 +238,15 @@ GLuint n_GLTextureRGBFloatFromData()
 		checkImage[i] = 0.1f;
 		*/
 	
-	
+
+
 	
 	for (int y = 0; y < dataheight; y++) {
-		for (int x = 0; x < datawidth * 3; x+=3) {
+		for (int x = 0; x < datawidth; x++) {
 			float r = 1.0;
-			checkImage[x + datawidth * 3 * y] = (GLfloat) r;
+			checkImage[(x + datawidth * y) * 3] = (GLfloat) r;//red
+			//checkImage[(x + datawidth * y) * 3 + 1] = 0.7; //green
+			//checkImage[(x + datawidth * y) * 3 + 2] = 0.3; //blue
 		}
 	}
 
@@ -265,10 +268,14 @@ GLuint n_GLTextureRGBFloatFromData()
 			m_Zd[i][j] = -da*exp(-pow(xd[i][j]/dropletRadius,2)-pow(yd[i][j]/dropletRadius,2));
 			}
     }
-
+	m_Zd[0][0] = -1;
+	
+	//pridani kapky
 	for(int i=0; i<dim; i++) {
         for(int j=0; j<dim; j++) {
-			checkImage[(300+i) + datawidth * 3 * (0+j)] += m_Zd[i][j];
+			int x = datawidth/2 - dim/2 + i;
+			int y = dataheight/2 - dim/2 + j;
+			checkImage[(x + datawidth * y) * 3] +=  m_Zd[i][j];
 		}
 	}
 
