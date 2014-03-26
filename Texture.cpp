@@ -240,13 +240,13 @@ GLuint n_GLTextureRGBFloatFromData()
 	
 
 
-	
+	srand (static_cast <unsigned> (time(0)));
 	for (int y = 0; y < dataheight; y++) {
 		for (int x = 0; x < datawidth; x++) {
 			float r = 1.0;
 			checkImage[(x + datawidth * y) * 3] = (GLfloat) r;//red
-			//checkImage[(x + datawidth * y) * 3 + 1] = 0.7; //green
-			//checkImage[(x + datawidth * y) * 3 + 2] = 0.3; //blue
+			checkImage[(x + datawidth * y) * 3 + 1] = 0.5;//(GLfloat) static_cast <float> (rand()) / static_cast <float> (RAND_MAX);; //green
+			checkImage[(x + datawidth * y) * 3 + 2] = 0.1;//(GLfloat) static_cast <float> (rand()) / static_cast <float> (RAND_MAX);; //blue
 		}
 	}
 
@@ -268,7 +268,7 @@ GLuint n_GLTextureRGBFloatFromData()
 			m_Zd[i][j] = -da*exp(-pow(xd[i][j]/dropletRadius,2)-pow(yd[i][j]/dropletRadius,2));
 			}
     }
-	m_Zd[0][0] = -1;
+	//m_Zd[0][0] = -1;
 	
 	//pridani kapky
 	for(int i=0; i<dim; i++) {

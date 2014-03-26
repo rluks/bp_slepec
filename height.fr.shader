@@ -16,14 +16,18 @@ void main()
 	//frag_color = texture(n_tex, v_texcoord);
 	//frag_color.r = texture(n_tex, v_texcoord).r;
 	//frag_color.rgb = texture(n_tex, v_texcoord).brg;
-	frag_color.rgb = texture(n_tex, v_texcoord).rgb;
-	/*
+	//frag_color.rgb = texture(n_tex, v_texcoord).rgb;
+	
 	float depth = texture(depthmap, v_texcoord.xy).r;
+
+	//test
+	depth = 1.0;
 
 	if (depth <= 0.0)
 	{
 		frag_color.r = 0.0;
 		frag_color.g = 0.0;
+		frag_color.b = 0.0;
 	}
 	else
 	{
@@ -38,6 +42,8 @@ void main()
 		h = h - delta_t*depth*((dudx)/delta_x + (dvdy)/delta_y);
 
 		frag_color.r = h;
-	}*/
+		frag_color.b = texture(n_tex, v_texcoord.xy).b;
+		frag_color.g = texture(n_tex, v_texcoord.xy).g;
+	}
 	
 }

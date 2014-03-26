@@ -15,24 +15,12 @@ const float delta_y = 30.0/600.0;
 
 
 const float g = 1.0;
-const float c = 1.0;//dissipation const.
+const float c = 2.0;//dissipation const.
 
 void main()
 {
-frag_color.rgb = texture(n_tex, v_texcoord).rgb;
 
-	////////////////
-
-	////////////////
-
-	//tohle se chova ocekavane, nahodna data se meni (3x)
-	//frag_color.rgb = texture(n_tex, v_texcoord).brg;
-
-	//s depthmap jsou problemy
-	//frag_color = texture(depthmap, v_texcoord).r *  vec4(1.0, 1.0, 1.0, 1.0);//tohle se zda nic nedela, stejne se vykresli nahodna data z tex
-	//frag_color.r = texture(depthmap, v_texcoord).g;//depthmap ma jen r kanal, proc tohle neni error? tohle vraci nula
-
-	/*
+	
 	float depth = texture(depthmap, v_texcoord.xy).r +
 		texture(depthmap, v_texcoord.xy+vec2(pixel_size.z,pixel_size.y)).r +
 		texture(depthmap, v_texcoord.xy+vec2(pixel_size.x,pixel_size.y)).r +
@@ -40,9 +28,13 @@ frag_color.rgb = texture(n_tex, v_texcoord).rgb;
 
 	depth /= 4.0;
 
+	//test
+	depth = 1.0;
+
 	if(depth <= 0.0)
 	{	
-		frag_color.r = 0.2;
+		frag_color.r = 0.0;
+		frag_color.b = 0.0;
 		frag_color.g = 0.0;
 	}
 	else
@@ -66,8 +58,8 @@ frag_color.rgb = texture(n_tex, v_texcoord).rgb;
 		float hx = 0.0;
 		float hy = 0.0;
 
-		hx += (delta_t/delta_x) * (c*delta_t*dudxx-g*dhdx);
-		hy += (delta_t/delta_y) * (c*delta_t*dvdyy-g*dhdy);
+		hx += (delta_t/delta_x) * (c*delta_t*dudxx - g*dhdx);
+		hy += (delta_t/delta_y) * (c*delta_t*dvdyy - g*dhdy);
 
 		float next_u = texture(n_tex, v_texcoord.xy).b;
 		float next_v = texture(n_tex, v_texcoord.xy).g;
@@ -75,11 +67,9 @@ frag_color.rgb = texture(n_tex, v_texcoord).rgb;
 		next_u += hx;
 		next_v += hy;
 
-		frag_color.r = next_u;
+		frag_color.b = next_u;
 		frag_color.g = next_v;
-
-
-		//frag_color.r = 0.7;
-	}*/
+		frag_color.r = texture(n_tex, v_texcoord).r;
+	}
 	
 }
