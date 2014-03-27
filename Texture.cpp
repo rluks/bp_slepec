@@ -89,15 +89,26 @@ GLuint n_GLTextureRFloatDepthTest()
 	}
 
 	//pocatecni data
+	/*
 	float r = 1.0f;
 	for (int i = 0; i < dataheight * datawidth; i++) {
 			//r = r + 0.0001f;
 			checkImage[i] = (GLfloat) r;
+	}*/
+
+	float r = 1.0;
+	for (int y = 0; y < dataheight; y++) {
+		for (int x = 0; x < datawidth; x++) {		
+			checkImage[x + datawidth * y] = (GLfloat) r;
+		}
 	}
 
 	/*
-	for (int i = 0; i < 200000; i++) {
-			checkImage[i] = 0.0;
+	r = 0.0;
+	for (int y = dataheight/4; y < dataheight/2; y++) {
+		for (int x = datawidth/3; x < 2*datawidth/3; x++) {		
+			checkImage[x + datawidth * y] = (GLfloat) r;
+		}
 	}*/
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -245,8 +256,8 @@ GLuint n_GLTextureRGBFloatFromData()
 		for (int x = 0; x < datawidth; x++) {
 			float r = 1.0;
 			checkImage[(x + datawidth * y) * 3] = (GLfloat) r;//red
-			checkImage[(x + datawidth * y) * 3 + 1] = 0.5;//(GLfloat) static_cast <float> (rand()) / static_cast <float> (RAND_MAX);; //green
-			checkImage[(x + datawidth * y) * 3 + 2] = 0.1;//(GLfloat) static_cast <float> (rand()) / static_cast <float> (RAND_MAX);; //blue
+			checkImage[(x + datawidth * y) * 3 + 1] = (GLfloat) static_cast <float> (rand()) / static_cast <float> (RAND_MAX);; //green
+			checkImage[(x + datawidth * y) * 3 + 2] = (GLfloat) static_cast <float> (rand()) / static_cast <float> (RAND_MAX);; //blue
 		}
 	}
 

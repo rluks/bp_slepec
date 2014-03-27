@@ -21,7 +21,7 @@ void main()
 	float depth = texture(depthmap, v_texcoord.xy).r;
 
 	//test
-	depth = 1.0;
+	//depth = 1.0;
 
 	if (depth <= 0.0)
 	{

@@ -157,6 +157,7 @@ bool InitGLObjects()
 	n_source_tex = 0;
 	
 	//cisteni textury depthmap - meni barvu pozadi WTF?
+	/*
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, depthmap, 0);
 	glViewport(0, 0, datawidth, dataheight);
@@ -164,6 +165,7 @@ bool InitGLObjects()
 	glClear ( GL_COLOR_BUFFER_BIT);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, depthmap);
+	*/
 
 	//cisteni textury depthmap - jiny zpusob
 	/*
@@ -336,9 +338,26 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 		}
 		return 0;
 
+	case WM_LBUTTONDOWN:
+		{
+		//std::cout << "click mouse" << std::endl;
+		// Capture mouse input. 
+		RECT t_wnd_area;
+		GetClientRect(h_wnd, &t_wnd_area);
+		int n_ww = t_wnd_area.right - t_wnd_area.left;
+		int n_wh = t_wnd_area.bottom - t_wnd_area.top;
+		std::cout << "ww:" << n_ww << " | wh:" << n_wh << std::endl;//800 600
+		POINTS pts = MAKEPOINTS(n_l_param);
+		std::cout << "x:" << pts.x << " | y:" << pts.y << std::endl;//0,0				800,0
+																	//0,600				800,600
+		break;
+		}
+
 	case WM_KEYDOWN:
 		if(n_w_param == VK_ESCAPE)
 			SendMessage(h_wnd, WM_CLOSE, 0, 0);
+		if(n_w_param == VK_SPACE)
+			std::cout << "space" << std::endl;
 		return 0;
 	}
 
@@ -358,7 +377,6 @@ void onResize(int n_x, int n_y, int n_new_width, int n_new_height)
 	n_height = n_new_height;
 	glViewport(n_x, n_y, n_new_width, n_new_height);
 }
-
 
 
 void drawPingPong(){
@@ -399,6 +417,11 @@ void OnIdle(CGL30Driver &driver)
 	//blur.bind(datawidth, dataheight);	drawPingPong();
 
 	
+	/*
+	if(clickCount > 0){
+		std::cout << "klik x: y: " << std::endl;
+	}*/
+
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, depthmap);
 	glActiveTexture(GL_TEXTURE0);
