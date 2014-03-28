@@ -7,5 +7,6 @@ out vec4 frag_color; // vystup do framebufferu
 void main()
 {
 	vec2 texcoord = gl_PointCoord;
-	frag_color.rgb = vec3(0.5, 0.5, 0.5);
+	float x = 1.0 - 2.0 * length(vec2(0.5, 0.5) - gl_PointCoord.xy);
+	frag_color = vec4(max(x, 0.0));
 }

@@ -148,17 +148,6 @@ bool InitGLObjects()
 	glDrawBuffers(1, p_draw_buffers);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
-	//init dat v texture
-	/*
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[0], 0);
-	glViewport(0, 0, datawidth, dataheight);
-	glClearColor(0.8, 0.8, 0.4, 0.0);
-	glClear ( GL_COLOR_BUFFER_BIT);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, n_texture[0]);
-	*/
-
 	n_source_tex = 0;
 	
 	//cisteni textury depthmap - meni barvu pozadi WTF?
@@ -181,7 +170,39 @@ bool InitGLObjects()
 	glClearBufferuiv(GL_COLOR, 0, clearColor);*/
 	
 
+	//pridani kapky
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[0], 0);
+	glViewport(0, 0, datawidth, dataheight);
+	glClearColor(1.0, 1.0, 1.0, 0.0);
+	glClear ( GL_COLOR_BUFFER_BIT);
 	
+	glBindTexture(GL_TEXTURE_2D, n_texture[0]);
+
+	{//bod
+		float bod[] = {0.5, 0.5};
+
+		GLuint bodVBO, bodVAO;
+		glGenBuffers(1, &bodVBO);
+		glBindBuffer(GL_ARRAY_BUFFER, bodVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(bod), bod, GL_STATIC_DRAW);
+
+		glGenVertexArrays(1, &bodVAO);
+		glBindVertexArray(bodVAO);
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, bodVBO);
+			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, p_OffsetInVBO(0));
+		}
+		glBindVertexArray(0);
+
+		point.bind();
+		glBindVertexArray(bodVAO);
+		glDrawArrays(GL_POINTS, 0, 1);
+		glBindVertexArray(0);
+	}
+
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
 	//p_box->Delete();
 	// uvolni pamet
@@ -459,6 +480,7 @@ void OnIdle(CGL30Driver &driver)
 	pass.bind(t_mvp); // ted kreslite do okna, chcete videt vysledek
 	DrawScene();
 
+	/*
 	{//bod
 		float bod[] = {0.5, 0.5};
 
@@ -479,10 +501,8 @@ void OnIdle(CGL30Driver &driver)
 		point.bind();
 		glBindVertexArray(bodVAO);
 		glDrawArrays(GL_POINTS, 0, 1);
-				//glDrawElements GL_FLOAT, p_OffsetInVBO(0));
-
 		glBindVertexArray(0);
-	}
+	}*/
 
 	driver.Blit(); // preklopi buffery, zobrazi co jsme nakreslili
 
