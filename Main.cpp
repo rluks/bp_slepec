@@ -339,7 +339,7 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 		return 0;
 
 	case WM_LBUTTONDOWN:
-		{
+		{/*
 		//std::cout << "click mouse" << std::endl;
 		// Capture mouse input. 
 		RECT t_wnd_area;
@@ -347,6 +347,7 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 		int n_ww = t_wnd_area.right - t_wnd_area.left;
 		int n_wh = t_wnd_area.bottom - t_wnd_area.top;
 		std::cout << "ww:" << n_ww << " | wh:" << n_wh << std::endl;//800 600
+		*/
 		POINTS pts = MAKEPOINTS(n_l_param);
 		std::cout << "x:" << pts.x << " | y:" << pts.y << std::endl;//0,0				800,0
 																	//0,600				800,600
