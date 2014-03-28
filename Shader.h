@@ -55,3 +55,12 @@ public:
 	bool compile();
 	void bind(int, int);
 };
+
+
+
+struct ShaderPoint : public Shader {
+public:
+	GLuint n_vertex_shader_point, n_fragment_shader_point, n_program_object_point;
+	bool compile();
+	void bind();
+};

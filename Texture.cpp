@@ -256,8 +256,8 @@ GLuint n_GLTextureRGBFloatFromData()
 		for (int x = 0; x < datawidth; x++) {
 			float r = 1.0;
 			checkImage[(x + datawidth * y) * 3] = (GLfloat) r;//red
-			checkImage[(x + datawidth * y) * 3 + 1] = (GLfloat) static_cast <float> (rand()) / static_cast <float> (RAND_MAX);; //green
-			checkImage[(x + datawidth * y) * 3 + 2] = (GLfloat) static_cast <float> (rand()) / static_cast <float> (RAND_MAX);; //blue
+			checkImage[(x + datawidth * y) * 3 + 1] = 0;//(GLfloat) static_cast <float> (rand()) / static_cast <float> (RAND_MAX);; //green
+			checkImage[(x + datawidth * y) * 3 + 2] = 0;//(GLfloat) static_cast <float> (rand()) / static_cast <float> (RAND_MAX);; //blue
 		}
 	}
 
@@ -275,7 +275,6 @@ GLuint n_GLTextureRGBFloatFromData()
     float m_Zd[dim][dim];
     for(int i=0; i<dim; i++) {
 		for(int j=0; j<dim; j++) {
-			// Calculate Gaussian centered on zero
 			m_Zd[i][j] = -da*exp(-pow(xd[i][j]/dropletRadius,2)-pow(yd[i][j]/dropletRadius,2));
 			}
     }

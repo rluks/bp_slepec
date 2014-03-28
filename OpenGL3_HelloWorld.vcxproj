@@ -116,6 +116,8 @@
     <None Include="height.vx.shader" />
     <None Include="pass.fr.shader" />
     <None Include="pass.vx.shader" />
+    <None Include="point.fr.shader" />
+    <None Include="point.vx.shader" />
     <None Include="velocity.fr.shader" />
     <None Include="velocity.vx.shader" />
   </ItemGroup>

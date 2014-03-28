@@ -49,6 +49,9 @@ ShaderBlur blur;
 ShaderPass pass;
 ShaderVelocity velocity;
 ShaderHeight height;
+ShaderPoint point;
+
+std::vector<POINTS> pointsQueue;
 
 /**
  *	@brief vraci "pointer" do VBO
@@ -122,6 +125,8 @@ bool InitGLObjects()
 	pass.compile();
 	velocity.compile();
 	height.compile();
+
+	point.compile();
 
 	/*
 	TBmp *p_box;
@@ -351,6 +356,7 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 		POINTS pts = MAKEPOINTS(n_l_param);
 		std::cout << "x:" << pts.x << " | y:" << pts.y << std::endl;//0,0				800,0
 																	//0,600				800,600
+		pointsQueue.push_back(pts);
 		break;
 		}
 
@@ -417,11 +423,18 @@ void OnIdle(CGL30Driver &driver)
 	//volani shaderu
 	//blur.bind(datawidth, dataheight);	drawPingPong();
 
+
+	//pridani kapek
+	while(pointsQueue.size() > 0){
+		std::cout << "pridani kapek" << std::endl;
+
+		pointsQueue.pop_back();
+		//pointsQueue.resize(0);
+	}
+
 	
-	/*
-	if(clickCount > 0){
-		std::cout << "klik x: y: " << std::endl;
-	}*/
+
+	//system("PAUSE");
 
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, depthmap);
@@ -445,6 +458,31 @@ void OnIdle(CGL30Driver &driver)
 
 	pass.bind(t_mvp); // ted kreslite do okna, chcete videt vysledek
 	DrawScene();
+
+	{//bod
+		float bod[] = {0.5, 0.5};
+
+		GLuint bodVBO, bodVAO;
+		glGenBuffers(1, &bodVBO);
+		glBindBuffer(GL_ARRAY_BUFFER, bodVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(bod), bod, GL_STATIC_DRAW);
+
+		glGenVertexArrays(1, &bodVAO);
+		glBindVertexArray(bodVAO);
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, bodVBO);
+			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, p_OffsetInVBO(0));
+		}
+		glBindVertexArray(0);
+
+		point.bind();
+		glBindVertexArray(bodVAO);
+		glDrawArrays(GL_POINTS, 0, 1);
+				//glDrawElements GL_FLOAT, p_OffsetInVBO(0));
+
+		glBindVertexArray(0);
+	}
 
 	driver.Blit(); // preklopi buffery, zobrazi co jsme nakreslili
 

@@ -222,3 +222,21 @@ void ShaderHeight::bind(int width, int height){
 		glUniform3f(pixel_size, 1.0f/width, 1.0f/height, 0.0f);
 	}
 }
+
+
+
+//bod
+bool ShaderPoint::compile(){
+	vertexpath  = "point.vx.shader";
+	fragmentpath = "point.fr.shader";
+	if(!Shader::compile(&n_vertex_shader_point, &n_fragment_shader_point, &n_program_object_point))
+		return false;
+
+	return true;
+}
+
+void ShaderPoint::bind(){
+	glUseProgram(n_program_object_point);
+	{
+	}
+}

@@ -85,5 +85,11 @@
     <None Include="height.vx.shader">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="point.fr.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="point.vx.shader">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
