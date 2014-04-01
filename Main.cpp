@@ -33,6 +33,8 @@ static bool b_running = true;
 void OnIdle(CGL30Driver &driver);
 void onResize(int n_x, int n_y, int n_new_width, int n_new_height);
 LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_param);
+void drawPingPong();
+void drawDrop(bool, float, float);
 // prototypy funkci
 
 GLuint fbo;
@@ -43,6 +45,7 @@ static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_obje
 //textury
 static GLuint n_texture[2];//r-height,g-y velocity,b-x velocity
 static GLuint depthmap;
+
 
 //shadery
 ShaderBlur blur;
@@ -63,7 +66,7 @@ void drawDrop(bool clear, float x, float y){
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[0], 0);
 	glViewport(0, 0, datawidth, dataheight);
-	glClearColor(0.6, 0.0, 0.0, 0.0);
+	glClearColor(0.0, 0.0, 0.0, 0.0);
 	if(clear)
 		glClear ( GL_COLOR_BUFFER_BIT);
 	
@@ -199,6 +202,7 @@ bool InitGLObjects()
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, depthmap);
 	*/
+	
 
 	//cisteni textury depthmap - jiny zpusob
 	/*
@@ -207,9 +211,8 @@ bool InitGLObjects()
 	glDrawBuffer(GL_COLOR_ATTACHMENT0);
 	GLuint clearColor[4] = {1, 0, 0, 0};
 	glClearBufferuiv(GL_COLOR, 0, clearColor);*/
-	
 
-	//pridani kapky
+	//pridani kapky s true cistenim hladiny
 	drawDrop(true, 0.5, 0.5);
 
 
@@ -454,18 +457,19 @@ void OnIdle(CGL30Driver &driver)
 	//volani shaderu
 	//blur.bind(datawidth, dataheight);	drawPingPong();
 
-
-
 	
 
 	//system("PAUSE");
 
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, depthmap);
-	glActiveTexture(GL_TEXTURE0);
+	for(int i = 0; i < 3; i++){	
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, depthmap);
+		glActiveTexture(GL_TEXTURE0);
 
-	velocity.bind(datawidth, dataheight);	drawPingPong();
-	height.bind(datawidth, dataheight);	drawPingPong();
+		velocity.bind(datawidth, dataheight);	drawPingPong();
+		height.bind(datawidth, dataheight);	drawPingPong();
+	}
+
 
 	glViewport(0, 0, n_width, n_height); // viewport na velikost okna
 	glClear ( GL_COLOR_BUFFER_BIT);
@@ -483,6 +487,13 @@ void OnIdle(CGL30Driver &driver)
 	pass.bind(t_mvp); // ted kreslite do okna, chcete videt vysledek
 	DrawScene();
 
+
+	//TODO prekazky
+	
+	//koncept hry / 1obrazovka
+	//herni logika
+	//reprezentace mapy v texture jako bmp
+	//kolize na cpu, nahrat i do gpu
 	
 	//pridani kapek
 	while(pointsQueue.size() > 0){

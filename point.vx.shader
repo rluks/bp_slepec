@@ -7,5 +7,5 @@ out vec2 v_texcoord;
 void main()
 {
 	gl_Position = vec4(v_pos.xy, -0.1, 1.0);
-	gl_PointSize = 30.0;
+	gl_PointSize = 5.0;
 }

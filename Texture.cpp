@@ -96,19 +96,36 @@ GLuint n_GLTextureRFloatDepthTest()
 			checkImage[i] = (GLfloat) r;
 	}*/
 
-	float r = 1.0;
+	
+	float r = 7.0;
 	for (int y = 0; y < dataheight; y++) {
 		for (int x = 0; x < datawidth; x++) {		
 			checkImage[x + datawidth * y] = (GLfloat) r;
+			if(x > 30 && x < 770 && y > 30 && y < 570)
+				checkImage[x + datawidth * y] = 7.0;
+			
+			if(x > 200 && x < 350 && y > 200 && y < 240)
+				checkImage[x + datawidth * y] = -5.0;
 		}
 	}
 
 	/*
-	r = 0.0;
-	for (int y = dataheight/4; y < dataheight/2; y++) {
-		for (int x = datawidth/3; x < 2*datawidth/3; x++) {		
-			checkImage[x + datawidth * y] = (GLfloat) r;
-		}
+	for (int y = 0; y < dataheight; y++)
+		for (int x = 0; x < datawidth; x++)	
+			checkImage[x + datawidth * y] = 7.0;
+	*/
+
+	/*
+	for (int y = 0; y < dataheight; y++){
+		checkImage[datawidth * y] = 0.0;
+	}
+
+	for (int x = 0; x < datawidth; x++) {		
+		checkImage[x] = 0.0;
+	}
+
+	for (int x = 0; x < datawidth; x++) {		
+		checkImage[x + dataheight] = 0.0;
 	}*/
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -250,17 +267,17 @@ GLuint n_GLTextureRGBFloatFromData()
 		*/
 	
 
-
+	float r = 0.0;
 	srand (static_cast <unsigned> (time(0)));
 	for (int y = 0; y < dataheight; y++) {
 		for (int x = 0; x < datawidth; x++) {
-			float r = 1.0;
 			checkImage[(x + datawidth * y) * 3] = (GLfloat) r;//red
-			checkImage[(x + datawidth * y) * 3 + 1] = 0;//(GLfloat) static_cast <float> (rand()) / static_cast <float> (RAND_MAX);; //green
-			checkImage[(x + datawidth * y) * 3 + 2] = 0;//(GLfloat) static_cast <float> (rand()) / static_cast <float> (RAND_MAX);; //blue
+			checkImage[(x + datawidth * y) * 3 + 1] = 0.0;//(GLfloat) static_cast <float> (rand()) / static_cast <float> (RAND_MAX);; //green
+			checkImage[(x + datawidth * y) * 3 + 2] = 0.0;//(GLfloat) static_cast <float> (rand()) / static_cast <float> (RAND_MAX);; //blue
 		}
 	}
-
+	
+	/*
 	int dropletRadius = 40;
 	float da = (float)0.7;
 	const int dim = 161;//4*dropletRadius+1;
@@ -268,8 +285,8 @@ GLuint n_GLTextureRGBFloatFromData()
     float yd[dim][dim];
     for(int i=0; i<dim; i++) {
 		for(int j=-2*dropletRadius; j<=2*dropletRadius; j++){
-			xd[i][j+2*dropletRadius] = j;
-			yd[j+2*dropletRadius][i] = j;
+			xd[i][j+2*dropletRadius] = (float)j;
+			yd[j+2*dropletRadius][i] = (float)j;
         }
     }
     float m_Zd[dim][dim];
@@ -287,7 +304,7 @@ GLuint n_GLTextureRGBFloatFromData()
 			int y = dataheight/2 - dim/2 + j;
 			checkImage[(x + datawidth * y) * 3] +=  m_Zd[i][j];
 		}
-	}
+	}*/
 
 	/* do jedne datawidth pruh dole
 	for (int i = 0; i < datawidth * 3; i+=3) {
@@ -358,6 +375,9 @@ GLuint n_GLTextureRGBFloatFromData()
 	glBindTexture(GL_TEXTURE_2D, n_tex_surface);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, datawidth, dataheight, 0, GL_RGB, GL_FLOAT, /*NULL*/checkImage);
 
 	//uvolneni pameti

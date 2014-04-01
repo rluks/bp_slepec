@@ -15,7 +15,7 @@ const float delta_y = 30.0/600.0;
 
 
 const float g = 1.0;
-const float c = 50.0;//dissipation const.
+const float c = 30.0;//dissipation const.
 
 void main()
 {
