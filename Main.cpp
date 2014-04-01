@@ -454,13 +454,6 @@ void OnIdle(CGL30Driver &driver)
 
 	float f_time = clock() / 1000.0f; // cas pro animaci
 
-	//volani shaderu
-	//blur.bind(datawidth, dataheight);	drawPingPong();
-
-	
-
-	//system("PAUSE");
-
 	for(int i = 0; i < 3; i++){	
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, depthmap);
@@ -487,9 +480,7 @@ void OnIdle(CGL30Driver &driver)
 	pass.bind(t_mvp); // ted kreslite do okna, chcete videt vysledek
 	DrawScene();
 
-
-	//TODO prekazky
-	
+	//TODO
 	//koncept hry / 1obrazovka
 	//herni logika
 	//reprezentace mapy v texture jako bmp
@@ -503,32 +494,7 @@ void OnIdle(CGL30Driver &driver)
 		float y = 1.0 - (float)p.y/dataheight * 2.0;
 		std::cout << "kapka na souradnicich - x: " << x << " |y: " << y << std::endl;
 		drawDrop(false, x, y);
-		//pointsQueue.resize(0);
 	}
-
-	/*
-	{//bod
-		float bod[] = {0.5, 0.5};
-
-		GLuint bodVBO, bodVAO;
-		glGenBuffers(1, &bodVBO);
-		glBindBuffer(GL_ARRAY_BUFFER, bodVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(bod), bod, GL_STATIC_DRAW);
-
-		glGenVertexArrays(1, &bodVAO);
-		glBindVertexArray(bodVAO);
-		{
-			glBindBuffer(GL_ARRAY_BUFFER, bodVBO);
-			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, p_OffsetInVBO(0));
-		}
-		glBindVertexArray(0);
-
-		point.bind();
-		glBindVertexArray(bodVAO);
-		glDrawArrays(GL_POINTS, 0, 1);
-		glBindVertexArray(0);
-	}*/
 
 	driver.Blit(); // preklopi buffery, zobrazi co jsme nakreslili
 
