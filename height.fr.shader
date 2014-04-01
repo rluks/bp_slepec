@@ -11,6 +11,8 @@ const float delta_t = 0.01;
 const float delta_x = 30.0/800.0;//TODO posilat
 const float delta_y = 30.0/600.0;
 
+float c = 2.0;//dissipation const.
+
 void main()
 {
 	//frag_color = texture(n_tex, v_texcoord);
@@ -39,7 +41,14 @@ void main()
 
 		float h = texture(n_tex, v_texcoord.xy).r;
 
+		float val = 0.5 - max(abs(v_texcoord.x - 0.5), abs(v_texcoord.y - 0.5));
+		float k = 1.0 - smoothstep(.05, .01, val);
+
 		h = h - delta_t*depth*((dudx)/delta_x + (dvdy)/delta_y);
+
+		//if(h > 0.0 && h < 0.0005)
+		//	h -= h/5.0;
+		h = h * k;
 
 		frag_color.r = h;
 		frag_color.b = texture(n_tex, v_texcoord.xy).b;

@@ -79,10 +79,12 @@ GLuint n_GLTextureRFloatDepthTest()
 {
 	GLuint n_tex_surface;
 	GLfloat *checkImage;
+	int wid=21;
+	int hei=16;
 
 	//alokace pameti
 	try {
-		checkImage = new GLfloat [datawidth * dataheight];
+		checkImage = new GLfloat [21 * 16];
 	} catch (std::bad_alloc e){
 		std::cerr << "Alokace pameti selhala" << std::endl;
 		return -1;
@@ -98,14 +100,11 @@ GLuint n_GLTextureRFloatDepthTest()
 
 	
 	float r = 7.0;
-	for (int y = 0; y < dataheight; y++) {
-		for (int x = 0; x < datawidth; x++) {		
-			checkImage[x + datawidth * y] = (GLfloat) r;
-			if(x > 30 && x < 770 && y > 30 && y < 570)
-				checkImage[x + datawidth * y] = 7.0;
-			
-			if(x > 200 && x < 350 && y > 200 && y < 240)
-				checkImage[x + datawidth * y] = -5.0;
+	for (int y = 0; y < hei; y++) {
+		for (int x = 0; x < wid; x++) {		
+			checkImage[x + wid * y] = (GLfloat) r;		
+			if(x >= 5 && x < 8 && y >= 8 && y <11)
+				checkImage[x + wid * y] = -5.0;
 		}
 	}
 
@@ -115,26 +114,13 @@ GLuint n_GLTextureRFloatDepthTest()
 			checkImage[x + datawidth * y] = 7.0;
 	*/
 
-	/*
-	for (int y = 0; y < dataheight; y++){
-		checkImage[datawidth * y] = 0.0;
-	}
-
-	for (int x = 0; x < datawidth; x++) {		
-		checkImage[x] = 0.0;
-	}
-
-	for (int x = 0; x < datawidth; x++) {		
-		checkImage[x + dataheight] = 0.0;
-	}*/
-
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &n_tex_surface);
 
 	glBindTexture(GL_TEXTURE_2D, n_tex_surface);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, datawidth, dataheight, 0, GL_RED, GL_FLOAT, checkImage);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, wid, hei, 0, GL_RED, GL_FLOAT, checkImage);
 
 	//uvolneni pameti
 	delete[] checkImage;

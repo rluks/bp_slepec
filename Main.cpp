@@ -35,6 +35,7 @@ void onResize(int n_x, int n_y, int n_new_width, int n_new_height);
 LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_param);
 void drawPingPong();
 void drawDrop(bool, float, float);
+//void clearTextureRGBA(GLuint tex, float r, float g, float b, float a)
 // prototypy funkci
 
 GLuint fbo;
@@ -61,6 +62,15 @@ std::vector<POINTS> pointsQueue;
  *	@param[in] off je offset v bytech, na ktery ma vraceny pointer ukazovat
  */
 #define p_OffsetInVBO(off) ((void*)(off))
+
+void clearTextureRGBA(GLuint tex, float r, float g, float b, float a){
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[0], 0);
+	glViewport(0, 0, datawidth, dataheight);
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClear ( GL_COLOR_BUFFER_BIT);
+	glBindTexture(GL_TEXTURE_2D, n_texture[0]);
+}
 
 void drawDrop(bool clear, float x, float y){
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);

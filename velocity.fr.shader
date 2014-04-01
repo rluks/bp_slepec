@@ -55,15 +55,13 @@ void main()
 		float hx = 0.0;
 		float hy = 0.0;
 
-		float y = texture(n_tex, v_texcoord.xy).g;
-		float x = texture(n_tex, v_texcoord.xy).b;
-		float edge = 0.5 - max(abs(x - 0.5), abs(y - 0.5));
-		float k = step(edge, 0.05);
-		//float k = step(0.05, edge);
-		c += 44.0 * k;
+		float val = 0.5 - max(abs(v_texcoord.x - 0.5), abs(v_texcoord.y - 0.5));
+		float k = 1.0 - smoothstep(.05, .1, val);
+		float c1 = c + 15.0 * k;
+		//float c1 = c - 15.0 * k;
 
-		hx += (delta_t/delta_x) * (c*delta_t*dudxx - g*dhdx);
-		hy += (delta_t/delta_y) * (c*delta_t*dvdyy - g*dhdy);
+		hx += (delta_t/delta_x) * (c1*delta_t*dudxx - g*dhdx);
+		hy += (delta_t/delta_y) * (c1*delta_t*dvdyy - g*dhdy);
 
 		float next_u = texture(n_tex, v_texcoord.xy).b;
 		float next_v = texture(n_tex, v_texcoord.xy).g;
