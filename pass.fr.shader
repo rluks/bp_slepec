@@ -11,8 +11,10 @@ void main()
 	float height = 30* texture(n_tex, v_texcoord).r;
 	frag_color = vec4(height, -height, 0.0, 1.0);
 
-	if(height == 0.0)
-		frag_color = vec4(0.5, 0.5, 0.5, 1.0);
+	frag_color = 50 * texture(n_tex, v_texcoord).r * vec4(0.4, 1.0, 0.8, 1.0);
+
+	/*if(height == 0.0)
+		frag_color = vec4(0.5, 0.5, 0.5, 1.0);*/
 	
 	/*
 	if(height >= 0.0 && height < 0.1)

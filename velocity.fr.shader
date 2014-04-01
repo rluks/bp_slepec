@@ -15,7 +15,7 @@ const float delta_y = 30.0/600.0;
 
 
 const float g = 1.0;
-const float c = 30.0;//dissipation const.
+float c = 2.0;//dissipation const.
 
 void main()
 {
@@ -54,6 +54,13 @@ void main()
 
 		float hx = 0.0;
 		float hy = 0.0;
+
+		float y = texture(n_tex, v_texcoord.xy).g;
+		float x = texture(n_tex, v_texcoord.xy).b;
+		float edge = 0.5 - max(abs(x - 0.5), abs(y - 0.5));
+		float k = step(edge, 0.05);
+		//float k = step(0.05, edge);
+		c += 44.0 * k;
 
 		hx += (delta_t/delta_x) * (c*delta_t*dudxx - g*dhdx);
 		hy += (delta_t/delta_y) * (c*delta_t*dvdyy - g*dhdy);
