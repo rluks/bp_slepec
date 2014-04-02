@@ -12,12 +12,16 @@
 #include <cstdlib>
 #include <ctime>
 
+#include <glm/vec2.hpp> 
+
 #include "OpenGL30Drv.h"
 #include "Transform.h"
 #include "Tga.h"
 #include "Shader.h"
 #include "Texture.h"
 #include "Common.h"
+
+
 
 static const char *p_s_window_name = "OpenGL 3 window";
 static const char *p_s_class_name = "my_wndclass";
@@ -47,13 +51,14 @@ static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_obje
 static GLuint n_texture[2];//r-height,g-y velocity,b-x velocity
 static GLuint depthmap;
 
-
 //shadery
 ShaderBlur blur;
 ShaderPass pass;
 ShaderVelocity velocity;
 ShaderHeight height;
 ShaderPoint point;
+
+glm::vec2 movement;
 
 std::vector<POINTS> pointsQueue;
 
@@ -177,22 +182,23 @@ bool InitGLObjects()
 	pass.compile();
 	velocity.compile();
 	height.compile();
-
 	point.compile();
-
+	
 	/*
 	TBmp *p_box;
-	if(!(p_box = CTgaCodec::p_Load_TGA("box.tga"))) {
-		fprintf(stderr, "error: failed to load \'box.tga\'\n");
-		return false;
-	}
+	if(!(p_box = CTgaCodec::p_Load_TGA("level0.bmp"))) {
+		fprintf(stderr, "error: failed to load \'level0.tga\'\n");
+		//return false;
+	}*/
 	// nahraje obrazky
-	*/
-
+	
 	//textury
 	n_texture[1] = n_GLTextureRGBFloat();
 	n_texture[0] = n_GLTextureRGBFloatFromData();
-	depthmap = n_GLTextureRFloatDepthTest();
+	//depthmap = n_GLTextureRFloatDepthTest();
+	//depthmap = LoadTexture("level0.bmp", depthmap);
+	depthmap = loadBMP_custom("level0.bmp");
+	//depthmap = n_GLTextureFromBitmap(p_box, GL_RGBA8);
 
 	//FBO
 	glGenFramebuffers(1, &fbo);
@@ -407,8 +413,27 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 	case WM_KEYDOWN:
 		if(n_w_param == VK_ESCAPE)
 			SendMessage(h_wnd, WM_CLOSE, 0, 0);
-		if(n_w_param == VK_SPACE)
-			std::cout << "space" << std::endl;
+
+		//smery pohybu TODO klavesy zaroven?
+		if(n_w_param == VK_RIGHT){
+			movement.x = 1.0;
+			movement.y = 0.0;
+		}
+		if(n_w_param == VK_LEFT){
+			movement.x = -1.0;
+			movement.y = 0.0;
+		}
+		if(n_w_param == VK_UP){
+			movement.x = 0.0;
+			movement.y = 1.0;
+		}
+		if(n_w_param == VK_DOWN){
+			movement.x = 0.0;
+			movement.y = -1.0;
+		}
+
+		std::cout << "smer pohybu: x: " << movement.x << " | y: "  << movement.y << std::endl;
+
 		return 0;
 	}
 
