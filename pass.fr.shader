@@ -14,7 +14,7 @@ void main()
 	float height = 50 * texture(n_tex, v_texcoord).r;
 	height = abs(smoothstep(.01, 1.0, height));
 	frag_color = height * vec4(0.4, 1.0, 0.8, 1.0);
-	frag_color.r = height;
+	//frag_color.r = height;
 	
 
 
@@ -37,7 +37,7 @@ void main()
 
 	float depth = texture(depthmap, v_texcoord.xy).r;
 	//if(depth <= 0.0)
-		frag_color.g = depth;
+		//frag_color.g = depth;
 
 	
 	

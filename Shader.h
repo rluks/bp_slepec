@@ -6,6 +6,8 @@
 #include <iostream>
 #include "Transform.h"
 
+#include <glm/vec2.hpp> 
+
 
 //pomocne funkce
 std::string getTextFileString(std::string);
@@ -39,6 +41,17 @@ public:
 	n_depthmap_sampler_uniform_pass;
 	bool compile();
 	void bind(Matrix4f);
+};
+
+struct ShaderHero : public Shader {
+public:
+	GLuint n_vertex_shader_hero, n_fragment_shader_hero, n_program_object_hero;
+	GLuint n_mvp_matrix_uniform_hero, 
+	n_texture_sampler_uniform_hero,
+	n_depthmap_sampler_uniform_hero,
+	movement_vector;
+	bool compile();
+	void bind(Matrix4f, glm::vec2);
 };
 
 struct ShaderVelocity : public Shader {

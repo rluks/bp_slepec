@@ -180,6 +180,34 @@ void ShaderPass::bind(Matrix4f t_mvp){
 	}
 }
 
+//hero
+bool ShaderHero::compile(){
+	vertexpath  = "hero.vx.shader";
+	fragmentpath = "hero.fr.shader";
+	if(!Shader::compile(&n_vertex_shader_hero, &n_fragment_shader_hero, &n_program_object_hero))
+		return false;
+
+	n_mvp_matrix_uniform_hero = glGetUniformLocation(n_program_object_hero, "t_modelview_projection_matrix");
+	n_texture_sampler_uniform_hero = glGetUniformLocation(n_program_object_hero, "n_tex");
+	n_depthmap_sampler_uniform_hero = glGetUniformLocation(n_program_object_hero, "depthmap");
+	movement_vector = glGetUniformLocation(n_program_object_hero, "movement");
+
+
+
+	return true;
+}
+
+void ShaderHero::bind(Matrix4f t_mvp, glm::vec2 movement){
+	glUseProgram(n_program_object_hero);
+	{
+		glUniformMatrix4fv(n_mvp_matrix_uniform_hero, 1, GL_FALSE, &t_mvp[0][0]);
+		glUniform1i(n_texture_sampler_uniform_hero, 0);
+		glUniform1i(n_depthmap_sampler_uniform_hero, 1);
+		glUniform2f(movement_vector, movement.x, movement.y);
+
+	}
+}
+
 //velocity
 bool ShaderVelocity::compile(){
 	vertexpath  = "velocity.vx.shader";

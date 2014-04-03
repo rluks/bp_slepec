@@ -50,6 +50,7 @@ static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_obje
 //textury
 static GLuint n_texture[2];//r-height,g-y velocity,b-x velocity
 static GLuint depthmap;
+static GLuint hero_tex;
 
 //shadery
 ShaderBlur blur;
@@ -57,8 +58,11 @@ ShaderPass pass;
 ShaderVelocity velocity;
 ShaderHeight height;
 ShaderPoint point;
+ShaderHero hero;
 
-glm::vec2 movement;
+glm::vec2 movement;//posun po obrazovce
+glm::vec2 movementShift;//pozadovany posun
+
 
 std::vector<POINTS> pointsQueue;
 
@@ -183,13 +187,14 @@ bool InitGLObjects()
 	velocity.compile();
 	height.compile();
 	point.compile();
+	hero.compile();
 	
-	/*
+	
 	TBmp *p_box;
-	if(!(p_box = CTgaCodec::p_Load_TGA("level0.bmp"))) {
-		fprintf(stderr, "error: failed to load \'level0.tga\'\n");
+	if(!(p_box = CTgaCodec::p_Load_TGA("player1.tga"))) {
+		fprintf(stderr, "error: failed to load \'.tga file\'\n");
 		//return false;
-	}*/
+	}
 	// nahraje obrazky
 	
 	//textury
@@ -197,9 +202,9 @@ bool InitGLObjects()
 	n_texture[0] = n_GLTextureRGBFloatFromData();
 	//depthmap = n_GLTextureRFloatDepthTest();
 	//depthmap = loadBMP_custom("level0.bmp");
-	depthmap = loadBMP_custom("level1.bmp");
+	depthmap = loadBMP_custom("level2.bmp");
 
-	//depthmap = n_GLTextureFromBitmap(p_box, GL_RGBA8);
+	hero_tex = n_GLTextureFromBitmap(p_box, GL_RGBA8);
 
 	//FBO
 	glGenFramebuffers(1, &fbo);
@@ -232,9 +237,7 @@ bool InitGLObjects()
 	//pridani kapky s true cistenim hladiny
 	drawDrop(true, 0.5, 0.5);
 
-
-
-	//p_box->Delete();
+	p_box->Delete();
 	// uvolni pamet
 	return true;
 }
@@ -417,23 +420,23 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 
 		//smery pohybu TODO klavesy zaroven?
 		if(n_w_param == VK_RIGHT){
-			movement.x = 1.0;
-			movement.y = 0.0;
+			movementShift.x = 1.0;
+			movementShift.y = 0.0;
 		}
 		if(n_w_param == VK_LEFT){
-			movement.x = -1.0;
-			movement.y = 0.0;
+			movementShift.x = -1.0;
+			movementShift.y = 0.0;
 		}
 		if(n_w_param == VK_UP){
-			movement.x = 0.0;
-			movement.y = 1.0;
+			movementShift.x = 0.0;
+			movementShift.y = 1.0;
 		}
 		if(n_w_param == VK_DOWN){
-			movement.x = 0.0;
-			movement.y = -1.0;
+			movementShift.x = 0.0;
+			movementShift.y = -1.0;
 		}
 
-		std::cout << "smer pohybu: x: " << movement.x << " | y: "  << movement.y << std::endl;
+		std::cout << "smer pohybu: x: " << movementShift.x << " | y: "  << movementShift.y << std::endl;
 
 		return 0;
 	}
@@ -483,7 +486,7 @@ void OnIdle(CGL30Driver &driver)
 {
 	glClearColor(0, 0, 0, 0); //barva pozadi
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);//vypnuto protoze kreslime podle poradi ne podle hloubek - vsechno na stejne Z
 	// vycistime framebuffer
 
 	glBindTexture(GL_TEXTURE_2D, 0);//nechci omylem vykreslovat posledni bind. texturu
@@ -532,7 +535,52 @@ void OnIdle(CGL30Driver &driver)
 		drawDrop(false, x, y);
 	}
 
-	driver.Blit(); // preklopi buffery, zobrazi co jsme nakreslili
+	{//drawHero();
 
-	//system("PAUSE");
+		const float p_hero_vertices[] = {
+		0, 1, -1, 0, 1, /**/1, 1, 0, 0, 1,/**/ 1, 0, 0, 1, 1,/**/ 0, 0, -1, 1, 1};
+		// vrcholy krychle, vzdy 2 souradnice textury, pak 3 souradnice vrcholu; vrcholy jsou usporadane poporade po ctvericich, tvoricich polygony jednotlivych sten
+
+		const unsigned int p_hero_indices[] = {	
+			0, 1, 2, 0, 3, 2};
+		
+		GLuint heroVBO, heroVAO, heroIBO;
+		glGenBuffers(1, &heroVBO);
+		glBindBuffer(GL_ARRAY_BUFFER, heroVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(p_hero_vertices), p_hero_vertices, GL_STATIC_DRAW);
+
+		glGenBuffers(1, &heroIBO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, heroIBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(p_hero_indices), p_hero_indices, GL_STATIC_DRAW);
+
+		glGenVertexArrays(1, &heroVAO);
+		glBindVertexArray(heroVAO);
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, heroVBO);
+			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), p_OffsetInVBO(0));
+			glEnableVertexAttribArray(1);
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), p_OffsetInVBO(2 * sizeof(float)));
+
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, heroIBO);
+		}
+		glBindVertexArray(0);
+
+
+		glBindTexture(GL_TEXTURE_2D, hero_tex);
+
+		movement.x = 0.0;
+		movement.y = 0.0;
+		hero.bind(t_mvp, movement);
+
+		glBindVertexArray(heroVAO);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, p_OffsetInVBO(0));
+		glDisable(GL_BLEND);
+		glBindVertexArray(0);
+		//glBindTexture(GL_TEXTURE_2D, n_texture[n_source_tex]);
+	}
+
+	driver.Blit(); // preklopi buffery, zobrazi co jsme nakreslili
 }

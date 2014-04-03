@@ -115,6 +115,8 @@
     <None Include="blur.vx.shader" />
     <None Include="height.fr.shader" />
     <None Include="height.vx.shader" />
+    <None Include="hero.fr.shader" />
+    <None Include="hero.vx.shader" />
     <None Include="pass.fr.shader" />
     <None Include="pass.vx.shader" />
     <None Include="point.fr.shader" />

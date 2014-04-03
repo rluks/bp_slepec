@@ -91,5 +91,11 @@
     <None Include="point.vx.shader">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="hero.fr.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="hero.vx.shader">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
