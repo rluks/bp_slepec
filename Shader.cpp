@@ -165,6 +165,8 @@ bool ShaderPass::compile(){
 
 	n_mvp_matrix_uniform_pass = glGetUniformLocation(n_program_object_pass, "t_modelview_projection_matrix");
 	n_texture_sampler_uniform_pass = glGetUniformLocation(n_program_object_pass, "n_tex");
+	n_depthmap_sampler_uniform_pass = glGetUniformLocation(n_program_object_pass, "depthmap");
+
 
 	return true;
 }
@@ -174,6 +176,7 @@ void ShaderPass::bind(Matrix4f t_mvp){
 	{
 		glUniformMatrix4fv(n_mvp_matrix_uniform_pass, 1, GL_FALSE, &t_mvp[0][0]);
 		glUniform1i(n_texture_sampler_uniform_pass, 0);
+		glUniform1i(n_depthmap_sampler_uniform_pass, 1);
 	}
 }
 
