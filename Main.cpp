@@ -196,8 +196,9 @@ bool InitGLObjects()
 	n_texture[1] = n_GLTextureRGBFloat();
 	n_texture[0] = n_GLTextureRGBFloatFromData();
 	//depthmap = n_GLTextureRFloatDepthTest();
-	//depthmap = LoadTexture("level0.bmp", depthmap);
-	depthmap = loadBMP_custom("level0.bmp");
+	//depthmap = loadBMP_custom("level0.bmp");
+	depthmap = loadBMP_custom("level1.bmp");
+
 	//depthmap = n_GLTextureFromBitmap(p_box, GL_RGBA8);
 
 	//FBO
