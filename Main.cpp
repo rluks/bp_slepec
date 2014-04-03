@@ -39,6 +39,7 @@ void onResize(int n_x, int n_y, int n_new_width, int n_new_height);
 LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_param);
 void drawPingPong();
 void drawDrop(bool, float, float);
+void drawHero(glm::vec2);
 //void clearTextureRGBA(GLuint tex, float r, float g, float b, float a)
 // prototypy funkci
 
@@ -60,6 +61,8 @@ ShaderHeight height;
 ShaderPoint point;
 ShaderHero hero;
 
+static float frame_time;
+Keys k = {false, false, false, false};
 glm::vec2 movement;//posun po obrazovce
 glm::vec2 movementShift;//pozadovany posun
 
@@ -394,6 +397,10 @@ int main(int n_arg_num, const char **p_arg_list)
 	}
 	// vyrobime objekty OpenGL, nutne ke kresleni
 
+	float start_time = clock() / 1000.0f; // cas pro animaci
+	float end_time;
+	frame_time = 0.015;
+
 	MSG t_msg;
 	while(b_running) {
 		if(PeekMessage(&t_msg, h_wnd, 0, 0, PM_REMOVE)) {
@@ -406,6 +413,11 @@ int main(int n_arg_num, const char **p_arg_list)
 				fprintf(stderr, "error: OpenGL error(s) occured\n");
 #endif //_DEBUG
 		}
+
+		end_time = clock() / 1000.0f; // cas pro animaci
+		frame_time = end_time - start_time;
+		//std::cout << "delta t: " << frame_time << std::endl;//0.015 tj cca 1/60
+		start_time = end_time;
 	}
 	// smycka zprav, s funkci OnIdle()
 
@@ -442,45 +454,50 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 		return 0;
 
 	case WM_LBUTTONDOWN:
-		{/*
-		//std::cout << "click mouse" << std::endl;
-		// Capture mouse input. 
-		RECT t_wnd_area;
-		GetClientRect(h_wnd, &t_wnd_area);
-		int n_ww = t_wnd_area.right - t_wnd_area.left;
-		int n_wh = t_wnd_area.bottom - t_wnd_area.top;
-		std::cout << "ww:" << n_ww << " | wh:" << n_wh << std::endl;//800 600
-		*/
+		{
 		POINTS pts = MAKEPOINTS(n_l_param);
-		std::cout << "x:" << pts.x << " | y:" << pts.y << std::endl;//0,0				800,0
+		//std::cout << "x:" << pts.x << " | y:" << pts.y << std::endl;//0,0				800,0
 																	//0,600				800,600
 		pointsQueue.push_back(pts);
 		break;
 		}
 
+	case WM_KEYUP:
+
+		//smery pohybu
+		if(n_w_param == VK_RIGHT)
+			k.right = false;
+		
+		if(n_w_param == VK_LEFT)
+			k.left = false;
+
+		if(n_w_param == VK_UP)
+			k.up = false;
+		
+		if(n_w_param == VK_DOWN)
+			k.down = false;
+
+		break;
+
+
 	case WM_KEYDOWN:
 		if(n_w_param == VK_ESCAPE)
 			SendMessage(h_wnd, WM_CLOSE, 0, 0);
 
-		//smery pohybu TODO klavesy zaroven?
-		if(n_w_param == VK_RIGHT){
-			movementShift.x = 1.0;
-			movementShift.y = 0.0;
-		}
-		if(n_w_param == VK_LEFT){
-			movementShift.x = -1.0;
-			movementShift.y = 0.0;
-		}
-		if(n_w_param == VK_UP){
-			movementShift.x = 0.0;
-			movementShift.y = 1.0;
-		}
-		if(n_w_param == VK_DOWN){
-			movementShift.x = 0.0;
-			movementShift.y = -1.0;
-		}
+		//smery pohybu
+		if(n_w_param == VK_RIGHT)
+			k.right = true;
+		
+		if(n_w_param == VK_LEFT)
+			k.left = true;
+		
+		if(n_w_param == VK_UP)
+			k.up = true;
 
-		std::cout << "smer pohybu: x: " << movementShift.x << " | y: "  << movementShift.y << std::endl;
+		if(n_w_param == VK_DOWN)
+			k.down = true;
+
+		break;
 
 		return 0;
 	}
@@ -502,6 +519,25 @@ void onResize(int n_x, int n_y, int n_new_width, int n_new_height)
 	glViewport(n_x, n_y, n_new_width, n_new_height);
 }
 
+void calculateTimeBasedMovement(float frame_time)
+{
+	if(k.up)
+		movementShift.y = 1.0;
+	if(k.down)
+		movementShift.y = -1.0;
+	if(k.right)
+		movementShift.x = 1.0;
+	if(k.left)
+		movementShift.x = -1.0;
+
+	if(k.up && k.down)
+		movementShift.y = 0.0;
+	if(k.left && k.right)
+		movementShift.x = 0.0;
+
+	movement.x += frame_time * 0.5 * movementShift.x;
+	movement.y += frame_time * 0.5 * movementShift.y;
+}
 
 void drawPingPong(){
 
@@ -534,8 +570,6 @@ void OnIdle(CGL30Driver &driver)
 	// vycistime framebuffer
 
 	glBindTexture(GL_TEXTURE_2D, 0);//nechci omylem vykreslovat posledni bind. texturu
-
-	float f_time = clock() / 1000.0f; // cas pro animaci
 
 	for(int i = 0; i < 3; i++){	
 		glActiveTexture(GL_TEXTURE1);
@@ -575,15 +609,15 @@ void OnIdle(CGL30Driver &driver)
 		pointsQueue.pop_back();
 		float x = (float)p.x/datawidth * 2.0 - 1.0;
 		float y = 1.0 - (float)p.y/dataheight * 2.0;
-		std::cout << "kapka na souradnicich - x: " << x << " |y: " << y << std::endl;
+		//std::cout << "kapka na souradnicich - x: " << x << " |y: " << y << std::endl;
 		drawDrop(false, x, y);
 	}
-	
-	movement.x += movementShift.x/100.0;
-	movement.y += movementShift.y/100.0;
-	//std::cout << "drawHero - movement: " << movement.x << " | " << movement.y << std::endl;
+
+	//std::cout << "keys: up: " << k.up << " down: " << k.down << " left: " << k.left  << " right: " << k.right << std::endl;
+	calculateTimeBasedMovement(frame_time);
 
 	drawHero(movement);
+	
 	movementShift.x = 0.0;
 	movementShift.y = 0.0;
 
