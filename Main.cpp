@@ -120,10 +120,10 @@ void drawDrop(bool clear, float x, float y){
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
-void drawHero(){
+void drawHero(glm::vec2 movement){
 
 	const float p_hero_vertices[] = {
-	0, 1, -1, 0, 1, /**/1, 1, 0, 0, 1,/**/ 1, 0, 0, 1, 1,/**/ 0, 0, -1, 1, 1};
+	0, 1, -1, 11.0/12.0, 1, /**/1, 1, -15.0/16.0, 11.0/12.0, 1,/**/ 1, 0, -15.0/16.0, 1, 1,/**/ 0, 0, -1, 1, 1};
 	// vrcholy krychle, vzdy 2 souradnice textury, pak 3 souradnice vrcholu; vrcholy jsou usporadane poporade po ctvericich, tvoricich polygony jednotlivych sten
 
 	const unsigned int p_hero_indices[] = {	
@@ -154,8 +154,6 @@ void drawHero(){
 
 	glBindTexture(GL_TEXTURE_2D, hero_tex);
 
-	movement.x = 0.0;
-	movement.y = 0.0;
 	hero.bind(movement);
 
 	glBindVertexArray(heroVAO);
@@ -165,6 +163,7 @@ void drawHero(){
 	glDisable(GL_BLEND);
 	glBindVertexArray(0);
 }
+
 /**
  *	@brief vytvori vsechny OpenGL objekty, potrebne pro kresleni
  *	@return vraci true pri uspechu, false pri neuspechu
@@ -579,8 +578,14 @@ void OnIdle(CGL30Driver &driver)
 		std::cout << "kapka na souradnicich - x: " << x << " |y: " << y << std::endl;
 		drawDrop(false, x, y);
 	}
+	
+	movement.x += movementShift.x/100.0;
+	movement.y += movementShift.y/100.0;
+	//std::cout << "drawHero - movement: " << movement.x << " | " << movement.y << std::endl;
 
-	drawHero();
+	drawHero(movement);
+	movementShift.x = 0.0;
+	movementShift.y = 0.0;
 
 	driver.Blit(); // preklopi buffery, zobrazi co jsme nakreslili
 }
