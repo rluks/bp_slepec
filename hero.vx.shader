@@ -2,7 +2,6 @@
 in vec2 v_tex;
 in vec3 v_pos; // atributy - vstup z dat vrcholu
 
-uniform mat4 t_modelview_projection_matrix; // parametr shaderu - transformacni matice
 uniform vec2 movement;
 
 out vec2 v_texcoord;
