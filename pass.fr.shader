@@ -37,7 +37,7 @@ void main()
 
 	float depth = texture(depthmap, v_texcoord.xy).r;
 	//if(depth <= 0.0)
-		frag_color.g = 1-depth;
+		//frag_color.g = 1-depth;
 
 	
 	

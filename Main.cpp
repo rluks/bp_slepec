@@ -123,7 +123,7 @@ void drawDrop(bool clear, float x, float y){
 void drawHero(glm::vec2 movement){
 
 	const float p_hero_vertices[] = {
-	0, 1, -1, 11.0/12.0, 1, /**/1, 1, -15.0/16.0, 11.0/12.0, 1,/**/ 1, 0, -15.0/16.0, 1, 1,/**/ 0, 0, -1, 1, 1};
+	0, 1, -1, 9.0/12.0, 1, /**/1, 1, -13.0/16.0, 9.0/12.0, 1,/**/ 1, 0, -13.0/16.0, 1, 1,/**/ 0, 0, -1, 1, 1};
 	// vrcholy krychle, vzdy 2 souradnice textury, pak 3 souradnice vrcholu; vrcholy jsou usporadane poporade po ctvericich, tvoricich polygony jednotlivych sten
 
 	const unsigned int p_hero_indices[] = {	
