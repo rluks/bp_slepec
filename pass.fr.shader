@@ -11,8 +11,8 @@ float c = 2.0;//dissipation const.
 
 void main()
 {
-	float height = 50 * texture(n_tex, v_texcoord).r;
-	height = abs(smoothstep(.01, 1.0, height));
+	float height = abs(50 * texture(n_tex, v_texcoord).r);
+	height = smoothstep(.01, 1.0, height);
 	frag_color = height * vec4(0.4, 1.0, 0.8, 1.0);
 	//frag_color.r = height;
 	
