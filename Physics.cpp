@@ -1,8 +1,5 @@
 #include "Physics.h"
 
-#include "Shader.h"
-#include "Texture.h"
-
 
 void BoxDebug::generate(/*std::vector<Box> &boxes, */BMPFile * bmpfile){
 
@@ -39,26 +36,29 @@ void BoxDebug::generate(/*std::vector<Box> &boxes, */BMPFile * bmpfile){
 
 	boxes.push_back(a);
 	boxes.push_back(b);
+
+
+	//pripravit shader
+	boxesShader.compile();
 	
 }
 
 void BoxDebug::draw(){
 	Box a = boxes.at(1);
-	const float p_hero_vertices[] = {
+	const float p_box_vertices[] = {
 		0, 0, a.vMin.x, a.vMin.y, 1, /**/1, 0, a.vMax.x , a.vMin.y, 1,/**/ 1, 1, a.vMax.x, a.vMax.y, 1,/**/ 0, 1, a.vMin.x, a.vMax.y, 1};
 	// vrcholy krychle, vzdy 2 souradnice textury, pak 3 souradnice vrcholu; vrcholy jsou usporadane poporade po ctvericich, tvoricich polygony jednotlivych sten
 
-	const unsigned int p_hero_indices[] = {	
-		0, 1, 2, 0, 3, 2};
+	const unsigned int p_box_indices[] = {	
+		0, 1, 1, 2, 2, 3, 3, 0, 0, 2, 1, 3};
 		
-	//GLuint heroVBO, heroVAO, heroIBO;
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(p_hero_vertices), p_hero_vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(p_box_vertices), p_box_vertices, GL_STATIC_DRAW);
 
 	glGenBuffers(1, &IBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(p_hero_indices), p_hero_indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(p_box_indices), p_box_indices, GL_STATIC_DRAW);
 
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
@@ -73,16 +73,9 @@ void BoxDebug::draw(){
 	}
 	glBindVertexArray(0);
 
-
-	//glBindTexture(GL_TEXTURE_2D, hero_tex);
-	ShaderBoxes boxesShader;
-	boxesShader.compile();
 	boxesShader.bind();
 
 	glBindVertexArray(VAO);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, p_OffsetInVBO(0));
-	glDisable(GL_BLEND);
+	glDrawElements(GL_LINES, 12, GL_UNSIGNED_INT, p_OffsetInVBO(0));
 	glBindVertexArray(0);
 }

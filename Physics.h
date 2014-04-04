@@ -7,6 +7,7 @@
 
 #include "Common.h"
 #include "Texture.h"
+#include "Shader.h"
 
 struct Box {
 public:
@@ -17,6 +18,7 @@ struct BoxDebug {
 public:
 	GLuint VBO, VAO, IBO;
 	std::vector<Box> boxes;
+	ShaderBoxes boxesShader;
 
 	void generate(/*std::vector<Box> &boxes, */BMPFile * bmpfile);
 	void draw();

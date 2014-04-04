@@ -1,6 +1,9 @@
 //potlacuje warning C4996: 'fopen' was declared deprecated:
 #define _CRT_SECURE_NO_DEPRECATE
 
+#ifndef Shader_H
+#define Shader_H
+
 #include <GL/glew.h>
 #include <string>
 #include <iostream>
@@ -82,3 +85,5 @@ public:
 	bool compile();
 	void bind();
 };
+
+#endif
