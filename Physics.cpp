@@ -45,24 +45,15 @@ void BoxDebug::generate(/*std::vector<Box> &boxes, */BMPFile * bmpfile){
 
 void BoxDebug::draw(){
 
-	//float* p_box_vertices = new float[12 * boxes.size()];
 	std::vector<float> p_box_vertices;
+	std::vector<int> p_box_indices;
 	for(int i = 0; i < boxes.size(); i++){
 		Box a = boxes.at(i);
 		float a_vertices[] = {a.vMin.x, a.vMin.y, 1, /**/a.vMax.x , a.vMin.y, 1,/**/a.vMax.x, a.vMax.y, 1,/**/a.vMin.x, a.vMax.y, 1};
+		float a_indices[] = {0+i*4, 1+i*4, 1+i*4, 2+i*4, 2+i*4, 3+i*4, 3+i*4, 0+i*4, 0+i*4, 2+i*4, 1+i*4, 3+i*4};
 		p_box_vertices.insert(p_box_vertices.end(), a_vertices, a_vertices+12);
+		p_box_indices.insert(p_box_indices.end(), a_indices, a_indices+12);
 	}
-	
-	//Box a = boxes.at(0);
-	//Box b = boxes.at(1);
-
-	//float p_box_vertices[] = {
-	//	a.vMin.x, a.vMin.y, 1, /**/a.vMax.x , a.vMin.y, 1,/**/a.vMax.x, a.vMax.y, 1,/**/a.vMin.x, a.vMax.y, 1,
-	//	b.vMin.x, b.vMin.y, 1, /**/b.vMax.x , b.vMin.y, 1,/**/b.vMax.x, b.vMax.y, 1,/**/b.vMin.x, b.vMax.y, 1};
-
-	unsigned int p_box_indices[] = {	
-		0, 1, 1, 2, 2, 3, 3, 0, 0, 2, 1, 3,
-		4, 5, 5, 6, 6, 7, 7, 4, 4, 6, 5, 7};
 		
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -70,7 +61,7 @@ void BoxDebug::draw(){
 
 	glGenBuffers(1, &IBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(p_box_indices), p_box_indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, p_box_indices.size() * sizeof(int), &p_box_indices[0], GL_STATIC_DRAW);
 
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
