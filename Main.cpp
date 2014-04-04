@@ -300,7 +300,7 @@ bool InitGLObjects()
 	BMPFile bmpfile;
 	loadBMP_customData("level2.bmp", &bmpfile);
 	boxDebug.generate(&bmpfile);
-	delete [] bmpfile.data;
+	delete [] bmpfile.p_buffer;
 
 	hero_tex = n_GLTextureFromBitmap(p_box, GL_RGBA8);
 

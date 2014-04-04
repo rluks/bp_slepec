@@ -176,17 +176,19 @@ int loadBMP_customData(const char * imagepath, BMPFile * bmpfile){
 	if (dataPos==0)      dataPos=54; // The BMP header is done that way
 
 	// Create a buffer
-	bmpfile->data = new unsigned char [imageSize];
+	bmpfile->p_buffer = new unsigned char [imageSize];
+
+	std::cout << "sizeof: " << sizeof(unsigned char) << "|" << sizeof(uint32_t) << std::endl;
 
 	// Read the actual data from the file into the buffer
-	fread(bmpfile->data,1,imageSize,file);
+	fread(bmpfile->p_buffer,sizeof(unsigned char),imageSize,file);
 
 	// Everything is in memory now, the file wan be closed
 	fclose (file);
 
-	bmpfile->height=height;
-	bmpfile->width=width;
-	bmpfile->imageSize=imageSize;
+	bmpfile->n_height=height;
+	bmpfile->n_width=width;
+	//bmpfile->imageSize=imageSize;
 }
 
 GLuint n_GLTextureRFloatFromData()

@@ -29,8 +29,8 @@
 struct BMPFile {
 public:
 	unsigned int imageSize;
-	unsigned int width, height;
-	unsigned char * data;
+	unsigned int n_width, n_height;
+	unsigned char * p_buffer;
 };
 
 //from bmp
