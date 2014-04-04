@@ -125,8 +125,11 @@ void drawDrop(bool clear, float x, float y){
 
 void drawHero(glm::vec2 movement){
 
+	const int heroHeight = 3;
+	const int heroWidth = 2;
+
 	const float p_hero_vertices[] = {
-	0, 1, -1, 9.0/12.0, 1, /**/1, 1, -13.0/16.0, 9.0/12.0, 1,/**/ 1, 0, -13.0/16.0, 1, 1,/**/ 0, 0, -1, 1, 1};
+	0, 0, 0, 0, 1, /**/1, 0, heroWidth, 0, 1,/**/ 1, 1, heroWidth, heroHeight, 1,/**/ 0, 1, 0, heroHeight, 1};
 	// vrcholy krychle, vzdy 2 souradnice textury, pak 3 souradnice vrcholu; vrcholy jsou usporadane poporade po ctvericich, tvoricich polygony jednotlivych sten
 
 	const unsigned int p_hero_indices[] = {	
@@ -397,6 +400,9 @@ int main(int n_arg_num, const char **p_arg_list)
 	}
 	// vyrobime objekty OpenGL, nutne ke kresleni
 
+	//movement.x = 16.0;
+	//movement.y = 12.0;
+
 	DWORD start_time =  GetTickCount(); // cas pro animaci
 	DWORD end_time;
 	frame_time = 15;
@@ -522,9 +528,9 @@ void onResize(int n_x, int n_y, int n_new_width, int n_new_height)
 void calculateTimeBasedMovement(DWORD frame_time)
 {
 	if(k.up)
-		movementShift.y = 1.0;
-	if(k.down)
 		movementShift.y = -1.0;
+	if(k.down)
+		movementShift.y = 1.0;
 	if(k.right)
 		movementShift.x = 1.0;
 	if(k.left)
@@ -535,8 +541,10 @@ void calculateTimeBasedMovement(DWORD frame_time)
 	if(k.left && k.right)
 		movementShift.x = 0.0;
 
-	movement.x += frame_time * 0.5f * movementShift.x * 0.001f;
-	movement.y += frame_time * 0.5f * movementShift.y * 0.001f;
+	movement.x += frame_time * 0.25f * movementShift.x * 0.01;
+	movement.y += frame_time * 0.5f * movementShift.y * 0.01;
+
+	
 }
 
 void drawPingPong(){
@@ -616,6 +624,7 @@ void OnIdle(CGL30Driver &driver)
 	//std::cout << "keys: up: " << k.up << " down: " << k.down << " left: " << k.left  << " right: " << k.right << std::endl;
 	calculateTimeBasedMovement(frame_time);
 
+	std::cout << "movement.x: " << movement.x << " movement.y: " << movement.y << std::endl;
 	drawHero(movement);
 	
 	movementShift.x = 0.0;
