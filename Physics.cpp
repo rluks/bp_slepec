@@ -46,10 +46,10 @@ void BoxDebug::generate(/*std::vector<Box> &boxes, */BMPFile * bmpfile){
 void BoxDebug::draw(){
 	Box a = boxes.at(0);
 	Box b = boxes.at(1);
+
 	float p_box_vertices[] = {
-		0, 0, a.vMin.x, a.vMin.y, 1, /**/1, 0, a.vMax.x , a.vMin.y, 1,/**/ 1, 1, a.vMax.x, a.vMax.y, 1,/**/ 0, 1, a.vMin.x, a.vMax.y, 1,
-	0, 0, b.vMin.x, b.vMin.y, 1, /**/1, 0, b.vMax.x , b.vMin.y, 1,/**/ 1, 1, b.vMax.x, b.vMax.y, 1,/**/ 0, 1, b.vMin.x, b.vMax.y, 1};
-	// vrcholy krychle, vzdy 2 souradnice textury, pak 3 souradnice vrcholu; vrcholy jsou usporadane poporade po ctvericich, tvoricich polygony jednotlivych sten
+		a.vMin.x, a.vMin.y, 1, /**/a.vMax.x , a.vMin.y, 1,/**/a.vMax.x, a.vMax.y, 1,/**/a.vMin.x, a.vMax.y, 1,
+		b.vMin.x, b.vMin.y, 1, /**/b.vMax.x , b.vMin.y, 1,/**/b.vMax.x, b.vMax.y, 1,/**/b.vMin.x, b.vMax.y, 1};
 
 	unsigned int p_box_indices[] = {	
 		0, 1, 1, 2, 2, 3, 3, 0, 0, 2, 1, 3,
@@ -67,11 +67,8 @@ void BoxDebug::draw(){
 	glBindVertexArray(VAO);
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), p_OffsetInVBO(0));
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), p_OffsetInVBO(2 * sizeof(float)));
-
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, p_OffsetInVBO(0));
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
 	}
 	glBindVertexArray(0);
