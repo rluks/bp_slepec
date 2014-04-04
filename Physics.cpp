@@ -3,7 +3,6 @@
 
 void BoxDebug::generate(/*std::vector<Box> &boxes, */BMPFile * bmpfile){
 
-	std::cout << "w: " << bmpfile->width << " h: " << bmpfile->height << " s: " << bmpfile->imageSize << std::endl;
 
 	/*
 	for(int i = 0; i < bmpfile->width*bmpfile->height; i++){
@@ -48,9 +47,11 @@ void BoxDebug::draw(){
 	std::vector<float> p_box_vertices;
 	std::vector<int> p_box_indices;
 	for(int i = 0; i < boxes.size(); i++){
+	for(unsigned int i = 0; i < boxes.size(); i++){
 		Box a = boxes.at(i);
 		float a_vertices[] = {a.vMin.x, a.vMin.y, 1, /**/a.vMax.x , a.vMin.y, 1,/**/a.vMax.x, a.vMax.y, 1,/**/a.vMin.x, a.vMax.y, 1};
 		float a_indices[] = {0+i*4, 1+i*4, 1+i*4, 2+i*4, 2+i*4, 3+i*4, 3+i*4, 0+i*4, 0+i*4, 2+i*4, 1+i*4, 3+i*4};
+		int a_indices[] = {0+i*4, 1+i*4, 1+i*4, 2+i*4, 2+i*4, 3+i*4, 3+i*4, 0+i*4, 0+i*4, 2+i*4, 1+i*4, 3+i*4};
 		p_box_vertices.insert(p_box_vertices.end(), a_vertices, a_vertices+12);
 		p_box_indices.insert(p_box_indices.end(), a_indices, a_indices+12);
 	}
