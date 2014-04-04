@@ -44,37 +44,40 @@ void BoxDebug::generate(/*std::vector<Box> &boxes, */BMPFile * bmpfile){
 
 void BoxDebug::draw(){
 
-	std::vector<float> p_box_vertices;
-	std::vector<int> p_box_indices;
-	for(unsigned int i = 0; i < boxes.size(); i++){
-		Box a = boxes.at(i);
-		float a_vertices[] = {a.vMin.x, a.vMin.y, 1, /**/a.vMax.x , a.vMin.y, 1,/**/a.vMax.x, a.vMax.y, 1,/**/a.vMin.x, a.vMax.y, 1};
-		int a_indices[] = {0+i*4, 1+i*4, 1+i*4, 2+i*4, 2+i*4, 3+i*4, 3+i*4, 0+i*4, 0+i*4, 2+i*4, 1+i*4, 3+i*4};
-		p_box_vertices.insert(p_box_vertices.end(), a_vertices, a_vertices+12);
-		p_box_indices.insert(p_box_indices.end(), a_indices, a_indices+12);
-	}
+	if(boxes.size() > 0){
+
+		std::vector<float> p_box_vertices;
+		std::vector<int> p_box_indices;
+		for(unsigned int i = 0; i < boxes.size(); i++){
+			Box a = boxes.at(i);
+			float a_vertices[] = {a.vMin.x, a.vMin.y, 1, /**/a.vMax.x , a.vMin.y, 1,/**/a.vMax.x, a.vMax.y, 1,/**/a.vMin.x, a.vMax.y, 1};
+			int a_indices[] = {0+i*4, 1+i*4, 1+i*4, 2+i*4, 2+i*4, 3+i*4, 3+i*4, 0+i*4, 0+i*4, 2+i*4, 1+i*4, 3+i*4};
+			p_box_vertices.insert(p_box_vertices.end(), a_vertices, a_vertices+12);
+			p_box_indices.insert(p_box_indices.end(), a_indices, a_indices+12);
+		}
 		
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, p_box_vertices.size() * sizeof(float), &p_box_vertices[0], GL_STATIC_DRAW);
-
-	glGenBuffers(1, &IBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, p_box_indices.size() * sizeof(int), &p_box_indices[0], GL_STATIC_DRAW);
-
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
-	{
+		glGenBuffers(1, &VBO);
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, p_OffsetInVBO(0));
+		glBufferData(GL_ARRAY_BUFFER, p_box_vertices.size() * sizeof(float), &p_box_vertices[0], GL_STATIC_DRAW);
+
+		glGenBuffers(1, &IBO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, p_box_indices.size() * sizeof(int), &p_box_indices[0], GL_STATIC_DRAW);
+
+		glGenVertexArrays(1, &VAO);
+		glBindVertexArray(VAO);
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, VBO);
+			glEnableVertexAttribArray(1);
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, p_OffsetInVBO(0));
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+		}
+		glBindVertexArray(0);
+
+		boxesShader.bind();
+
+		glBindVertexArray(VAO);
+		glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, p_OffsetInVBO(0));
+		glBindVertexArray(0);
 	}
-	glBindVertexArray(0);
-
-	boxesShader.bind();
-
-	glBindVertexArray(VAO);
-	glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, p_OffsetInVBO(0));
-	glBindVertexArray(0);
 }
