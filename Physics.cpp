@@ -44,13 +44,16 @@ void BoxDebug::generate(/*std::vector<Box> &boxes, */BMPFile * bmpfile){
 }
 
 void BoxDebug::draw(){
-	Box a = boxes.at(1);
-	const float p_box_vertices[] = {
-		0, 0, a.vMin.x, a.vMin.y, 1, /**/1, 0, a.vMax.x , a.vMin.y, 1,/**/ 1, 1, a.vMax.x, a.vMax.y, 1,/**/ 0, 1, a.vMin.x, a.vMax.y, 1};
+	Box a = boxes.at(0);
+	Box b = boxes.at(1);
+	float p_box_vertices[] = {
+		0, 0, a.vMin.x, a.vMin.y, 1, /**/1, 0, a.vMax.x , a.vMin.y, 1,/**/ 1, 1, a.vMax.x, a.vMax.y, 1,/**/ 0, 1, a.vMin.x, a.vMax.y, 1,
+	0, 0, b.vMin.x, b.vMin.y, 1, /**/1, 0, b.vMax.x , b.vMin.y, 1,/**/ 1, 1, b.vMax.x, b.vMax.y, 1,/**/ 0, 1, b.vMin.x, b.vMax.y, 1};
 	// vrcholy krychle, vzdy 2 souradnice textury, pak 3 souradnice vrcholu; vrcholy jsou usporadane poporade po ctvericich, tvoricich polygony jednotlivych sten
 
-	const unsigned int p_box_indices[] = {	
-		0, 1, 1, 2, 2, 3, 3, 0, 0, 2, 1, 3};
+	unsigned int p_box_indices[] = {	
+		0, 1, 1, 2, 2, 3, 3, 0, 0, 2, 1, 3,
+		4, 5, 5, 6, 6, 7, 7, 4, 4, 6, 5, 7};
 		
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -76,6 +79,6 @@ void BoxDebug::draw(){
 	boxesShader.bind();
 
 	glBindVertexArray(VAO);
-	glDrawElements(GL_LINES, 12, GL_UNSIGNED_INT, p_OffsetInVBO(0));
+	glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, p_OffsetInVBO(0));
 	glBindVertexArray(0);
 }
