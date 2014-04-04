@@ -77,6 +77,29 @@ GLuint loadBMP_custom(const char * imagepath){
 	// Everything is in memory now, the file wan be closed
 	fclose (file);
 
+	////
+	/*
+	for(int i = 0; i < width*height; i++){
+		unsigned char pixel = data[i];
+		char out = (pixel == 0x00) ? ' ' : '*'; 
+		printf("|%d|", pixel);
+	}*/
+	/*
+	for(int i = 0; i < width; i++){
+		std::string line;
+		for(int j = 0; j < height; j++){
+			unsigned char pixel = data[i + width * j];
+			char out = (pixel == 0xFF) ? ' ' : '*'; 
+			//std::cout << std::hex << pixel << std::endl;
+			//printf("|%d|", pixel);
+			line+=out;
+		}
+		std::cout << "|" << line << "|" << std::endl;
+		line.clear();
+	}
+	std::cout << "size: " <<sizeof(int) << "|" << sizeof(float) << std::endl;*/
+	////
+
 	// Create one OpenGL texture
 	GLuint textureID;
 	glGenTextures(1, &textureID);
@@ -111,6 +134,59 @@ GLuint loadBMP_custom(const char * imagepath){
 
 	// Return the ID of the texture we just created
 	return textureID;
+}
+
+int loadBMP_customData(const char * imagepath, BMPFile * bmpfile){
+
+	// Data read from the header of the BMP file
+	unsigned char header[54];
+	unsigned int dataPos;
+	unsigned int imageSize;
+	unsigned int width, height;
+	// Actual RGB data
+
+	// Open the file
+	FILE * file = fopen(imagepath,"rb");
+	if (!file)							    {printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", imagepath); getchar(); return 0;}
+
+	// Read the header, i.e. the 54 first bytes
+
+	// If less than 54 bytes are read, problem
+	if ( fread(header, 1, 54, file)!=54 ){ 
+		printf("Not a correct BMP file - 54 bytes\n");
+		return 0;//TODO exception
+	}
+	// A BMP files always begins with "BM"
+	if ( header[0]!='B' || header[1]!='M' ){
+		printf("Not a correct BMP file - begins with BM\n");
+		return 0;
+	}
+	// Make sure this is a 24bpp file
+	if ( *(int*)&(header[0x1E])!=0  )         {printf("Not a correct BMP file 24bpp 0\n");    return 0;}
+	if ( *(int*)&(header[0x1C])!=24 )         {printf("Not a correct BMP file 24bpp 24\n");    return 0;}
+
+	// Read the information about the image
+	dataPos    = *(int*)&(header[0x0A]);
+	imageSize  = *(int*)&(header[0x22]);
+	width      = *(int*)&(header[0x12]);
+	height     = *(int*)&(header[0x16]);
+
+	// Some BMP files are misformatted, guess missing information
+	if (imageSize==0)    imageSize=width*height*3; // 3 : one byte for each Red, Green and Blue component
+	if (dataPos==0)      dataPos=54; // The BMP header is done that way
+
+	// Create a buffer
+	bmpfile->data = new unsigned char [imageSize];
+
+	// Read the actual data from the file into the buffer
+	fread(bmpfile->data,1,imageSize,file);
+
+	// Everything is in memory now, the file wan be closed
+	fclose (file);
+
+	bmpfile->height=height;
+	bmpfile->width=width;
+	bmpfile->imageSize=imageSize;
 }
 
 GLuint n_GLTextureRFloatFromData()

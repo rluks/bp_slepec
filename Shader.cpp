@@ -269,3 +269,22 @@ void ShaderPoint::bind(){
 	{
 	}
 }
+
+
+
+//boxes
+bool ShaderBoxes::compile(){
+	vertexpath  = "boxes.vx.shader";
+	fragmentpath = "boxes.fr.shader";
+	if(!Shader::compile(&n_vertex_shader_boxes, &n_fragment_shader_boxes, &n_program_object_boxes))
+		return false;
+
+	return true;
+}
+
+void ShaderBoxes::bind(){
+	glUseProgram(n_program_object_boxes);
+	{
+
+	}
+}

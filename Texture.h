@@ -26,10 +26,18 @@
 
 #include "Common.h"
 
+struct BMPFile {
+public:
+	unsigned int imageSize;
+	unsigned int width, height;
+	unsigned char * data;
+};
+
 //from bmp
 GLuint n_GLTextureFromBitmap(const TBmp *, GLenum n_internal_format);
 
 GLuint loadBMP_custom(const char * imagepath);
+int loadBMP_customData(const char * imagepath, BMPFile * bmpfile);
 
 //red
 GLuint n_GLTextureRFloatFromData();

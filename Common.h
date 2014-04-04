@@ -5,6 +5,11 @@
 #define dataheight 480
 // velikost dat
 
+/**
+ *	@brief vraci "pointer" do VBO
+ *	@param[in] off je offset v bytech, na ktery ma vraceny pointer ukazovat
+ */
+#define p_OffsetInVBO(off) ((void*)(off))
 
 struct Keys {
 public:
@@ -20,5 +25,8 @@ public:
 	static const int height = 3;
 	static const int width = 2;
 };
+
+
+
 
 #endif

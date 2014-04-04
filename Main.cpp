@@ -20,6 +20,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "Common.h"
+#include "Physics.h"
 
 
 
@@ -72,11 +73,10 @@ std::vector<POINTS> pointsQueue;
 //hero
 Hero hero;
 
-/**
- *	@brief vraci "pointer" do VBO
- *	@param[in] off je offset v bytech, na ktery ma vraceny pointer ukazovat
- */
-#define p_OffsetInVBO(off) ((void*)(off))
+//fyika
+BoxDebug boxDebug;
+
+
 
 void clearTextureRGBA(GLuint tex, float r, float g, float b, float a){
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
@@ -295,6 +295,12 @@ bool InitGLObjects()
 	//depthmap = n_GLTextureRFloatDepthTest();
 	//depthmap = loadBMP_custom("level0.bmp");
 	depthmap = loadBMP_custom("level2.bmp");
+
+	//fyzika
+	BMPFile bmpfile;
+	loadBMP_customData("level2.bmp", &bmpfile);
+	boxDebug.generate(&bmpfile);
+	delete [] bmpfile.data;
 
 	hero_tex = n_GLTextureFromBitmap(p_box, GL_RGBA8);
 
@@ -682,6 +688,8 @@ void OnIdle(CGL30Driver &driver)
 	
 	movementShift.x = 0.0;
 	movementShift.y = 0.0;
+
+	boxDebug.draw();
 
 	driver.Blit(); // preklopi buffery, zobrazi co jsme nakreslili
 }
