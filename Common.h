@@ -1,8 +1,8 @@
 #ifndef Common_H
 #define Common_H
 
-#define datawidth 800
-#define dataheight 600
+#define datawidth 640
+#define dataheight 480
 // velikost dat
 
 
@@ -12,6 +12,13 @@ public:
 	bool down;
 	bool left;
 	bool right;
+	bool space;
+};
+
+struct Hero {
+public:
+	static const int height = 3;
+	static const int width = 2;
 };
 
 #endif

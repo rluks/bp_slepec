@@ -9,8 +9,8 @@ uniform vec3 pixel_size; // pixel_size.z = 0
 
 const float delta_t = 0.01;
 
-const float delta_x = 30.0/800.0;//TODO posilat
-const float delta_y = 30.0/600.0;
+const float delta_x = 30.0/640.0;//TODO posilat
+const float delta_y = 30.0/480.0;
 
 
 
@@ -58,7 +58,6 @@ void main()
 		float val = 0.5 - max(abs(v_texcoord.x - 0.5), abs(v_texcoord.y - 0.5));
 		float k = 1.0 - smoothstep(.05, .1, val);
 		float c1 = c + 15.0 * k;
-		//float c1 = c - 15.0 * k;
 
 		hx += (delta_t/delta_x) * (c1*delta_t*dudxx - g*dhdx);
 		hy += (delta_t/delta_y) * (c1*delta_t*dvdyy - g*dhdy);

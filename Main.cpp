@@ -27,8 +27,8 @@ static const char *p_s_window_name = "OpenGL 3 window";
 static const char *p_s_class_name = "my_wndclass";
 // jmeno okna
 
-static int n_width = 800;
-static int n_height = 600;
+static int n_width = 640;
+static int n_height = 480;
 // velikost okna
 
 static bool b_running = true;
@@ -59,7 +59,7 @@ ShaderPass pass;
 ShaderVelocity velocity;
 ShaderHeight height;
 ShaderPoint point;
-ShaderHero hero;
+ShaderHero heroShader;
 
 static DWORD frame_time;
 Keys k = {false, false, false, false};
@@ -68,6 +68,9 @@ glm::vec2 movementShift;//pozadovany posun
 
 
 std::vector<POINTS> pointsQueue;
+
+//hero
+Hero hero;
 
 /**
  *	@brief vraci "pointer" do VBO
@@ -82,6 +85,49 @@ void clearTextureRGBA(GLuint tex, float r, float g, float b, float a){
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear ( GL_COLOR_BUFFER_BIT);
 	glBindTexture(GL_TEXTURE_2D, n_texture[0]);
+}
+
+
+void drawDrop2(bool clear, float x, float y){
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[0], 0);
+	glViewport(0, 0, datawidth, dataheight);
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+	if(clear)
+		glClear ( GL_COLOR_BUFFER_BIT);
+	
+	glBindTexture(GL_TEXTURE_2D, n_texture[0]);
+
+	{//bod
+
+		float s = (2.0f * x)/32.0f - 1.0f;
+		float t = 1.0f - (2.0f * y)/24.0f;
+		float bod[] = {s, t};
+
+		GLuint bodVBO, bodVAO;
+		glGenBuffers(1, &bodVBO);
+		glBindBuffer(GL_ARRAY_BUFFER, bodVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(bod), bod, GL_STATIC_DRAW);
+
+		glGenVertexArrays(1, &bodVAO);
+		glBindVertexArray(bodVAO);
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, bodVBO);
+			glEnableVertexAttribArray(1);//TODO nastavujem rucne na 1, nula compile shader upravit
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, p_OffsetInVBO(0));
+		}
+		glBindVertexArray(0);
+
+		point.bind();
+		glBindVertexArray(bodVAO);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE);//vstup vystup barva
+		glDrawArrays(GL_POINTS, 0, 1);
+		glDisable(GL_BLEND);
+		glBindVertexArray(0);
+	}
+
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
 void drawDrop(bool clear, float x, float y){
@@ -124,12 +170,8 @@ void drawDrop(bool clear, float x, float y){
 }
 
 void drawHero(glm::vec2 movement){
-
-	const int heroHeight = 3;
-	const int heroWidth = 2;
-
 	const float p_hero_vertices[] = {
-	0, 0, 0, 0, 1, /**/1, 0, heroWidth, 0, 1,/**/ 1, 1, heroWidth, heroHeight, 1,/**/ 0, 1, 0, heroHeight, 1};
+	0, 0, 0, 0, 1, /**/1, 0, hero.width, 0, 1,/**/ 1, 1, hero.width, hero.height, 1,/**/ 0, 1, 0, hero.height, 1};
 	// vrcholy krychle, vzdy 2 souradnice textury, pak 3 souradnice vrcholu; vrcholy jsou usporadane poporade po ctvericich, tvoricich polygony jednotlivych sten
 
 	const unsigned int p_hero_indices[] = {	
@@ -160,7 +202,7 @@ void drawHero(glm::vec2 movement){
 
 	glBindTexture(GL_TEXTURE_2D, hero_tex);
 
-	hero.bind(movement);
+	heroShader.bind(movement);
 
 	glBindVertexArray(heroVAO);
 	glEnable(GL_BLEND);
@@ -237,7 +279,7 @@ bool InitGLObjects()
 	velocity.compile();
 	height.compile();
 	point.compile();
-	hero.compile();
+	heroShader.compile();
 	
 	
 	TBmp *p_box;
@@ -462,7 +504,7 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 	case WM_LBUTTONDOWN:
 		{
 		POINTS pts = MAKEPOINTS(n_l_param);
-		//std::cout << "x:" << pts.x << " | y:" << pts.y << std::endl;//0,0				800,0
+		std::cout << "x:" << pts.x << " | y:" << pts.y << std::endl;//0,0				800,0
 																	//0,600				800,600
 		pointsQueue.push_back(pts);
 		break;
@@ -483,6 +525,9 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 		if(n_w_param == VK_DOWN)
 			k.down = false;
 
+		if(n_w_param == VK_SPACE)
+			k.space = false;
+
 		break;
 
 
@@ -502,6 +547,9 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 
 		if(n_w_param == VK_DOWN)
 			k.down = true;
+
+		if(n_w_param == VK_SPACE)
+			k.space = true;
 
 		break;
 
@@ -541,8 +589,8 @@ void calculateTimeBasedMovement(DWORD frame_time)
 	if(k.left && k.right)
 		movementShift.x = 0.0;
 
-	movement.x += frame_time * 0.25f * movementShift.x * 0.01;
-	movement.y += frame_time * 0.5f * movementShift.y * 0.01;
+	movement.x += frame_time * 0.25f * movementShift.x * 0.01f;
+	movement.y += frame_time * 0.5f * movementShift.y * 0.01f;
 
 	
 }
@@ -621,10 +669,15 @@ void OnIdle(CGL30Driver &driver)
 		drawDrop(false, x, y);
 	}
 
+	if(k.space){
+		std::cout << "space" << std::endl;
+		drawDrop2(false, movement.x + hero.width, movement.y + hero.height);
+	}
+
 	//std::cout << "keys: up: " << k.up << " down: " << k.down << " left: " << k.left  << " right: " << k.right << std::endl;
 	calculateTimeBasedMovement(frame_time);
 
-	std::cout << "movement.x: " << movement.x << " movement.y: " << movement.y << std::endl;
+	//std::cout << "movement.x: " << movement.x << " movement.y: " << movement.y << std::endl;
 	drawHero(movement);
 	
 	movementShift.x = 0.0;
