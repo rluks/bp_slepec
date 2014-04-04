@@ -61,7 +61,7 @@ ShaderHeight height;
 ShaderPoint point;
 ShaderHero hero;
 
-static float frame_time;
+static DWORD frame_time;
 Keys k = {false, false, false, false};
 glm::vec2 movement;//posun po obrazovce
 glm::vec2 movementShift;//pozadovany posun
@@ -397,9 +397,9 @@ int main(int n_arg_num, const char **p_arg_list)
 	}
 	// vyrobime objekty OpenGL, nutne ke kresleni
 
-	float start_time = clock() / 1000.0f; // cas pro animaci
-	float end_time;
-	frame_time = 0.015;
+	DWORD start_time =  GetTickCount(); // cas pro animaci
+	DWORD end_time;
+	frame_time = 15;
 
 	MSG t_msg;
 	while(b_running) {
@@ -414,7 +414,7 @@ int main(int n_arg_num, const char **p_arg_list)
 #endif //_DEBUG
 		}
 
-		end_time = clock() / 1000.0f; // cas pro animaci
+		end_time = GetTickCount(); // cas pro animaci
 		frame_time = end_time - start_time;
 		//std::cout << "delta t: " << frame_time << std::endl;//0.015 tj cca 1/60
 		start_time = end_time;
@@ -519,7 +519,7 @@ void onResize(int n_x, int n_y, int n_new_width, int n_new_height)
 	glViewport(n_x, n_y, n_new_width, n_new_height);
 }
 
-void calculateTimeBasedMovement(float frame_time)
+void calculateTimeBasedMovement(DWORD frame_time)
 {
 	if(k.up)
 		movementShift.y = 1.0;
@@ -535,8 +535,8 @@ void calculateTimeBasedMovement(float frame_time)
 	if(k.left && k.right)
 		movementShift.x = 0.0;
 
-	movement.x += frame_time * 0.5 * movementShift.x;
-	movement.y += frame_time * 0.5 * movementShift.y;
+	movement.x += frame_time * 0.5f * movementShift.x * 0.001f;
+	movement.y += frame_time * 0.5f * movementShift.y * 0.001f;
 }
 
 void drawPingPong(){
@@ -607,8 +607,8 @@ void OnIdle(CGL30Driver &driver)
 	while(pointsQueue.size() > 0){
 		POINTS p = pointsQueue.at(0);
 		pointsQueue.pop_back();
-		float x = (float)p.x/datawidth * 2.0 - 1.0;
-		float y = 1.0 - (float)p.y/dataheight * 2.0;
+		float x = (float)p.x/datawidth * 2.0f - 1.0f;
+		float y = 1.0f - (float)p.y/dataheight * 2.0f;
 		//std::cout << "kapka na souradnicich - x: " << x << " |y: " << y << std::endl;
 		drawDrop(false, x, y);
 	}
