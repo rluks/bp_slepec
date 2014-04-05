@@ -14,7 +14,11 @@ public:
 	static const int width = 2;
 
 	ShaderHero heroShader;
+	GLuint heroVBO, heroVAO, heroIBO;
 	GLuint hero_tex;
+	
+	static float p_hero_vertices[];
+	static unsigned int p_hero_indices[];		
 
 	void init();
 	void draw(glm::vec2);

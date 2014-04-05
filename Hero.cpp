@@ -1,5 +1,8 @@
 #include "Hero.h"
 
+float Hero::p_hero_vertices[20] = {0, 0, 0, 0, 1, /**/1, 0, width, 0, 1,/**/ 1, 1, width, height, 1,/**/ 0, 1, 0, height, 1};
+unsigned int Hero::p_hero_indices[6] = {0, 1, 2, 0, 3, 2};		
+
 void Hero::init(){
 
 	heroShader.compile();
@@ -16,17 +19,7 @@ void Hero::init(){
 
 void Hero::draw(glm::vec2 movement){
 
-
 		//if(c) throw "Hero not initialized";
-
-	const float p_hero_vertices[] = {
-	0, 0, 0, 0, 1, /**/1, 0, width, 0, 1,/**/ 1, 1, width, height, 1,/**/ 0, 1, 0, height, 1};
-	// vrcholy krychle, vzdy 2 souradnice textury, pak 3 souradnice vrcholu; vrcholy jsou usporadane poporade po ctvericich, tvoricich polygony jednotlivych sten
-
-	const unsigned int p_hero_indices[] = {	
-		0, 1, 2, 0, 3, 2};
-		
-	GLuint heroVBO, heroVAO, heroIBO;
 	glGenBuffers(1, &heroVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, heroVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(p_hero_vertices), p_hero_vertices, GL_STATIC_DRAW);
