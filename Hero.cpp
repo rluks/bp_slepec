@@ -15,11 +15,8 @@ void Hero::init(){
 
 	hero_tex = n_GLTextureFromBitmap(p_box, GL_RGBA8);
 	p_box->Delete();
-}
 
-void Hero::draw(glm::vec2 movement){
-
-		//if(c) throw "Hero not initialized";
+	//if(c) throw "Hero not initialized";
 	glGenBuffers(1, &heroVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, heroVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(p_hero_vertices), p_hero_vertices, GL_STATIC_DRAW);
@@ -40,7 +37,9 @@ void Hero::draw(glm::vec2 movement){
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, heroIBO);
 	}
 	glBindVertexArray(0);
+}
 
+void Hero::draw(glm::vec2 movement){
 
 	glBindTexture(GL_TEXTURE_2D, hero_tex);
 
