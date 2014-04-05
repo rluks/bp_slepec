@@ -93,6 +93,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Hero.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="OpenGL30Drv.cpp" />
     <ClCompile Include="Physics.cpp" />
@@ -104,6 +105,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h" />
+    <ClInclude Include="Hero.h" />
     <ClInclude Include="OpenGL30Drv.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Shader.h" />

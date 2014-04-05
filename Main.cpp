@@ -21,6 +21,7 @@
 #include "Texture.h"
 #include "Common.h"
 #include "Physics.h"
+#include "Hero.h"
 
 
 
@@ -40,7 +41,6 @@ void onResize(int n_x, int n_y, int n_new_width, int n_new_height);
 LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_param);
 void drawPingPong();
 void drawDrop(bool, float, float);
-void drawHero(glm::vec2);
 //void clearTextureRGBA(GLuint tex, float r, float g, float b, float a)
 // prototypy funkci
 
@@ -52,7 +52,6 @@ static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_obje
 //textury
 static GLuint n_texture[2];//r-height,g-y velocity,b-x velocity
 static GLuint depthmap;
-static GLuint hero_tex;
 
 //shadery
 ShaderBlur blur;
@@ -60,10 +59,9 @@ ShaderPass pass;
 ShaderVelocity velocity;
 ShaderHeight height;
 ShaderPoint point;
-ShaderHero heroShader;
 
 static DWORD frame_time;
-Keys k = {false, false, false, false};
+Keys k = {false, false, false, false, false};
 glm::vec2 movement;//posun po obrazovce
 glm::vec2 movementShift;//pozadovany posun
 
@@ -169,48 +167,7 @@ void drawDrop(bool clear, float x, float y){
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
-void drawHero(glm::vec2 movement){
-	const float p_hero_vertices[] = {
-	0, 0, 0, 0, 1, /**/1, 0, hero.width, 0, 1,/**/ 1, 1, hero.width, hero.height, 1,/**/ 0, 1, 0, hero.height, 1};
-	// vrcholy krychle, vzdy 2 souradnice textury, pak 3 souradnice vrcholu; vrcholy jsou usporadane poporade po ctvericich, tvoricich polygony jednotlivych sten
 
-	const unsigned int p_hero_indices[] = {	
-		0, 1, 2, 0, 3, 2};
-		
-	GLuint heroVBO, heroVAO, heroIBO;
-	glGenBuffers(1, &heroVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, heroVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(p_hero_vertices), p_hero_vertices, GL_STATIC_DRAW);
-
-	glGenBuffers(1, &heroIBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, heroIBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(p_hero_indices), p_hero_indices, GL_STATIC_DRAW);
-
-	glGenVertexArrays(1, &heroVAO);
-	glBindVertexArray(heroVAO);
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, heroVBO);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), p_OffsetInVBO(0));
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), p_OffsetInVBO(2 * sizeof(float)));
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, heroIBO);
-	}
-	glBindVertexArray(0);
-
-
-	glBindTexture(GL_TEXTURE_2D, hero_tex);
-
-	heroShader.bind(movement);
-
-	glBindVertexArray(heroVAO);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, p_OffsetInVBO(0));
-	glDisable(GL_BLEND);
-	glBindVertexArray(0);
-}
 
 /**
  *	@brief vytvori vsechny OpenGL objekty, potrebne pro kresleni
@@ -279,15 +236,10 @@ bool InitGLObjects()
 	velocity.compile();
 	height.compile();
 	point.compile();
-	heroShader.compile();
+
+	hero.init();
 	
-	
-	TBmp *p_box;
-	if(!(p_box = CTgaCodec::p_Load_TGA("player1.tga"))) {
-		fprintf(stderr, "error: failed to load \'.tga file\'\n");
-		//return false;
-	}
-	// nahraje obrazky
+
 	
 	//textury
 	n_texture[1] = n_GLTextureRGBFloat();
@@ -297,12 +249,12 @@ bool InitGLObjects()
 	depthmap = loadBMP_custom("level2.bmp");
 
 	//fyzika
-	BMPFile bmpfile;
+	TBmp bmpfile;
 	loadBMP_customData("level2.bmp", &bmpfile);
-	boxDebug.generate(&bmpfile);
-	delete [] bmpfile.p_buffer;
+	//boxDebug.generate(&bmpfile);
+	//delete [] bmpfile.p_buffer;
 
-	hero_tex = n_GLTextureFromBitmap(p_box, GL_RGBA8);
+	depthmap = n_GLTextureFromBitmap(&bmpfile, GL_RGBA8);
 
 	//FBO
 	glGenFramebuffers(1, &fbo);
@@ -335,7 +287,6 @@ bool InitGLObjects()
 	//pridani kapky s true cistenim hladiny
 	drawDrop(true, 0.5, 0.5);
 
-	p_box->Delete();
 	// uvolni pamet
 	return true;
 }
@@ -684,7 +635,7 @@ void OnIdle(CGL30Driver &driver)
 	calculateTimeBasedMovement(frame_time);
 
 	//std::cout << "movement.x: " << movement.x << " movement.y: " << movement.y << std::endl;
-	drawHero(movement);
+	hero.draw(movement);
 	
 	movementShift.x = 0.0;
 	movementShift.y = 0.0;

@@ -20,13 +20,4 @@ public:
 	bool space;
 };
 
-struct Hero {
-public:
-	static const int height = 3;
-	static const int width = 2;
-};
-
-
-
-
 #endif
