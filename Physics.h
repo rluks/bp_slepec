@@ -20,7 +20,7 @@ public:
 	std::vector<Box> boxes;
 	ShaderBoxes boxesShader;
 
-	void generate(/*std::vector<Box> &boxes, */BMPFile * bmpfile);
+	void generate(TBmp *);
 	void draw();
 };
 

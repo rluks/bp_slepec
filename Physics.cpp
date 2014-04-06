@@ -1,29 +1,29 @@
 #include "Physics.h"
 
 
-void BoxDebug::generate(/*std::vector<Box> &boxes, */BMPFile * bmpfile){
+void BoxDebug::generate(TBmp * bmpfile){
 
 
 	/*
-	for(int i = 0; i < bmpfile->width*bmpfile->height; i++){
-		unsigned char pixel = bmpfile->data[i];
+	for(int i = 0; i < bmpfile->n_width*bmpfile->n_height; i++){
+		unsigned char pixel = bmpfile->p_buffer[i];
 		char out = (pixel == 0xFF) ? ' ' : '*'; 
 		printf("|%d|", pixel);
 	}*/
 
-	/*
-	for(int i = 0; i < bmpfile->width; i++){
+	
+	for(int i = 0; i < bmpfile->n_width; i++){
 		std::string line;
-		for(int j = 0; j < bmpfile->height; j++){
-			unsigned char pixel = bmpfile->data[i + bmpfile->width * j];
-			char out = (pixel == 0xFF) ? ' ' : '*'; 
+		for(int j = 0; j < bmpfile->n_height; j++){
+			unsigned char pixel = bmpfile->p_buffer[i + bmpfile->n_width * j];
+			char out = (pixel == 0x00) ? ' ' : '*'; 
 			//std::cout << std::hex << pixel << std::endl;
 			//printf("|%d|", pixel);
 			line+=out;
 		}
 		std::cout << "|" << line << "|" << std::endl;
 		line.clear();
-	}*/
+	}
 
 	//rucne vytvorena testovaci data
 	Box a;
