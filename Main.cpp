@@ -243,19 +243,15 @@ bool InitGLObjects()
 	
 	//textury
 	n_texture[1] = n_GLTextureRGBFloat();
-	n_texture[0] = /*n_GLTextureRGBFloat();*/n_GLTextureRGBFloatFromData();
-	//depthmap = n_GLTextureRFloatDepthTest();
-	//depthmap = loadBMP_custom("level2.bmp");
+	n_texture[0] = n_GLTextureRGBFloat();
 	depthmap = LoadTextureFromPNGFile("level3.png");
 
 	//fyzika
-	
 	TBmp * bitmap;
 	if(!(bitmap = CPngCodec::p_Load_PNG("level3.png"))){
 		fprintf(stderr, "error: failed to load \'.png file\'\n");
 		return false;
 	}
-
 	boxDebug.generate(bitmap);
 	bitmap->Delete();
 
@@ -268,7 +264,7 @@ bool InitGLObjects()
 	n_source_tex = 0;
 
 	//pridani kapky s true cistenim hladiny
-	drawDrop(false, 0.5, 0.5);
+	drawDrop(true, 0.5, 0.5);
 
 	return true;
 }
@@ -568,7 +564,7 @@ void OnIdle(CGL30Driver &driver)
 
 	glBindTexture(GL_TEXTURE_2D, 0);//nechci omylem vykreslovat posledni bind. texturu
 
-	for(int i = 0; i < 1; i++){	
+	for(int i = 0; i < 3; i++){	
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, depthmap);
 		glActiveTexture(GL_TEXTURE0);

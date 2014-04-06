@@ -1,26 +1,14 @@
 #include "Hero.h"
 
 float Hero::p_hero_vertices[20] = {0, 0, 0, 0, 1, /**/1, 0, width, 0, 1,/**/ 1, 1, width, height, 1,/**/ 0, 1, 0, height, 1};
-unsigned int Hero::p_hero_indices[6] = {0, 1, 2, 0, 3, 2};		
+unsigned int Hero::p_hero_indices[6] = {0, 1, 2, 0, 3, 2};	
+bool Hero::isInit = false;
 
 void Hero::init(){
 
 	heroShader.compile();
-
-	/*
-	TBmp *p_box;
-	if(!(p_box = CTgaCodec::p_Load_TGA("player1.tga"))) {
-		fprintf(stderr, "error: failed to load \'.tga file\'\n");
-		//return false;
-	}
-
-	hero_tex = n_GLTextureFromBitmap(p_box, GL_RGBA8);
-	p_box->Delete();
-	*/
-
 	hero_tex = LoadTextureFromTGAFile("player1.tga");
 
-	//if(c) throw "Hero not initialized";
 	glGenBuffers(1, &heroVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, heroVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(p_hero_vertices), p_hero_vertices, GL_STATIC_DRAW);
@@ -41,9 +29,18 @@ void Hero::init(){
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, heroIBO);
 	}
 	glBindVertexArray(0);
+
+	isInit = true;
 }
 
 void Hero::draw(glm::vec2 movement){
+
+	try{	
+		if(!isInit) throw "Error - Hero:: not initialized";		
+	} catch (const char* msg){
+		std::cerr << msg << std::endl;
+		return;
+	}
 
 	glBindTexture(GL_TEXTURE_2D, hero_tex);
 
