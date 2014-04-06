@@ -44,8 +44,8 @@
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\vs_dev_lib\glm-0.9.5.1\glm;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\vs_dev_lib\libpng\include;C:\vs_dev_lib\glm-0.9.5.1\glm;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\vs_dev_lib\libpng\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
@@ -65,7 +65,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>..\lib\glew32s.lib;..\lib\glew32.lib;..\lib\FreeImage.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\lib\glew32s.lib;..\lib\glew32.lib;..\lib\FreeImage.lib;OpenGL32.lib;libpng.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
@@ -97,6 +97,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="OpenGL30Drv.cpp" />
     <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="PNGLoad.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Tga.cpp" />
@@ -108,6 +109,7 @@
     <ClInclude Include="Hero.h" />
     <ClInclude Include="OpenGL30Drv.h" />
     <ClInclude Include="Physics.h" />
+    <ClInclude Include="PNGLoad.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Tga.h" />
