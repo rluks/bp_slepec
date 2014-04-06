@@ -3,29 +3,33 @@
 
 void BoxDebug::generate(TBmp * bmpfile){
 
-
 	/*
 	for(int i = 0; i < bmpfile->n_width*bmpfile->n_height; i++){
 		unsigned char pixel = bmpfile->p_buffer[i];
 		char out = (pixel == 0xFF) ? ' ' : '*'; 
 		printf("|%d|", pixel);
 	}*/
-
-	
-	for(int i = 0; i < bmpfile->n_width; i++){
-		std::string line;
-		for(int j = 0; j < bmpfile->n_height; j++){
+		
+	boxes.resize(0);
+	std::string line("+");
+	for(int j = 0; j < bmpfile->n_height; j++){
+		for(int i = 0; i < bmpfile->n_width; i++){
 			unsigned char pixel = bmpfile->p_buffer[i + bmpfile->n_width * j];
 			char out = (pixel == 0x00) ? ' ' : '*'; 
-			//std::cout << std::hex << pixel << std::endl;
-			//printf("|%d|", pixel);
-			line+=out;
+			if(pixel == 0x00){//prekazka
+				Box box;
+				box.vMin = glm::vec2(i, j);
+				box.vMax = glm::vec2(i+1, j+1);
+				boxes.push_back(box);
+			}
+			line+= out;
 		}
 		std::cout << "|" << line << "|" << std::endl;
 		line.clear();
 	}
 
 	//rucne vytvorena testovaci data
+	/*
 	Box a;
 	Box b;
 	a.vMin = glm::vec2(0.0, 0.0);
@@ -34,8 +38,13 @@ void BoxDebug::generate(TBmp * bmpfile){
 	b.vMax = glm::vec2(7.0, 6.0);
 
 	boxes.push_back(a);
-	boxes.push_back(b);
+	boxes.push_back(b);*/
 
+	/*
+	for(unsigned int i = 0; i < boxes.size(); i++){
+		Box a = boxes.at(i);
+		std::cout << "box no." << i << ":" << "vMinx: " << a.vMin.x << " vMiny: " << a.vMin.y << "vMaxx: " << a.vMax.x << " vMaxy: " << a.vMax.y << std::endl;
+	}*/
 
 	//pripravit shader
 	boxesShader.compile();
@@ -45,7 +54,6 @@ void BoxDebug::generate(TBmp * bmpfile){
 void BoxDebug::draw(){
 
 	if(boxes.size() > 0){
-
 		std::vector<float> p_box_vertices;
 		std::vector<int> p_box_indices;
 		for(unsigned int i = 0; i < boxes.size(); i++){
@@ -77,7 +85,7 @@ void BoxDebug::draw(){
 		boxesShader.bind();
 
 		glBindVertexArray(VAO);
-		glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, p_OffsetInVBO(0));
+		glDrawElements(GL_LINES, boxes.size()*12, GL_UNSIGNED_INT, p_OffsetInVBO(0));
 		glBindVertexArray(0);
 	}
 }

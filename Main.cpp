@@ -177,6 +177,7 @@ bool InitGLObjects()
 {
 
 	const float p_box_vertices[] = {
+	//0, 1, -1, -1, 1, /**/1, 1, 1, -1, 1,/**/ 1, 0, 1, 1, 1,/**/ 0, 0, -1, 1, 1};
 	0, 0, -1, -1, 1, /**/1, 0, 1, -1, 1,/**/ 1, 1, 1, 1, 1,/**/ 0, 1, -1, 1, 1};
 	// vrcholy krychle, vzdy 2 souradnice textury, pak 3 souradnice vrcholu; vrcholy jsou usporadane poporade po ctvericich, tvoricich polygony jednotlivych sten
 
@@ -242,12 +243,13 @@ bool InitGLObjects()
 	
 	//textury
 	n_texture[1] = n_GLTextureRGBFloat();
-	n_texture[0] = n_GLTextureRGBFloatFromData();
+	n_texture[0] = /*n_GLTextureRGBFloat();*/n_GLTextureRGBFloatFromData();
 	//depthmap = n_GLTextureRFloatDepthTest();
 	//depthmap = loadBMP_custom("level2.bmp");
 	depthmap = LoadTextureFromPNGFile("level3.png");
 
 	//fyzika
+	
 	TBmp * bitmap;
 	if(!(bitmap = CPngCodec::p_Load_PNG("level3.png"))){
 		fprintf(stderr, "error: failed to load \'.png file\'\n");
@@ -257,8 +259,6 @@ bool InitGLObjects()
 	boxDebug.generate(bitmap);
 	bitmap->Delete();
 
-	//depthmap = n_GLTextureFromBitmap(&bmpfile, GL_RGBA8);
-
 	//FBO
 	glGenFramebuffers(1, &fbo);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
@@ -266,31 +266,10 @@ bool InitGLObjects()
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
 	n_source_tex = 0;
-	
-	//cisteni textury depthmap - meni barvu pozadi WTF?
-	/*
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, depthmap, 0);
-	glViewport(0, 0, datawidth, dataheight);
-	glClearColor(1.0, 0, 0, 0); // jen na prvni hodnote zalezi - meni rgb barvu pozadi / opengl je stavovy
-	glClear ( GL_COLOR_BUFFER_BIT);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, depthmap);
-	*/
-	
-
-	//cisteni textury depthmap - jiny zpusob
-	/*
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, depthmap, 0);
-	glDrawBuffer(GL_COLOR_ATTACHMENT0);
-	GLuint clearColor[4] = {1, 0, 0, 0};
-	glClearBufferuiv(GL_COLOR, 0, clearColor);*/
 
 	//pridani kapky s true cistenim hladiny
-	drawDrop(true, 0.5, 0.5);
+	drawDrop(false, 0.5, 0.5);
 
-	// uvolni pamet
 	return true;
 }
 
@@ -311,6 +290,8 @@ void CleanupGLObjects()
 	//glDeleteProgram(n_program_object);
 	// smaze shadery
 
+	//TODO smazat po sobe
+
 	glDeleteTextures(1, n_texture);
 	// smaze textury
 }
@@ -323,7 +304,7 @@ void DrawScene()
 	glBindVertexArray(n_vertex_array_object);
 	// rekne OpenGL odkud se berou data pro kresleni (z nasich VBO)
 
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, p_OffsetInVBO(0));
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, p_OffsetInVBO(0));
 	// nakresli objekt pomoci jedineho prikazu
 
 	glBindVertexArray(0); // vratime VAO 0, abychom si nahodne VAO nezmenili (pripadne osetreni proti chybe v ovladacich nvidia kde se VAO poskodi pri volani nekterych wgl funkci)
@@ -587,7 +568,7 @@ void OnIdle(CGL30Driver &driver)
 
 	glBindTexture(GL_TEXTURE_2D, 0);//nechci omylem vykreslovat posledni bind. texturu
 
-	for(int i = 0; i < 3; i++){	
+	for(int i = 0; i < 1; i++){	
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, depthmap);
 		glActiveTexture(GL_TEXTURE0);
@@ -630,7 +611,7 @@ void OnIdle(CGL30Driver &driver)
 	}
 
 	if(k.space){
-		std::cout << "space" << std::endl;
+		//std::cout << "space" << std::endl;
 		drawDrop2(false, movement.x + hero.width, movement.y + hero.height);
 	}
 
