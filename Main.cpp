@@ -102,6 +102,8 @@ void drawDrop2(bool clear, float x, float y){
 		float t = 1.0f - (2.0f * y)/24.0f;
 		float bod[] = {s, t};
 
+		//std::cout << "kapka hulkou na souradnicich - s(x): " << s << " |t(y): " << t << std::endl;
+
 		GLuint bodVBO, bodVAO;
 		glGenBuffers(1, &bodVBO);
 		glBindBuffer(GL_ARRAY_BUFFER, bodVBO);
@@ -177,8 +179,10 @@ bool InitGLObjects()
 {
 
 	const float p_box_vertices[] = {
-	//0, 1, -1, -1, 1, /**/1, 1, 1, -1, 1,/**/ 1, 0, 1, 1, 1,/**/ 0, 0, -1, 1, 1};
-	0, 0, -1, -1, 1, /**/1, 0, 1, -1, 1,/**/ 1, 1, 1, 1, 1,/**/ 0, 1, -1, 1, 1};
+
+	//0, 1, -1, -1, 1, /**/1, 1, 1, -1, 1,/**/1, 0, 1, 1, 1,/**/0, 0, -1, 1, 1};//textura spravne, simulace nefunguje
+	0, 0, -1, -1, 1, /**/1, 0, 1, -1, 1,/**/ 1, 1, 1, 1, 1,/**/ 0, 1, -1, 1, 1};//puvodne - textura vzhuru nohama, simulace funguje
+
 	// vrcholy krychle, vzdy 2 souradnice textury, pak 3 souradnice vrcholu; vrcholy jsou usporadane poporade po ctvericich, tvoricich polygony jednotlivych sten
 
 	const unsigned int p_box_indices[] = {	
@@ -602,8 +606,8 @@ void OnIdle(CGL30Driver &driver)
 		pointsQueue.pop_back();
 		float x = (float)p.x/datawidth * 2.0f - 1.0f;
 		float y = 1.0f - (float)p.y/dataheight * 2.0f;
-		//std::cout << "kapka na souradnicich - x: " << x << " |y: " << y << std::endl;
-		drawDrop(false, x, y);
+		std::cout << "kapka na souradnicich - x: " << x << " |y: " << y << std::endl;
+		drawDrop(true, x, y);
 	}
 
 	if(k.space){
