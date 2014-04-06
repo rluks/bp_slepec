@@ -238,23 +238,26 @@ bool InitGLObjects()
 	point.compile();
 
 	hero.init();
-	
 
 	
 	//textury
 	n_texture[1] = n_GLTextureRGBFloat();
 	n_texture[0] = n_GLTextureRGBFloatFromData();
 	//depthmap = n_GLTextureRFloatDepthTest();
-	//depthmap = loadBMP_custom("level0.bmp");
-	depthmap = loadBMP_custom("level2.bmp");
+	//depthmap = loadBMP_custom("level2.bmp");
+	depthmap = LoadTextureFromPNGFile("level3.png");
 
 	//fyzika
-	TBmp bmpfile;
-	loadBMP_customData("level2.bmp", &bmpfile);
-	//boxDebug.generate(&bmpfile);
-	//delete [] bmpfile.p_buffer;
+	TBmp * bitmap;
+	if(!(bitmap = CPngCodec::p_Load_PNG("level3.png"))){
+		fprintf(stderr, "error: failed to load \'.png file\'\n");
+		return false;
+	}
 
-	depthmap = n_GLTextureFromBitmap(&bmpfile, GL_RGBA8);
+	boxDebug.generate(bitmap);
+	bitmap->Delete();
+
+	//depthmap = n_GLTextureFromBitmap(&bmpfile, GL_RGBA8);
 
 	//FBO
 	glGenFramebuffers(1, &fbo);

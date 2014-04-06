@@ -12,9 +12,12 @@ GLuint n_GLTextureFromBitmap(const TBmp *p_bitmap, GLenum n_internal_format = GL
 	glGenTextures(1, &n_tex);
 	glBindTexture(GL_TEXTURE_2D, n_tex);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	// nastavime filtrovani
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
 
 	glTexImage2D(GL_TEXTURE_2D, 0, n_internal_format, p_bitmap->n_width, p_bitmap->n_height,
 		0, GL_RGBA, GL_UNSIGNED_BYTE, p_bitmap->p_buffer);
@@ -39,7 +42,9 @@ GLuint loadBMP_custom(const char * imagepath){
 	unsigned char * data;
 
 	// Open the file
-	FILE * file = fopen(imagepath,"rb");
+	FILE * file;
+	//FILE * file = fopen(imagepath,"rb");
+	fopen_s(&file, imagepath,"rb");
 	if (!file)							    {printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", imagepath); getchar(); return 0;}
 
 	// Read the header, i.e. the 54 first bytes
@@ -136,7 +141,7 @@ GLuint loadBMP_custom(const char * imagepath){
 	return textureID;
 }
 
-int loadBMP_customData(const char * imagepath, BMPFile * bmpfile){
+int loadBMP_customData(const char * imagepath, TBmp * bmpfile){
 
 	// Data read from the header of the BMP file
 	unsigned char header[54];
@@ -146,7 +151,9 @@ int loadBMP_customData(const char * imagepath, BMPFile * bmpfile){
 	// Actual RGB data
 
 	// Open the file
-	FILE * file = fopen(imagepath,"rb");
+	FILE * file;
+	//FILE * file = fopen(imagepath,"rb");
+	fopen_s(&file, imagepath,"rb");
 	if (!file)							    {printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", imagepath); getchar(); return 0;}
 
 	// Read the header, i.e. the 54 first bytes
@@ -176,12 +183,14 @@ int loadBMP_customData(const char * imagepath, BMPFile * bmpfile){
 	if (dataPos==0)      dataPos=54; // The BMP header is done that way
 
 	// Create a buffer
-	bmpfile->p_buffer = new unsigned char [imageSize];
+	//bmpfile->p_buffer = new unsigned char [imageSize];
+	bmpfile->p_buffer = new uint32_t [width*height];
 
 	std::cout << "sizeof: " << sizeof(unsigned char) << "|" << sizeof(uint32_t) << std::endl;
 
 	// Read the actual data from the file into the buffer
-	fread(bmpfile->p_buffer,sizeof(unsigned char),imageSize,file);
+	//fread(bmpfile->p_buffer,sizeof(unsigned char),imageSize,file);
+	fread(bmpfile->p_buffer,sizeof(uint32_t),width*height,file);
 
 	// Everything is in memory now, the file wan be closed
 	fclose (file);
@@ -189,6 +198,42 @@ int loadBMP_customData(const char * imagepath, BMPFile * bmpfile){
 	bmpfile->n_height=height;
 	bmpfile->n_width=width;
 	//bmpfile->imageSize=imageSize;
+
+	return 0;
+}
+
+GLuint LoadTextureFromPNGFile(const char * imagepath){
+	TBmp * bitmap;
+	if(!(bitmap = CPngCodec::p_Load_PNG(imagepath))){
+		fprintf(stderr, "error: failed to load \'.png file\'\n");
+		return false;
+	}
+	
+	/*
+	std::cout << "n_former_bpp " << bitmap->n_former_bpp<< std::endl;
+	std::cout << "b_grayscale " << bitmap->b_grayscale<< std::endl;
+	std::cout << "b_alpha " << bitmap->b_alpha<< std::endl;
+	std::cout << "n_width " << bitmap->n_width<< std::endl;
+	std::cout << "n_height " << bitmap->n_height<< std::endl;
+	*/
+
+	GLuint texture = n_GLTextureFromBitmap(bitmap, GL_RGBA8);
+	bitmap->Delete();
+
+	return texture;	
+}
+
+GLuint LoadTextureFromTGAFile(const char * imagepath){
+	TBmp * bitmap;
+	if(!(bitmap = CTgaCodec::p_Load_TGA(imagepath))) {
+		fprintf(stderr, "error: failed to load \'.tga file\'\n");
+		return false;
+	}
+
+	GLuint texture = n_GLTextureFromBitmap(bitmap, GL_RGBA8);
+	bitmap->Delete();
+
+	return texture;
 }
 
 GLuint n_GLTextureRFloatFromData()

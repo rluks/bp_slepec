@@ -7,6 +7,7 @@ void Hero::init(){
 
 	heroShader.compile();
 
+	/*
 	TBmp *p_box;
 	if(!(p_box = CTgaCodec::p_Load_TGA("player1.tga"))) {
 		fprintf(stderr, "error: failed to load \'.tga file\'\n");
@@ -15,6 +16,9 @@ void Hero::init(){
 
 	hero_tex = n_GLTextureFromBitmap(p_box, GL_RGBA8);
 	p_box->Delete();
+	*/
+
+	hero_tex = LoadTextureFromTGAFile("player1.tga");
 
 	//if(c) throw "Hero not initialized";
 	glGenBuffers(1, &heroVBO);
