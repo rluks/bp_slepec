@@ -11,11 +11,12 @@ void BoxDebug::generate(TBmp * bmpfile){
 	}*/
 		
 	boxes.resize(0);
+	std::cout << "prvni pixel +, 0x00 *, 0xFF mezera" << std::endl;
 	std::string line("+");
 	for(int j = 0; j < bmpfile->n_height; j++){
 		for(int i = 0; i < bmpfile->n_width; i++){
 			unsigned char pixel = bmpfile->p_buffer[i + bmpfile->n_width * j];
-			char out = (pixel == 0x00) ? ' ' : '*'; 
+			char out = (pixel == 0x00) ? '*' : ' '; 
 			if(pixel == 0x00){//prekazka
 				Box box;
 				box.vMin = glm::vec2(i, j);
@@ -45,6 +46,25 @@ void BoxDebug::generate(TBmp * bmpfile){
 		Box a = boxes.at(i);
 		std::cout << "box no." << i << ":" << "vMinx: " << a.vMin.x << " vMiny: " << a.vMin.y << "vMaxx: " << a.vMax.x << " vMaxy: " << a.vMax.y << std::endl;
 	}*/
+
+	//sloucit kostky
+	for(unsigned int i = 0; i < boxes.size(); i++){	
+		if(i+1 != boxes.size()){
+			Box a = boxes.at(i);
+			Box b = boxes.at(i+1);
+			std::cout << "box no." << i << ":" << "vMinx: " << a.vMin.x << " vMiny: " << a.vMin.y << "vMaxx: " << a.vMax.x << " vMaxy: " << a.vMax.y << std::endl;
+			std::cout << "box no." << i+1 << ":" << "vMinx: " << b.vMin.x << " vMiny: " << b.vMin.y << "vMaxx: " << b.vMax.x << " vMaxy: " << b.vMax.y << std::endl;
+			if((a.vMin.y == b.vMin.y) && (a.vMin.x+1 == b.vMin.x)){
+				Box merge;
+				merge.vMin.x = a.vMin.x;
+				merge.vMin.y = a.vMin.y;
+				merge.vMax.x = b.vMax.x;
+				merge.vMax.y = b.vMax.y;
+				boxes.at(i) = merge;
+				boxes.erase(boxes.begin() + i+1);
+			}
+		}
+	}
 
 	//pripravit shader
 	boxesShader.compile();
