@@ -247,9 +247,9 @@ bool InitGLObjects()
 	//textury
 	n_texture[1] = n_GLTextureRGBFloat();
 	n_texture[0] = n_GLTextureRGBFloat();
-	//depthmap = LoadTextureFromPNGFile("dum.png");
+	depthmap = LoadTextureFromPNGFile("dumO.png");
 	//depthmap = LoadTextureFromTGAFile("dum.tga");
-	depthmap = loadBMP_custom("dum.bmp");
+	//depthmap = loadBMP_custom("kolize.bmp");
 
 	//fyzika
 	TBmp * bitmap;
@@ -608,7 +608,7 @@ void OnIdle(CGL30Driver &driver)
 		float x = (float)p.x/datawidth * 2.0f - 1.0f;
 		float y = 1.0f - (float)p.y/dataheight * 2.0f;
 		std::cout << "kapka na souradnicich - x: " << x << " |y: " << y << std::endl;
-		drawDrop(true, x, y);
+		drawDrop(false, x, y);
 	}
 
 	if(k.space){
@@ -620,12 +620,14 @@ void OnIdle(CGL30Driver &driver)
 	calculateTimeBasedMovement(frame_time);
 
 	//std::cout << "movement.x: " << movement.x << " movement.y: " << movement.y << std::endl;
-	hero.draw(movement);
+	hero.updateBox(movement);
+	hero.draw();
 	
 	movementShift.x = 0.0;
 	movementShift.y = 0.0;
 
 	boxDebug.draw();
+	boxDebug.drawBox(hero.box);
 
 	driver.Blit(); // preklopi buffery, zobrazi co jsme nakreslili
 }
