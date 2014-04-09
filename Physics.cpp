@@ -110,6 +110,36 @@ void BoxDebug::generate(TBmp * bmpfile){
 	
 }
 
+void BoxDebug::drawBox(Box a){
+
+	float a_vertices[] = {a.vMin.x, a.vMin.y, 1, /**/a.vMax.x , a.vMin.y, 1,/**/a.vMax.x, a.vMax.y, 1,/**/a.vMin.x, a.vMax.y, 1};
+	int a_indices[] = {0, 1, 1, 2, 2, 3, 3, 0, 0, 2, 1, 3};
+		
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(a_vertices), a_vertices, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &IBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(a_indices), a_indices, GL_STATIC_DRAW);
+
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, p_OffsetInVBO(0));
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	}
+	glBindVertexArray(0);
+
+	boxesShader.bind();
+
+	glBindVertexArray(VAO);
+	glDrawElements(GL_LINES, 12, GL_UNSIGNED_INT, p_OffsetInVBO(0));
+	glBindVertexArray(0);
+}
+
 void BoxDebug::draw(){
 
 	if(boxes.size() > 0){

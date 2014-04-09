@@ -7,6 +7,7 @@
 #include "Common.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Physics.h"
 
 struct Hero {
 public:
@@ -16,12 +17,15 @@ public:
 	ShaderHero heroShader;
 	GLuint heroVBO, heroVAO, heroIBO;
 	GLuint hero_tex;
+
+	Box box;
 	
 	static float p_hero_vertices[];
 	static unsigned int p_hero_indices[];	
 
 	void init();
-	void draw(glm::vec2);
+	void updateBox(glm::vec2);
+	void draw();
 
 private:
 		static bool isInit;

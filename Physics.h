@@ -22,6 +22,7 @@ public:
 
 	void generate(TBmp *);
 	void draw();
+	void drawBox(Box);
 };
 
 #endif

@@ -6,6 +6,11 @@ bool Hero::isInit = false;
 
 void Hero::init(){
 
+	box.vMin.x = 0;
+	box.vMin.y = 0;
+	box.vMax.x = box.vMin.x + width;
+	box.vMax.y = box.vMin.y + height;
+
 	heroShader.compile();
 	hero_tex = LoadTextureFromTGAFile("player1.tga");
 
@@ -33,7 +38,14 @@ void Hero::init(){
 	isInit = true;
 }
 
-void Hero::draw(glm::vec2 movement){
+void Hero::updateBox(glm::vec2 movement){
+	box.vMin.x = movement.x;
+	box.vMin.y = movement.y;
+	box.vMax.x = box.vMin.x + width;
+	box.vMax.y = box.vMin.y + height;
+}
+
+void Hero::draw(){
 
 	try{	
 		if(!isInit) throw "Error - Hero:: not initialized";		
@@ -44,7 +56,7 @@ void Hero::draw(glm::vec2 movement){
 
 	glBindTexture(GL_TEXTURE_2D, hero_tex);
 
-	heroShader.bind(movement);
+	heroShader.bind(box.vMin);
 
 	glBindVertexArray(heroVAO);
 	glEnable(GL_BLEND);
