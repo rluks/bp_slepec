@@ -20,10 +20,10 @@ void main()
 	//frag_color.rgb = texture(n_tex, v_texcoord).brg;
 	//frag_color.rgb = texture(n_tex, v_texcoord).rgb;
 	
-	float depth = texture(depthmap, v_texcoord.xy).r;
+	float depth = texture(depthmap, vec2(v_texcoord.x, 1 - v_texcoord.y)).r;
 
 	//test
-	//depth = 1.0;
+	//float depth = 1.0;
 
 	if (depth <= 0.0)
 	{

@@ -11,6 +11,6 @@ void main()
 	height = smoothstep(.01, 1.0, height);
 	frag_color = height * vec4(0.4, 1.0, 0.8, 1.0);
 	
-	float depth = texture(depthmap, v_texcoord.xy).r;
+	float depth = texture(depthmap, vec2(v_texcoord.x, 1 - v_texcoord.y)).r;
 	frag_color.g = 1-depth;
 }

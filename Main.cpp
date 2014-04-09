@@ -247,9 +247,9 @@ bool InitGLObjects()
 	//textury
 	n_texture[1] = n_GLTextureRGBFloat();
 	n_texture[0] = n_GLTextureRGBFloat();
-	depthmap = LoadTextureFromPNGFile("dumO.png");
+	depthmap = LoadTextureFromPNGFile("dum.png");
 	//depthmap = LoadTextureFromTGAFile("dum.tga");
-	//depthmap = loadBMP_custom("kolize.bmp");
+	//depthmap = loadBMP_custom("dum.bmp");
 
 	//fyzika
 	TBmp * bitmap;

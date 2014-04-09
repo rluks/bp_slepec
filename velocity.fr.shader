@@ -20,13 +20,17 @@ float c = 2.0;//dissipation const.
 void main()
 {
 
-	float depth = texture(depthmap, v_texcoord.xy).r +
-		texture(depthmap, v_texcoord.xy+vec2(pixel_size.z, pixel_size.y)).r +
-		texture(depthmap, v_texcoord.xy+vec2(pixel_size.z, -pixel_size.y)).r +
-		texture(depthmap, v_texcoord.xy+vec2(pixel_size.x, pixel_size.z)).r +
-		texture(depthmap, v_texcoord.xy+vec2(-pixel_size.x, pixel_size.z)).r;
+
+	float depth = texture(depthmap, vec2(v_texcoord.x, 1 - v_texcoord.y)).r +
+		texture(depthmap, vec2(v_texcoord.x, (1 - v_texcoord.y) + pixel_size.y)).r +
+		texture(depthmap, vec2(v_texcoord.x, (1 - v_texcoord.y) -pixel_size.y)).r +
+		texture(depthmap, vec2(v_texcoord.x + pixel_size.x, 1 - v_texcoord.y)).r +
+		texture(depthmap, vec2(v_texcoord.x - pixel_size.x, 1 - v_texcoord.y)).r;
 
 	depth /= 5.0;
+
+	//test
+	//float depth = 1.0;
 
 	if(depth <= 0.0)
 	{	
