@@ -124,19 +124,100 @@ void BoxDebug::SeparatingAxisTheorem(Box a, glm::vec2 * movement){
 		glm::vec2 aprojx(a.vMin.x, a.vMax.x);
 		glm::vec2 bprojx(b.vMin.x, b.vMax.x);
 
+		//kolize?
 		bool verticCol = false;
 		bool horizCol = false;
 
-		if(aprojx.y > bprojx.x && bprojx.y > aprojx.x)
+		//smer
+		bool verticOver = false;
+		bool horizLeft = false;
+
+		//mira protnuti
+		float verticInter;
+		float horizInter;
+		
+		if(aprojx.y >= bprojx.x && bprojx.y >= aprojx.x){
 			horizCol = true;
 
-		if(aprojy.y > bprojy.x && bprojy.y > aprojy.x)
+			if(aprojx.x >= bprojx.x && aprojx.x <= bprojx.y){//B A
+				//std::cout << "B A" << std::endl;
+				horizInter = bprojx.y - aprojx.x;
+			}else if(aprojx.y <= bprojx.y && aprojx.y >= bprojx.x){//A B
+				//std::cout << "A B" << std::endl;
+				horizInter = aprojx.y - bprojx.y;
+				horizLeft = true;
+			}else{
+				std::cout << "NEZNAM HORIZONTAL" << std::endl;//uvnitr
+				horizInter = 0.0;
+			}
+		}
+		
+		/*
+		if(aprojx.y < bprojx.x){
+			//std::cout << "A B" << std::endl;
+		}else if(bprojx.y < aprojx.x){
+			//std::cout << "B A" << std::endl;
+		}else{
+			//std::cout << "ine" << std::endl;
+			horizCol = true;
+		}*/
+		
+		if(aprojy.y >= bprojy.x && bprojy.y >= aprojy.x){
 			verticCol = true;
+
+			if(aprojy.y >= bprojy.x && aprojy.y <= bprojy.y){//A nad B
+				verticInter = aprojy.x - bprojy.y;
+				verticOver = true;
+			}else if(bprojy.y >= aprojy.x && bprojy.y <= aprojy.y){//B nad A
+				verticInter = bprojy.x - aprojy.y;
+			}else{
+				std::cout << "NEZNAM VERTICAL" << std::endl;
+				verticInter = 0.0;
+			}
+		}
+
+		/*
+		if(aprojy.y < bprojy.x){
+			//std::cout << "A" << std::endl;
+			//std::cout << "B" << std::endl;
+		}
+		else if(bprojy.y < aprojy.x){
+			//std::cout << "B" << std::endl;
+			//std::cout << "A" << std::endl;
+		}
+		else{
+			//std::cout << "ine" << std::endl;
+			verticCol = true;
+		}*/
 
 		if(horizCol && verticCol){
 			std::cout << "movement.x: " << movement->x << " movement.y: " << movement->y << std::endl;
 			std::cout << "hrac(Min(" << a.vMin.x << ", " << a.vMin.y <<"), Max(" << a.vMax.x <<", " << a.vMax.y << ")) s " << "Min(" << b.vMin.x << ", " << b.vMin.y <<"), Max(" << b.vMax.x <<", " << b.vMax.y << ")" << std::endl;
-			movement->y = b.vMin.y - (a.vMax.y - a.vMin.y);
+
+			//upravit movement, aby nedoslo ke kolizi
+			if(verticInter < horizInter){
+				if(verticOver)
+					movement->y = b.vMin.y - (a.vMax.y - a.vMin.y) - 0.1;
+				else
+					movement->y = b.vMax.y;
+			}else{
+				if(horizLeft)
+					movement->x = b.vMin.x - (a.vMax.x - a.vMin.x);
+				else
+					movement->x = b.vMax.x;
+			}
+
+			/*
+			if(aprojy.y >= bprojy.x && aprojy.y <= bprojy.y)//A nad B
+				movement->y = b.vMin.y - (a.vMax.y - a.vMin.y);
+			else if(bprojy.y >= aprojy.x && bprojy.y <= aprojy.y)//B nad A
+				movement->y = b.vMax.y;
+			else if(aprojx.x > bprojx.x && aprojx.x <= bprojx.y)//B A
+				movement->x = b.vMax.x;
+			//else if()
+			else
+				std::cout << "NEZNAMA KOLIZE" << std::endl
+			*/
 		}
 	}
 }
