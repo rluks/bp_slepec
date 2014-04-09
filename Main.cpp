@@ -73,6 +73,7 @@ Hero hero;
 
 //fyika
 BoxDebug boxDebug;
+static int cnt = 0;
 
 
 
@@ -248,8 +249,6 @@ bool InitGLObjects()
 	n_texture[1] = n_GLTextureRGBFloat();
 	n_texture[0] = n_GLTextureRGBFloat();
 	depthmap = LoadTextureFromPNGFile("dum.png");
-	//depthmap = LoadTextureFromTGAFile("dum.tga");
-	//depthmap = loadBMP_custom("dum.bmp");
 
 	//fyzika
 	TBmp * bitmap;
@@ -384,8 +383,8 @@ int main(int n_arg_num, const char **p_arg_list)
 	}
 	// vyrobime objekty OpenGL, nutne ke kresleni
 
-	//movement.x = 16.0;
-	//movement.y = 12.0;
+	movement.x = 16.0;
+	movement.y = 12.0;
 
 	DWORD start_time =  GetTickCount(); // cas pro animaci
 	DWORD end_time;
@@ -628,6 +627,11 @@ void OnIdle(CGL30Driver &driver)
 
 	boxDebug.draw();
 	boxDebug.drawBox(hero.box);
+	//if(cnt == 100){
+		cnt = 0;
+		boxDebug.SeparatingAxisTheorem(hero.box);
+	//}
+	cnt++;
 
 	driver.Blit(); // preklopi buffery, zobrazi co jsme nakreslili
 }
