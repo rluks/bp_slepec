@@ -620,6 +620,7 @@ void OnIdle(CGL30Driver &driver)
 
 	//std::cout << "movement.x: " << movement.x << " movement.y: " << movement.y << std::endl;
 	hero.updateBox(movement);
+	boxDebug.SeparatingAxisTheorem(hero.box, &movement);
 	hero.draw();
 	
 	movementShift.x = 0.0;
@@ -629,7 +630,6 @@ void OnIdle(CGL30Driver &driver)
 	boxDebug.drawBox(hero.box);
 	//if(cnt == 100){
 		cnt = 0;
-		boxDebug.SeparatingAxisTheorem(hero.box);
 	//}
 	cnt++;
 

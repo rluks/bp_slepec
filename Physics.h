@@ -25,7 +25,7 @@ public:
 	ShaderBoxes boxesShader;
 
 	void generate(TBmp *);
-	void SeparatingAxisTheorem(Box);
+	void SeparatingAxisTheorem(Box, glm::vec2 *);
 	void draw();
 	void drawBox(Box);
 };

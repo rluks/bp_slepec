@@ -1,38 +1,5 @@
 #include "Physics.h"
 
-std::string Box::string(){
-	std::string s("vMin: ");
-	s.append(glm::to_string(vMin));
-	s.append("vMax: ");
-	s.append(glm::to_string(vMax));
-	return s;
-}
-
-glm::vec2 Box::project(glm::vec2 axis){
-
-	//vrcholy
-	glm::vec2 righttop(vMin.y, vMax.x);
-	glm::vec2 leftbottom(vMin.x, vMax.y);
-
-	std::vector<glm::vec2> vertices;
-	vertices.push_back(vMax);
-	vertices.push_back(righttop);
-	vertices.push_back(leftbottom);
-
-	//min max
-	float min = glm::dot(vMin, axis);
-	float max = min;
-	for(int i = 0; i < 3; i++){
-		float temp = glm::dot(vertices.at(i), axis);
-		if(temp < min)
-			min = temp;
-		else if(temp > max)
-			max = temp;
-	}
-	glm::vec2 projection(min,max);
-	return projection;
-}
-
 void BoxDebug::generate(TBmp * bmpfile){
 
 	/*
@@ -143,90 +110,34 @@ void BoxDebug::generate(TBmp * bmpfile){
 }
 
 
+void BoxDebug::SeparatingAxisTheorem(Box a, glm::vec2 * movement){
 
-void BoxDebug::SeparatingAxisTheorem(Box a){
-	for(unsigned int i = 0; i < boxes.size(); i++){//TODO prochazet jen blizke panackovi?
+	for(unsigned int i = 0; i < boxes.size(); i++){
+
 		Box b = boxes.at(i);
-
-		//std::cout << "hrac(vMin(" << a.vMin.x << ", " << a.vMin.y <<"), vMax(" << a.vMax.x <<", " << a.vMax.y << ")) box(" << "vMin(" << b.vMin.x << ", " << b.vMin.y <<"), vMax(" << b.vMax.x <<", " << b.vMax.y << "))" << std::endl;
 
 		//projekce na y
 		glm::vec2 aprojy(a.vMin.y, a.vMax.y);
 		glm::vec2 bprojy(b.vMin.y, b.vMax.y);
+
 		//projekce na x
 		glm::vec2 aprojx(a.vMin.x, a.vMax.x);
 		glm::vec2 bprojx(b.vMin.x, b.vMax.x);
 
-		//std::cout << "aprojx(" << aprojx.x << ", " << aprojx.y <<"), bprojx(" << bprojx.x <<", " << bprojx.y << ")" << std::endl;
-
 		bool verticCol = false;
 		bool horizCol = false;
 
-		if(aprojx.y < bprojx.x)
-			;//std::cout << "A B" << std::endl;
-		else if(bprojx.y < aprojx.x)
-			;//std::cout << "B A" << std::endl;
-		else{
-			//std::cout << "ine" << std::endl;
+		if(aprojx.y > bprojx.x && bprojx.y > aprojx.x)
 			horizCol = true;
-		}
 
-		if(aprojy.y < bprojy.x){
-			//std::cout << "A" << std::endl;
-			//std::cout << "B" << std::endl;
-		}
-		else if(bprojy.y < aprojy.x){
-			//std::cout << "B" << std::endl;
-			//std::cout << "A" << std::endl;
-		}
-		else{
-			//std::cout << "ine" << std::endl;
+		if(aprojy.y > bprojy.x && bprojy.y > aprojy.x)
 			verticCol = true;
-		}
 
-		if(horizCol && verticCol)
+		if(horizCol && verticCol){
+			std::cout << "movement.x: " << movement->x << " movement.y: " << movement->y << std::endl;
 			std::cout << "hrac(Min(" << a.vMin.x << ", " << a.vMin.y <<"), Max(" << a.vMax.x <<", " << a.vMax.y << ")) s " << "Min(" << b.vMin.x << ", " << b.vMin.y <<"), Max(" << b.vMax.x <<", " << b.vMax.y << ")" << std::endl;
-
-		///////////////////////////////////////////////////
-		//osa vertikalni
-		/*
-		glm::vec2 axis(0, 1);//normalizovany
-		//glm::vec2 p1 = a.project(axis);
-		glm::vec2 p2 = b.project(axis);
-
-		std::cout << "vMin(" << b.vMin.x << ", " << b.vMin.y <<"), vMax(" << b.vMax.x <<", " << b.vMax.y << ")" << std::endl;
-
-		//std::cout << p1.x << ":" << p1.y << std::endl;
-		std::cout << "Projekce = " << p2.x << ":" << p2.y << std::endl;	
-		*/
-		//break;
-		 
-		///////////////////////////////////////////////////
-		//osa vertikalni
-		/*
-		bool verticCol = false;
-		int alength = a.vMax.y - a.vMin.y; 
-		int blength = b.vMax.y - b.vMin.y;
-
-		if(a.vMin.y + alength >= b.vMin.y && b.vMax.y - blength <= a.vMax.y){
-			verticCol = true;
+			movement->y = b.vMin.y - (a.vMax.y - a.vMin.y);
 		}
-
-		//osa horizontalni
-		bool horizCol = false;
-		alength = a.vMax.x - a.vMin.x; 
-		blength = b.vMax.x - b.vMin.x;
-
-		if(a.vMin.x + alength >= b.vMin.x && b.vMax.x - blength <= a.vMax.x){
-			horizCol = true;
-		}
-
-		if(verticCol && horizCol){			
-			//std::cout << "kolize hrace(" << a.string() << ") s " << b.string() << std::endl;
-			std::cout << "kolize hrace(vMin(" << a.vMin.x << ", " << a.vMin.y <<"), vMax(" << a.vMax.x <<", " << a.vMax.y << ")) s " << "vMin(" << b.vMin.x << ", " << b.vMin.y <<"), vMax(" << b.vMax.x <<", " << b.vMax.y << ")" << std::endl;
-			break;
-		}*/
-
 	}
 }
 
