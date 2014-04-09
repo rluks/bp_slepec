@@ -182,7 +182,6 @@ bool InitGLObjects()
 
 	//0, 1, -1, -1, 1, /**/1, 1, 1, -1, 1,/**/1, 0, 1, 1, 1,/**/0, 0, -1, 1, 1};//textura spravne, simulace nefunguje
 	0, 0, -1, -1, 1, /**/1, 0, 1, -1, 1,/**/ 1, 1, 1, 1, 1,/**/ 0, 1, -1, 1, 1};//puvodne - textura vzhuru nohama, simulace funguje
-
 	// vrcholy krychle, vzdy 2 souradnice textury, pak 3 souradnice vrcholu; vrcholy jsou usporadane poporade po ctvericich, tvoricich polygony jednotlivych sten
 
 	const unsigned int p_box_indices[] = {	
@@ -248,11 +247,13 @@ bool InitGLObjects()
 	//textury
 	n_texture[1] = n_GLTextureRGBFloat();
 	n_texture[0] = n_GLTextureRGBFloat();
-	depthmap = LoadTextureFromPNGFile("level3.png");
+	//depthmap = LoadTextureFromPNGFile("dum.png");
+	//depthmap = LoadTextureFromTGAFile("dum.tga");
+	depthmap = loadBMP_custom("dum.bmp");
 
 	//fyzika
 	TBmp * bitmap;
-	if(!(bitmap = CPngCodec::p_Load_PNG("level3.png"))){
+	if(!(bitmap = CPngCodec::p_Load_PNG("dum.png"))){
 		fprintf(stderr, "error: failed to load \'.png file\'\n");
 		return false;
 	}
@@ -268,7 +269,7 @@ bool InitGLObjects()
 	n_source_tex = 0;
 
 	//pridani kapky s true cistenim hladiny
-	drawDrop(true, 0.5, 0.5);
+	drawDrop(true, -0.5, -0.5);
 
 	return true;
 }
@@ -567,7 +568,7 @@ void OnIdle(CGL30Driver &driver)
 	// vycistime framebuffer
 
 	glBindTexture(GL_TEXTURE_2D, 0);//nechci omylem vykreslovat posledni bind. texturu
-
+	
 	for(int i = 0; i < 3; i++){	
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, depthmap);
