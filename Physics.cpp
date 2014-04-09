@@ -48,6 +48,7 @@ void BoxDebug::generate(TBmp * bmpfile){
 	}*/
 
 	//sloucit kostky
+	/*
 	for(unsigned int i = 0; i < boxes.size(); i++){	
 		if(i+1 != boxes.size()){
 			Box a = boxes.at(i);
@@ -55,6 +56,7 @@ void BoxDebug::generate(TBmp * bmpfile){
 			std::cout << "box no." << i << ":" << "vMinx: " << a.vMin.x << " vMiny: " << a.vMin.y << "vMaxx: " << a.vMax.x << " vMaxy: " << a.vMax.y << std::endl;
 			std::cout << "box no." << i+1 << ":" << "vMinx: " << b.vMin.x << " vMiny: " << b.vMin.y << "vMaxx: " << b.vMax.x << " vMaxy: " << b.vMax.y << std::endl;
 			if((a.vMin.y == b.vMin.y) && (a.vMin.x+1 == b.vMin.x)){
+			//if((a.vMin.y == b.vMin.y && a.vMin.x+(a.vMin.x - a.vMax.x) == b.vMin.x) && (a.vMax.y == b.vMax.y && a.vMax.x+(b.vMin.x - b.vMax.x) == b.vMax.x)){
 				Box merge;
 				merge.vMin.x = a.vMin.x;
 				merge.vMin.y = a.vMin.y;
@@ -64,6 +66,39 @@ void BoxDebug::generate(TBmp * bmpfile){
 				boxes.erase(boxes.begin() + i+1);
 			}
 		}
+	}*/
+
+	//najit vhodne kostky ke slouceni
+	for(unsigned int i = 0; i < boxes.size(); i++){	
+		Box a = boxes.at(i);
+		int boxwidth = (int) (a.vMax.x - a.vMin.x);
+		int boxheight = (int) (a.vMax.y - a.vMin.y);
+		std::cout << "a box no." << i << ":" << "vMinx: " << a.vMin.x << " vMiny: " << a.vMin.y << "vMaxx: " << a.vMax.x << " vMaxy: " << a.vMax.y << " width: " << boxwidth << " height: " << boxheight << std::endl;
+		//bool canMerge = true;
+		//while(canMerge){
+			for(unsigned int j = i+1; j < boxes.size(); j++){	
+				std::cout << "j:" << j << std::endl;
+				Box b = boxes.at(j);
+				int boxwidthb = (int) (b.vMax.x - b.vMin.x);
+				int boxheightb = (int) (b.vMax.y - b.vMin.y);
+
+				if((a.vMin.y == b.vMin.y && a.vMin.x+boxwidth == b.vMin.x) && (a.vMax.y == b.vMax.y && a.vMax.x+boxwidthb == b.vMax.x)){
+					std::cout << "b box no." << j << ":" << "vMinx: " << b.vMin.x << " vMiny: " << b.vMin.y << "vMaxx: " << b.vMax.x << " vMaxy: " << b.vMax.y << " width: " << boxwidthb << " height: " << boxheightb << std::endl;
+					a.vMax = b.vMax;
+					boxwidth = (int) (a.vMax.x - a.vMin.x);
+					boxheight = (int) (a.vMax.y - a.vMin.y);
+					boxes.erase(boxes.begin() + j);
+					j--;
+					std::cout << "slouceno" << std::endl;
+				}
+
+			}
+			boxes.at(i) = a;
+			//prosel vsechny ostatni
+			//canMerge = false;
+		//}
+
+
 	}
 
 	//pripravit shader
