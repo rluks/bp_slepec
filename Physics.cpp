@@ -109,6 +109,40 @@ void BoxDebug::generate(TBmp * bmpfile){
 	
 }
 
+void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys k, glm::vec2 * movement, glm::vec2 * movementShift)
+{
+	if(k.up)
+		movementShift->y = -1.0;
+	if(k.down)
+		movementShift->y = 1.0;
+	if(k.right)
+		movementShift->x = 1.0;
+	if(k.left)
+		movementShift->x = -1.0;
+
+	if(k.up && k.down)
+		movementShift->y = 0.0;
+	if(k.left && k.right)
+		movementShift->x = 0.0;
+
+	movement->x += frame_time * 0.25f * movementShift->x * 0.01f;
+	movement->y += frame_time * 0.5f * movementShift->y * 0.01f;
+
+	/*
+	if(k.up)
+		movement.y += frame_time * 0.5f * movementShift.y * 0.01f;
+	else{
+		//float gravity = (boxDebug.verticOver) ? 0.0 : 0.0000005f;
+		float gravity = 0.0000005f;
+
+		movement.y += frame_time * (velocityVec.y + frame_time * gravity/2.0f);
+		velocityVec.y += frame_time * gravity;
+	}
+
+	std::cout << "velocityVec.y: " << velocityVec.y << std::endl;*/
+
+	
+}
 
 void BoxDebug::SeparatingAxisTheorem(Box a, glm::vec2 * movement){
 
@@ -129,13 +163,14 @@ void BoxDebug::SeparatingAxisTheorem(Box a, glm::vec2 * movement){
 		bool horizCol = false;
 
 		//smer
-		bool verticOver = false;
+		verticOver = false;
 		bool horizLeft = false;
 
 		//mira protnuti
 		float verticInter;
 		float horizInter;
 		
+		/*
 		if(aprojx.y >= bprojx.x && bprojx.y >= aprojx.x){
 			horizCol = true;
 
@@ -150,9 +185,9 @@ void BoxDebug::SeparatingAxisTheorem(Box a, glm::vec2 * movement){
 				std::cout << "NEZNAM HORIZONTAL" << std::endl;//uvnitr
 				horizInter = 0.0;
 			}
-		}
+		}*/
 		
-		/*
+		
 		if(aprojx.y < bprojx.x){
 			//std::cout << "A B" << std::endl;
 		}else if(bprojx.y < aprojx.x){
@@ -160,7 +195,19 @@ void BoxDebug::SeparatingAxisTheorem(Box a, glm::vec2 * movement){
 		}else{
 			//std::cout << "ine" << std::endl;
 			horizCol = true;
-		}*/
+
+			if(aprojx.x >= bprojx.x && aprojx.x <= bprojx.y){//B A
+				//std::cout << "B A" << std::endl;
+				horizInter = bprojx.y - aprojx.x;
+			}else if(aprojx.y <= bprojx.y && aprojx.y >= bprojx.x){//A B
+				//std::cout << "A B" << std::endl;
+				horizInter = aprojx.y - bprojx.y;
+				horizLeft = true;
+			}else{
+				//std::cout << "NEZNAM HORIZONTAL" << std::endl;//kostka uvnitr
+				horizInter = 0.0;
+			}
+		}
 		
 		if(aprojy.y >= bprojy.x && bprojy.y >= aprojy.x){
 			verticCol = true;
@@ -191,33 +238,22 @@ void BoxDebug::SeparatingAxisTheorem(Box a, glm::vec2 * movement){
 		}*/
 
 		if(horizCol && verticCol){
-			std::cout << "movement.x: " << movement->x << " movement.y: " << movement->y << std::endl;
-			std::cout << "hrac(Min(" << a.vMin.x << ", " << a.vMin.y <<"), Max(" << a.vMax.x <<", " << a.vMax.y << ")) s " << "Min(" << b.vMin.x << ", " << b.vMin.y <<"), Max(" << b.vMax.x <<", " << b.vMax.y << ")" << std::endl;
+			//std::cout << "movement.x: " << movement->x << " movement.y: " << movement->y << std::endl;
+			//std::cout << "hrac(Min(" << a.vMin.x << ", " << a.vMin.y <<"), Max(" << a.vMax.x <<", " << a.vMax.y << ")) s " << "Min(" << b.vMin.x << ", " << b.vMin.y <<"), Max(" << b.vMax.x <<", " << b.vMax.y << ")" << std::endl;
 
 			//upravit movement, aby nedoslo ke kolizi
+			float gap = 0.1f;
 			if(verticInter < horizInter){
-				if(verticOver)
-					movement->y = b.vMin.y - (a.vMax.y - a.vMin.y) - 0.1;
-				else
-					movement->y = b.vMax.y;
+				if(verticOver){
+					movement->y = b.vMin.y - (a.vMax.y - a.vMin.y) - gap;
+				}else
+					movement->y = b.vMax.y + gap;
 			}else{
 				if(horizLeft)
-					movement->x = b.vMin.x - (a.vMax.x - a.vMin.x);
+					movement->x = b.vMin.x - (a.vMax.x - a.vMin.x) - gap;
 				else
-					movement->x = b.vMax.x;
+					movement->x = b.vMax.x + gap;
 			}
-
-			/*
-			if(aprojy.y >= bprojy.x && aprojy.y <= bprojy.y)//A nad B
-				movement->y = b.vMin.y - (a.vMax.y - a.vMin.y);
-			else if(bprojy.y >= aprojy.x && bprojy.y <= aprojy.y)//B nad A
-				movement->y = b.vMax.y;
-			else if(aprojx.x > bprojx.x && aprojx.x <= bprojx.y)//B A
-				movement->x = b.vMax.x;
-			//else if()
-			else
-				std::cout << "NEZNAMA KOLIZE" << std::endl
-			*/
 		}
 	}
 }
@@ -227,6 +263,8 @@ void BoxDebug::drawBox(Box a){
 
 	float a_vertices[] = {a.vMin.x, a.vMin.y, 1, /**/a.vMax.x , a.vMin.y, 1,/**/a.vMax.x, a.vMax.y, 1,/**/a.vMin.x, a.vMax.y, 1};
 	int a_indices[] = {0, 1, 1, 2, 2, 3, 3, 0, 0, 2, 1, 3};
+
+	//std::cout << "drawBox: vMin: " << a.vMin.x << ", " << a.vMin.y << std::endl;
 		
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);

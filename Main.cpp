@@ -53,7 +53,7 @@ static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_obje
 static GLuint n_texture[2];//r-height,g-y velocity,b-x velocity
 static GLuint depthmap;
 
-//shadery
+//shadery TODOprejmenovat na shaderShader
 ShaderBlur blur;
 ShaderPass pass;
 ShaderVelocity velocity;
@@ -64,6 +64,7 @@ static DWORD frame_time;
 Keys k = {false, false, false, false, false};
 glm::vec2 movement;//posun po obrazovce
 glm::vec2 movementShift;//pozadovany posun
+glm::vec2 velocityVec;
 
 
 std::vector<POINTS> pointsQueue;
@@ -383,12 +384,14 @@ int main(int n_arg_num, const char **p_arg_list)
 	}
 	// vyrobime objekty OpenGL, nutne ke kresleni
 
+	//inicializace promennych
 	movement.x = 16.0;
 	movement.y = 12.0;
+	velocityVec.y = 0.0;
 
 	DWORD start_time =  GetTickCount(); // cas pro animaci
 	DWORD end_time;
-	frame_time = 15;
+	frame_time = 15; //0.015 tj cca 1/60
 
 	MSG t_msg;
 	while(b_running) {
@@ -514,27 +517,7 @@ void onResize(int n_x, int n_y, int n_new_width, int n_new_height)
 	glViewport(n_x, n_y, n_new_width, n_new_height);
 }
 
-void calculateTimeBasedMovement(DWORD frame_time)
-{
-	if(k.up)
-		movementShift.y = -1.0;
-	if(k.down)
-		movementShift.y = 1.0;
-	if(k.right)
-		movementShift.x = 1.0;
-	if(k.left)
-		movementShift.x = -1.0;
 
-	if(k.up && k.down)
-		movementShift.y = 0.0;
-	if(k.left && k.right)
-		movementShift.x = 0.0;
-
-	movement.x += frame_time * 0.25f * movementShift.x * 0.01f;
-	movement.y += frame_time * 0.5f * movementShift.y * 0.01f;
-
-	
-}
 
 void drawPingPong(){
 
@@ -616,7 +599,7 @@ void OnIdle(CGL30Driver &driver)
 	}
 
 	//std::cout << "keys: up: " << k.up << " down: " << k.down << " left: " << k.left  << " right: " << k.right << std::endl;
-	calculateTimeBasedMovement(frame_time);
+	boxDebug.calculateTimeBasedMovement(frame_time, k, &movement, &movementShift);
 
 	//std::cout << "movement.x: " << movement.x << " movement.y: " << movement.y << std::endl;
 	hero.updateBox(movement);
