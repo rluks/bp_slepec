@@ -63,7 +63,6 @@ ShaderPoint point;
 static DWORD frame_time;
 Keys k = {false, false, false, false, false};
 glm::vec2 movement;//posun po obrazovce
-glm::vec2 movementShift;//pozadovany posun
 glm::vec2 velocityVec;
 
 
@@ -599,18 +598,21 @@ void OnIdle(CGL30Driver &driver)
 	}
 
 	//std::cout << "keys: up: " << k.up << " down: " << k.down << " left: " << k.left  << " right: " << k.right << std::endl;
-	boxDebug.calculateTimeBasedMovement(frame_time, k, &movement, &movementShift);
+	boxDebug.calculateTimeBasedMovement(frame_time, k, &movement);
 
 	//std::cout << "movement.x: " << movement.x << " movement.y: " << movement.y << std::endl;
 	hero.updateBox(movement);
 	boxDebug.SeparatingAxisTheorem(hero.box, &movement);
 	hero.draw();
 	
-	movementShift.x = 0.0;
-	movementShift.y = 0.0;
+	//movementShift.x -= 0.2;//jen v jednom smeru
+	//movementShift.x = (movementShift.x < 0.0) ? 0.0 : movementShift.x;
+	boxDebug.movementShift.x = 0.0;
+	boxDebug.movementShift.y = 0.0;
 
 	boxDebug.draw();
 	boxDebug.drawBox(hero.box);
+
 	//if(cnt == 100){
 		cnt = 0;
 	//}
