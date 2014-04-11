@@ -271,6 +271,22 @@ void ShaderPoint::bind(){
 	}
 }
 
+//bod simple
+bool ShaderPointSimple::compile(){
+	vertexpath  = "pointSimple.vx.shader";
+	fragmentpath = "pointSimple.fr.shader";
+	if(!Shader::compile(&n_vertex_shader_pointSimple, &n_fragment_shader_pointSimple, &n_program_object_pointSimple))
+		return false;
+
+	return true;
+}
+
+void ShaderPointSimple::bind(){
+	glUseProgram(n_program_object_pointSimple);
+	{
+	}
+}
+
 
 
 //boxes

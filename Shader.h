@@ -80,6 +80,13 @@ public:
 	void bind();
 };
 
+struct ShaderPointSimple : public Shader {
+public:
+	GLuint n_vertex_shader_pointSimple, n_fragment_shader_pointSimple, n_program_object_pointSimple;
+	bool compile();
+	void bind();
+};
+
 struct ShaderBoxes : public Shader {
 public:
 	GLuint n_vertex_shader_boxes, n_fragment_shader_boxes, n_program_object_boxes;

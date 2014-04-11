@@ -121,5 +121,11 @@
     <None Include="boxes.vx.shader">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="pointSimple.fr.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="pointSimple.vx.shader">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
