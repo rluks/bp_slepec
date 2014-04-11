@@ -22,7 +22,7 @@ public:
 
 	glm::vec2 movementDirection;
 	//info o kolizich
-	bool verticOver;
+	static bool standingOn;
 	float gravity;
 
 	void generate(TBmp *);

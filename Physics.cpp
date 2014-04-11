@@ -1,5 +1,7 @@
 #include "Physics.h"
 
+bool BoxDebug::standingOn = false;
+
 void BoxDebug::generate(TBmp * bmpfile){
 
 	/*
@@ -132,20 +134,12 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys key, Hero * her
 
 	gravity = 0.03f;
 
-	//gravity = (verticOver) ? 0.0f : 0.03f;//kolize hrace se zemi, gravitace off
-	//std::cout << "gravity:" << gravity << std::endl;
-
-	/*
-	if(hero->jumping && verticOver)
-		hero->jumping = false;
-	*/
-
 	if(hero->jumping == false && key.up){
 		hero->velocity.y = -0.5;
 		hero->jumping = true;
 	}
 
-	if(hero->jumping){
+	if(hero->jumping || !standingOn){
 		hero->position.y += hero->velocity.y;
 		hero->velocity.y += gravity;
 	}
@@ -176,26 +170,13 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys key, Hero * her
 
 	//position += velocity * dt;
     //velocity += acceleration * dt;
-
-	/*
-	if(k.up)
-		position.y += frame_time * 0.5f * movementDirection.y * 0.01f;
-	else{
-		//float gravity = (boxDebug.verticOver) ? 0.0 : 0.0000005f;
-		float gravity = 0.0000005f;
-
-		position.y += frame_time * (velocityVec.y + frame_time * gravity/2.0f);
-		velocityVec.y += frame_time * gravity;
-	}
-
-	std::cout << "velocityVec.y: " << velocityVec.y << std::endl;*/
-
 	
 }
 
 void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 
 	Box a = hero->box;
+	standingOn = false;
 	for(unsigned int i = 0; i < boxes.size(); i++){
 
 		Box b = boxes.at(i);
@@ -213,7 +194,7 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 		bool horizCol = false;
 
 		//smer
-		verticOver = false;
+		bool verticOver = false;
 		bool horizLeft = false;
 
 		//mira protnuti
@@ -288,20 +269,24 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 				if(verticOver){
 					hero->position.y = b.vMin.y - (a.vMax.y - a.vMin.y) - gap;
 					hero->jumping = false;
+					standingOn = true;
 					//hero->position.y -= verticInter;
-				}else
+				}else{
 					hero->position.y = b.vMax.y + gap;
 					//hero->position.y += verticInter;
+				}
 			}else{
-				if(horizLeft)
+				if(horizLeft){
 					hero->position.x = b.vMin.x - (a.vMax.x - a.vMin.x) - gap;
 					//hero->position.x -= horizInter;
-				else
+				}else{
 					hero->position.x = b.vMax.x + gap;
 					//hero->position.x += horizInter;
+				}
 			}
-		}
-	}
+
+		}//horizCol && verticCol
+	}//for boxes
 }
 
 
