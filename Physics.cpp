@@ -130,9 +130,9 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys key, Hero * her
 {
 	setMovementDirection(key);
 
-	std::cout << "y:" << hero->position.y << std::endl;
+	//std::cout << "y:" << hero->position.y << std::endl;
 
-	////
+	/*
 	float gravity = 0.03f;
 	if(hero->jumping == false && key.space){
 		hero->velocity.y = -0.5;
@@ -154,14 +154,12 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys key, Hero * her
 	}
 	else
 		hero->moving = false;
-	////
-
 	if(hero->moving)
-		hero->position.x += (/*frame_time * 0.1f * */hero->velocity.x * movementDirection.x);
+		hero->position.x += (frame_time * 0.1f * hero->velocity.x * movementDirection.x);
+	*/
 
-
-	//position->x += frame_time * 0.25f * movementDirection.x * 0.01f;
-	//position->y += frame_time * 0.5f * movementDirection.y * 0.01f;
+	hero->position.x += frame_time * 0.25f * movementDirection.x * 0.01f;
+	hero->position.y += frame_time * 0.5f * movementDirection.y * 0.01f;
 
 
 	//position += velocity * dt;
@@ -208,62 +206,27 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 
 		//mira protnuti
 		float verticInter;
-		float horizInter;
-		
-		/*
-		if(aprojx.y >= bprojx.x && bprojx.y >= aprojx.x){
-			horizCol = true;
-
-			if(aprojx.x >= bprojx.x && aprojx.x <= bprojx.y){//B A
-				//std::cout << "B A" << std::endl;
-				horizInter = bprojx.y - aprojx.x;
-			}else if(aprojx.y <= bprojx.y && aprojx.y >= bprojx.x){//A B
-				//std::cout << "A B" << std::endl;
-				horizInter = aprojx.y - bprojx.y;
-				horizLeft = true;
-			}else{
-				std::cout << "NEZNAM HORIZONTAL" << std::endl;//uvnitr
-				horizInter = 0.0;
-			}
-		}*/
-		
+		float horizInter;	
 		
 		if(aprojx.y < bprojx.x){
 			//std::cout << "A B" << std::endl;
 		}else if(bprojx.y < aprojx.x){
 			//std::cout << "B A" << std::endl;
 		}else{
-			//std::cout << "ine" << std::endl;
+			//std::cout << "horizontalni kolize" << std::endl;
 			horizCol = true;
 
-			if(aprojx.x >= bprojx.x && aprojx.x <= bprojx.y){//B A
-				//std::cout << "B A" << std::endl;
+			if(aprojx.x > bprojx.x && aprojx.x <= bprojx.y){//B A
 				horizInter = bprojx.y - aprojx.x;
-			}else if(aprojx.y <= bprojx.y && aprojx.y >= bprojx.x){//A B
-				//std::cout << "A B" << std::endl;
-				horizInter = aprojx.y - bprojx.y;
+			}else if(aprojx.y < bprojx.y && aprojx.y >= bprojx.x){//A B
+				horizInter = aprojx.y - bprojx.x;
 				horizLeft = true;
 			}else{
-				//std::cout << "NEZNAM HORIZONTAL" << std::endl;//kostka uvnitr
-				horizInter = 0.0;
+				std::cout << "kostka uvnitr HORIZONTAL" << std::endl;
+				horizInter = 1000.0f;//musime se pohnout v Y ose
 			}
 		}
 		
-		if(aprojy.y >= bprojy.x && bprojy.y >= aprojy.x){
-			verticCol = true;
-
-			if(aprojy.y >= bprojy.x && aprojy.y <= bprojy.y){//A nad B
-				verticInter = aprojy.x - bprojy.y;
-				verticOver = true;
-			}else if(bprojy.y >= aprojy.x && bprojy.y <= aprojy.y){//B nad A
-				verticInter = bprojy.x - aprojy.y;
-			}else{
-				std::cout << "NEZNAM VERTICAL" << std::endl;
-				verticInter = 0.0;
-			}
-		}
-
-		/*
 		if(aprojy.y < bprojy.x){
 			//std::cout << "A" << std::endl;
 			//std::cout << "B" << std::endl;
@@ -273,26 +236,48 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 			//std::cout << "A" << std::endl;
 		}
 		else{
-			//std::cout << "ine" << std::endl;
+			//std::cout << "vertikalni kolize" << std::endl;
 			verticCol = true;
-		}*/
+
+			if(aprojy.y >= bprojy.x && aprojy.y < bprojy.y){//A nad B
+				verticInter = aprojy.y - bprojy.x;
+				verticOver = true;
+			}else if(aprojy.x <= bprojy.y && aprojy.x > bprojy.x){//B nad A
+				verticInter = bprojy.y - aprojy.x;
+			}else{
+				std::cout << "kostka uvnitr VERTICAL" << std::endl;
+				verticInter = 1000.0f;//musime se pohnout v X ose
+			}
+		}
 
 		if(horizCol && verticCol){
-			//std::cout << "position.x: " << position->x << " position.y: " << position->y << std::endl;
-			//std::cout << "hrac(Min(" << a.vMin.x << ", " << a.vMin.y <<"), Max(" << a.vMax.x <<", " << a.vMax.y << ")) s " << "Min(" << b.vMin.x << ", " << b.vMin.y <<"), Max(" << b.vMax.x <<", " << b.vMax.y << ")" << std::endl;
+			std::cout << "hrac(Min(" << a.vMin.x << ", " << a.vMin.y <<"), Max(" << a.vMax.x <<", " << a.vMax.y << ")) s " << "Min(" << b.vMin.x << ", " << b.vMin.y <<"), Max(" << b.vMax.x <<", " << b.vMax.y << ")" << std::endl;
+
+			if(verticOver)std::cout << "A nad B" << std::endl;
+			else std::cout << "A pod B" << std::endl;
+
+			if(horizLeft)std::cout << "A B" << std::endl;
+			else std::cout << "B A" << std::endl;
 
 			//upravit position, aby nedoslo ke kolizi
 			float gap = 0.1f;
+			std::cout << "verticInter:" << verticInter << std::endl;
+			std::cout << " horizInter:" << horizInter << std::endl;
 			if(verticInter < horizInter){
+				std::cout << "verticInter < horizInter" << std::endl;
 				if(verticOver){
 					hero->position.y = b.vMin.y - (a.vMax.y - a.vMin.y) - gap;
+					//hero->position.y -= verticInter;
 				}else
 					hero->position.y = b.vMax.y + gap;
+					//hero->position.y += verticInter;
 			}else{
 				if(horizLeft)
 					hero->position.x = b.vMin.x - (a.vMax.x - a.vMin.x) - gap;
+					//hero->position.x -= horizInter;
 				else
 					hero->position.x = b.vMax.x + gap;
+					//hero->position.x += horizInter;
 			}
 		}
 	}

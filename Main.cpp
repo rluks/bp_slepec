@@ -247,11 +247,11 @@ bool InitGLObjects()
 	//textury
 	n_texture[1] = n_GLTextureRGBFloat();
 	n_texture[0] = n_GLTextureRGBFloat();
-	depthmap = LoadTextureFromPNGFile("test.png");
+	depthmap = LoadTextureFromPNGFile("dum.png");
 
 	//fyzika
 	TBmp * bitmap;
-	if(!(bitmap = CPngCodec::p_Load_PNG("test.png"))){
+	if(!(bitmap = CPngCodec::p_Load_PNG("dum.png"))){
 		fprintf(stderr, "error: failed to load \'.png file\'\n");
 		return false;
 	}
@@ -610,6 +610,8 @@ void OnIdle(CGL30Driver &driver)
 	boxDebug.draw();
 	boxDebug.drawBox(hero.box);
 
+	boxDebug.movementDirection.x = 0.0;
+	boxDebug.movementDirection.y = 0.0;
 
 	driver.Blit(); // preklopi buffery, zobrazi co jsme nakreslili
 }
