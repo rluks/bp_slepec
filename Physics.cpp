@@ -109,8 +109,8 @@ void BoxDebug::generate(TBmp * bmpfile){
 	
 }
 
-void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys k, glm::vec2 * position)
-{
+void BoxDebug::setMovementDirection(Keys k){
+
 	if(k.up)
 		movementDirection.y = -1.0;
 	if(k.down)
@@ -124,6 +124,11 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys k, glm::vec2 * 
 		movementDirection.y = 0.0;
 	if(k.left && k.right)
 		movementDirection.x = 0.0;
+}
+
+void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys k, glm::vec2 * position, glm::vec2 * velocity)
+{
+	setMovementDirection(k);
 
 	position->x += frame_time * 0.25f * movementDirection.x * 0.01f;
 	position->y += frame_time * 0.5f * movementDirection.y * 0.01f;

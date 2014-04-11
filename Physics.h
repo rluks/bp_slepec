@@ -27,7 +27,8 @@ public:
 	bool verticOver;
 
 	void generate(TBmp *);
-	void calculateTimeBasedMovement(DWORD, Keys, glm::vec2 *);
+	void setMovementDirection(Keys);
+	void calculateTimeBasedMovement(DWORD, Keys, glm::vec2 *, glm::vec2 *);
 	void SeparatingAxisTheorem(Box, glm::vec2 *);
 	void draw();
 	void drawBox(Box);
