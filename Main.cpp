@@ -53,12 +53,12 @@ static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_obje
 static GLuint n_texture[2];//r-height,g-y velocity,b-x velocity
 static GLuint depthmap;
 
-//shadery TODOprejmenovat na shaderShader
-ShaderBlur blur;
-ShaderPass pass;
-ShaderVelocity velocity;
-ShaderHeight height;
-ShaderPoint point;
+//shadery
+ShaderBlur blurShader;
+ShaderPass passShader;
+ShaderVelocity velocityShader;
+ShaderHeight heightShader;
+ShaderPoint pointShader;
 
 static DWORD frame_time;
 Keys k = {false, false, false, false, false};
@@ -119,7 +119,7 @@ void drawDrop2(bool clear, float x, float y){
 		}
 		glBindVertexArray(0);
 
-		point.bind();
+		pointShader.bind();
 		glBindVertexArray(bodVAO);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE);//vstup vystup barva
@@ -158,7 +158,7 @@ void drawDrop(bool clear, float x, float y){
 		}
 		glBindVertexArray(0);
 
-		point.bind();
+		pointShader.bind();
 		glBindVertexArray(bodVAO);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE);//vstup vystup barva
@@ -236,11 +236,11 @@ bool InitGLObjects()
 	// vytvorime a nastavime vertex array objekt - objekt na GPU, ktery si pamatuje konfiguraci nastaveni VBO. pak pri kresleni volame jen glBindVertexArray() namisto vsech prikazu v bloku vyse
 
 	//shadery
-	blur.compile();
-	pass.compile();
-	velocity.compile();
-	height.compile();
-	point.compile();
+	blurShader.compile();
+	passShader.compile();
+	velocityShader.compile();
+	heightShader.compile();
+	pointShader.compile();
 
 	hero.init();
 
@@ -555,8 +555,8 @@ void OnIdle(CGL30Driver &driver)
 		glBindTexture(GL_TEXTURE_2D, depthmap);
 		glActiveTexture(GL_TEXTURE0);
 
-		velocity.bind(datawidth, dataheight);	drawPingPong();
-		height.bind(datawidth, dataheight);	drawPingPong();
+		velocityShader.bind(datawidth, dataheight);	drawPingPong();
+		heightShader.bind(datawidth, dataheight);	drawPingPong();
 	}
 
 
@@ -573,7 +573,7 @@ void OnIdle(CGL30Driver &driver)
 		t_mvp = t_projection * t_modelview;
 	}
 
-	pass.bind(t_mvp); // ted kreslite do okna, chcete videt vysledek
+	passShader.bind(t_mvp); // ted kreslite do okna, chcete videt vysledek
 	DrawScene();
 
 	//TODO
