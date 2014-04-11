@@ -597,26 +597,28 @@ void OnIdle(CGL30Driver &driver)
 		drawDrop2(false, movement.x + hero.width, movement.y + hero.height);
 	}
 
-	//std::cout << "keys: up: " << k.up << " down: " << k.down << " left: " << k.left  << " right: " << k.right << std::endl;
+	//nastavit novy pohyb na zaklade stisknutych tlacitek
 	boxDebug.calculateTimeBasedMovement(frame_time, k, &movement);
-
-	//std::cout << "movement.x: " << movement.x << " movement.y: " << movement.y << std::endl;
 	hero.updateBox(movement);
+
+	//zjistit kolize pro novy pohyb
+	//poupravit novy pohyb, aby nedoslo ke kolizi
 	boxDebug.SeparatingAxisTheorem(hero.box, &movement);
-	hero.draw();
+	
+
+	//aplikovat pohyb
+
 	
 	//movementDirection.x -= 0.2;//jen v jednom smeru
 	//movementDirection.x = (movementDirection.x < 0.0) ? 0.0 : movementDirection.x;
 	boxDebug.movementDirection.x = 0.0;
 	boxDebug.movementDirection.y = 0.0;
 
+	//vykreslit
+	hero.draw();
 	boxDebug.draw();
 	boxDebug.drawBox(hero.box);
 
-	//if(cnt == 100){
-		cnt = 0;
-	//}
-	cnt++;
 
 	driver.Blit(); // preklopi buffery, zobrazi co jsme nakreslili
 }
