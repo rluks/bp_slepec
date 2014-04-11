@@ -12,14 +12,7 @@ Collision::Collision(enum collisionType collisType, glm::vec2 p1, glm::vec2 p2) 
 bool BoxDebug::standingOn = false;
 
 void BoxDebug::generate(TBmp * bmpfile){
-
-	/*
-	for(int i = 0; i < bmpfile->n_width*bmpfile->n_height; i++){
-		unsigned char pixel = bmpfile->p_buffer[i];
-		char out = (pixel == 0xFF) ? ' ' : '*'; 
-		printf("|%d|", pixel);
-	}*/
-		
+	
 	boxes.resize(0);
 	//std::cout << "prvni pixel +, 0x00 *, 0xFF mezera" << std::endl;
 	std::string line("+");
@@ -38,38 +31,6 @@ void BoxDebug::generate(TBmp * bmpfile){
 		//std::cout << "|" << line << "|" << std::endl;
 		line.clear();
 	}
-
-	//rucne vytvorena testovaci data
-	/*
-	Box a;
-	Box b;
-	a.vMin = glm::vec2(0.0, 0.0);
-	a.vMax = glm::vec2(1.0, 1.0);
-	b.vMin = glm::vec2(5.0, 3.0);
-	b.vMax = glm::vec2(7.0, 6.0);
-
-	boxes.push_back(a);
-	boxes.push_back(b);*/
-
-	//sloucit kostky po 2
-	/*
-	for(unsigned int i = 0; i < boxes.size(); i++){	
-		if(i+1 != boxes.size()){
-			Box a = boxes.at(i);
-			Box b = boxes.at(i+1);
-			std::cout << "box no." << i << ":" << "vMinx: " << a.vMin.x << " vMiny: " << a.vMin.y << "vMaxx: " << a.vMax.x << " vMaxy: " << a.vMax.y << std::endl;
-			std::cout << "box no." << i+1 << ":" << "vMinx: " << b.vMin.x << " vMiny: " << b.vMin.y << "vMaxx: " << b.vMax.x << " vMaxy: " << b.vMax.y << std::endl;
-			if((a.vMin.y == b.vMin.y) && (a.vMin.x+1 == b.vMin.x)){
-				Box merge;
-				merge.vMin.x = a.vMin.x;
-				merge.vMin.y = a.vMin.y;
-				merge.vMax.x = b.vMax.x;
-				merge.vMax.y = b.vMax.y;
-				boxes.at(i) = merge;
-				boxes.erase(boxes.begin() + i+1);
-			}
-		}
-	}*/
 
 	//najit vhodne kostky ke slouceni na delku
 	for(unsigned int i = 0; i < boxes.size(); i++){	
@@ -216,8 +177,7 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 		bool horizLeft = false;
 
 		//mira protnuti
-		float verticInter;
-		float horizInter;	
+		float verticInter, horizInter;	
 		
 		if(aprojx.y < bprojx.x){
 			//std::cout << "A B" << std::endl;
@@ -261,35 +221,18 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 			}
 		}
 
-		if(horizCol && verticCol){
+		if(horizCol && verticCol){//doslo ke kolizi
 
-			/*
-			//if(b.vMin.x != 0 && b.vMin.y != 23 && b.vMax.x != 32 && b.vMax.y != 24){
-				std::cout << "hrac(Min(" << a.vMin.x << ", " << a.vMin.y <<"), Max(" << a.vMax.x <<", " << a.vMax.y << ")) s " << "Min(" << b.vMin.x << ", " << b.vMin.y <<"), Max(" << b.vMax.x <<", " << b.vMax.y << ")" << std::endl;
-
-				if(verticOver)std::cout << "A nad B" << std::endl;
-				else std::cout << "A pod B" << std::endl;
-
-				if(horizLeft)std::cout << "A B" << std::endl;
-				else std::cout << "B A" << std::endl;
-
-				std::cout << "verticInter:" << verticInter << std::endl;
-				std::cout << " horizInter:" << horizInter << std::endl;
-			//}
-			*/
-
-			//upravit position, aby nedoslo ke kolizi
 			float gap = 0.0f;	
 
+			//krajni body kolize
 			float mostLeftX;
 			float mostRightX;
 			float mostTopY;
 			float mostBottomY;
 			collisionType type;
 
-			if(verticInter < horizInter){
-
-				//std::cout << "verticInter < horizInter" << std::endl;
+			if(verticInter < horizInter){//protnuti ve vertikalni ose je mensi
 
 				mostLeftX = (a.vMin.x < b.vMin.x) ? b.vMin.x : a.vMin.x;
 				mostRightX = (a.vMax.x > b.vMax.x) ? b.vMax.x : a.vMax.x;
@@ -395,8 +338,6 @@ void BoxDebug::drawBox(Box a){
 
 	float a_vertices[] = {a.vMin.x, a.vMin.y, 1, /**/a.vMax.x , a.vMin.y, 1,/**/a.vMax.x, a.vMax.y, 1,/**/a.vMin.x, a.vMax.y, 1};
 	int a_indices[] = {0, 1, 1, 2, 2, 3, 3, 0, 0, 2, 1, 3};
-
-	//std::cout << "drawBox: vMin: " << a.vMin.x << ", " << a.vMin.y << std::endl;
 		
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
