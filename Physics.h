@@ -27,7 +27,7 @@ public:
 	void generate(TBmp *);
 	void setMovementDirection(Keys);
 	void calculateTimeBasedMovement(DWORD, Keys, Hero *);
-	void SeparatingAxisTheorem(Box, glm::vec2 *);
+	void SeparatingAxisTheorem(Hero *);
 	void draw();
 	void drawBox(Box);
 };

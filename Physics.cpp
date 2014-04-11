@@ -183,8 +183,9 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys key, Hero * her
 	
 }
 
-void BoxDebug::SeparatingAxisTheorem(Box a, glm::vec2 * position){
+void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 
+	Box a = hero->box;
 	for(unsigned int i = 0; i < boxes.size(); i++){
 
 		Box b = boxes.at(i);
@@ -284,14 +285,14 @@ void BoxDebug::SeparatingAxisTheorem(Box a, glm::vec2 * position){
 			float gap = 0.1f;
 			if(verticInter < horizInter){
 				if(verticOver){
-					position->y = b.vMin.y - (a.vMax.y - a.vMin.y) - gap;
+					hero->position.y = b.vMin.y - (a.vMax.y - a.vMin.y) - gap;
 				}else
-					position->y = b.vMax.y + gap;
+					hero->position.y = b.vMax.y + gap;
 			}else{
 				if(horizLeft)
-					position->x = b.vMin.x - (a.vMax.x - a.vMin.x) - gap;
+					hero->position.x = b.vMin.x - (a.vMax.x - a.vMin.x) - gap;
 				else
-					position->x = b.vMax.x + gap;
+					hero->position.x = b.vMax.x + gap;
 			}
 		}
 	}

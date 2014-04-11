@@ -601,16 +601,9 @@ void OnIdle(CGL30Driver &driver)
 
 	//zjistit kolize pro novy pohyb
 	//poupravit novy pohyb, aby nedoslo ke kolizi
-	boxDebug.SeparatingAxisTheorem(hero.box, &hero.position);
-	
+	boxDebug.SeparatingAxisTheorem(&hero);
 
 	//aplikovat pohyb
-
-	
-	//movementDirection.x -= 0.2;//jen v jednom smeru
-	//movementDirection.x = (movementDirection.x < 0.0) ? 0.0 : movementDirection.x;
-	//boxDebug.movementDirection.x = 0.0;
-	//boxDebug.movementDirection.y = 0.0;
 
 	//vykreslit
 	hero.draw();
