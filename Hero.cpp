@@ -38,9 +38,9 @@ void Hero::init(){
 	isInit = true;
 }
 
-void Hero::updateBox(glm::vec2 movement){
-	box.vMin.x = movement.x;
-	box.vMin.y = movement.y;
+void Hero::updateBox(glm::vec2 position){
+	box.vMin.x = position.x;
+	box.vMin.y = position.y;
 	box.vMax.x = box.vMin.x + width;
 	box.vMax.y = box.vMin.y + height;
 }

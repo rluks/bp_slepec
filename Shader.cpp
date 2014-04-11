@@ -189,19 +189,19 @@ bool ShaderHero::compile(){
 
 	n_texture_sampler_uniform_hero = glGetUniformLocation(n_program_object_hero, "n_tex");
 	n_depthmap_sampler_uniform_hero = glGetUniformLocation(n_program_object_hero, "depthmap");
-	movement_vector = glGetUniformLocation(n_program_object_hero, "movement");
+	position_vector = glGetUniformLocation(n_program_object_hero, "position");
 
 
 
 	return true;
 }
 
-void ShaderHero::bind(glm::vec2 movement){
+void ShaderHero::bind(glm::vec2 position){
 	glUseProgram(n_program_object_hero);
 	{
 		glUniform1i(n_texture_sampler_uniform_hero, 0);
 		glUniform1i(n_depthmap_sampler_uniform_hero, 1);
-		glUniform2f(movement_vector, movement.x, movement.y);
+		glUniform2f(position_vector, position.x, position.y);
 
 	}
 }

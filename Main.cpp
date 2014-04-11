@@ -62,7 +62,7 @@ ShaderPoint pointShader;
 
 static DWORD frame_time;
 Keys key = {false, false, false, false, false};
-glm::vec2 movement;//posun po obrazovce
+glm::vec2 position;
 glm::vec2 velocityVec;
 
 
@@ -384,8 +384,8 @@ int main(int n_arg_num, const char **p_arg_list)
 	// vyrobime objekty OpenGL, nutne ke kresleni
 
 	//inicializace promennych
-	movement.x = 16.0;
-	movement.y = 12.0;
+	position.x = 16.0;
+	position.y = 12.0;
 	velocityVec.y = 0.0;
 
 	DWORD start_time =  GetTickCount(); // cas pro animaci
@@ -594,16 +594,16 @@ void OnIdle(CGL30Driver &driver)
 
 	if(key.space){
 		//std::cout << "space" << std::endl;
-		drawDrop2(false, movement.x + hero.width, movement.y + hero.height);
+		drawDrop2(false, position.x + hero.width, position.y + hero.height);
 	}
 
 	//nastavit novy pohyb na zaklade stisknutych tlacitek
-	boxDebug.calculateTimeBasedMovement(frame_time, key, &movement);
-	hero.updateBox(movement);
+	boxDebug.calculateTimeBasedMovement(frame_time, key, &position);
+	hero.updateBox(position);
 
 	//zjistit kolize pro novy pohyb
 	//poupravit novy pohyb, aby nedoslo ke kolizi
-	boxDebug.SeparatingAxisTheorem(hero.box, &movement);
+	boxDebug.SeparatingAxisTheorem(hero.box, &position);
 	
 
 	//aplikovat pohyb

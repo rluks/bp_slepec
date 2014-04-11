@@ -51,7 +51,7 @@ public:
 	GLuint n_vertex_shader_hero, n_fragment_shader_hero, n_program_object_hero;
 	GLuint n_texture_sampler_uniform_hero,
 	n_depthmap_sampler_uniform_hero,
-	movement_vector;
+	position_vector;
 	bool compile();
 	void bind(glm::vec2);
 };

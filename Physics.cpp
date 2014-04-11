@@ -109,7 +109,7 @@ void BoxDebug::generate(TBmp * bmpfile){
 	
 }
 
-void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys k, glm::vec2 * movement)
+void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys k, glm::vec2 * position)
 {
 	if(k.up)
 		movementDirection.y = -1.0;
@@ -125,20 +125,20 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys k, glm::vec2 * 
 	if(k.left && k.right)
 		movementDirection.x = 0.0;
 
-	movement->x += frame_time * 0.25f * movementDirection.x * 0.01f;
-	movement->y += frame_time * 0.5f * movementDirection.y * 0.01f;
+	position->x += frame_time * 0.25f * movementDirection.x * 0.01f;
+	position->y += frame_time * 0.5f * movementDirection.y * 0.01f;
 
 	//position += velocity * dt;
     //velocity += acceleration * dt;
 
 	/*
 	if(k.up)
-		movement.y += frame_time * 0.5f * movementDirection.y * 0.01f;
+		position.y += frame_time * 0.5f * movementDirection.y * 0.01f;
 	else{
 		//float gravity = (boxDebug.verticOver) ? 0.0 : 0.0000005f;
 		float gravity = 0.0000005f;
 
-		movement.y += frame_time * (velocityVec.y + frame_time * gravity/2.0f);
+		position.y += frame_time * (velocityVec.y + frame_time * gravity/2.0f);
 		velocityVec.y += frame_time * gravity;
 	}
 
@@ -147,7 +147,7 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys k, glm::vec2 * 
 	
 }
 
-void BoxDebug::SeparatingAxisTheorem(Box a, glm::vec2 * movement){
+void BoxDebug::SeparatingAxisTheorem(Box a, glm::vec2 * position){
 
 	for(unsigned int i = 0; i < boxes.size(); i++){
 
@@ -241,21 +241,21 @@ void BoxDebug::SeparatingAxisTheorem(Box a, glm::vec2 * movement){
 		}*/
 
 		if(horizCol && verticCol){
-			//std::cout << "movement.x: " << movement->x << " movement.y: " << movement->y << std::endl;
+			//std::cout << "position.x: " << position->x << " position.y: " << position->y << std::endl;
 			//std::cout << "hrac(Min(" << a.vMin.x << ", " << a.vMin.y <<"), Max(" << a.vMax.x <<", " << a.vMax.y << ")) s " << "Min(" << b.vMin.x << ", " << b.vMin.y <<"), Max(" << b.vMax.x <<", " << b.vMax.y << ")" << std::endl;
 
-			//upravit movement, aby nedoslo ke kolizi
+			//upravit position, aby nedoslo ke kolizi
 			float gap = 0.1f;
 			if(verticInter < horizInter){
 				if(verticOver){
-					movement->y = b.vMin.y - (a.vMax.y - a.vMin.y) - gap;
+					position->y = b.vMin.y - (a.vMax.y - a.vMin.y) - gap;
 				}else
-					movement->y = b.vMax.y + gap;
+					position->y = b.vMax.y + gap;
 			}else{
 				if(horizLeft)
-					movement->x = b.vMin.x - (a.vMax.x - a.vMin.x) - gap;
+					position->x = b.vMin.x - (a.vMax.x - a.vMin.x) - gap;
 				else
-					movement->x = b.vMax.x + gap;
+					position->x = b.vMax.x + gap;
 			}
 		}
 	}
