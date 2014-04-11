@@ -130,22 +130,24 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys key, Hero * her
 {
 	setMovementDirection(key);
 
-	//std::cout << "y:" << hero->position.y << std::endl;
+	gravity = 0.03f;
+
+	//gravity = (verticOver) ? 0.0f : 0.03f;//kolize hrace se zemi, gravitace off
+	//std::cout << "gravity:" << gravity << std::endl;
 
 	/*
-	float gravity = 0.03f;
-	if(hero->jumping == false && key.space){
+	if(hero->jumping && verticOver)
+		hero->jumping = false;
+	*/
+
+	if(hero->jumping == false && key.up){
 		hero->velocity.y = -0.5;
 		hero->jumping = true;
 	}
 
 	if(hero->jumping){
-		if(!verticOver){
-			hero->position.y += hero->velocity.y;
-			hero->velocity.y += gravity;
-		}else{
-			hero->jumping = false;
-		}
+		hero->position.y += hero->velocity.y;
+		hero->velocity.y += gravity;
 	}
 
 	if(hero->moving == false && movementDirection.x != 0.0){
@@ -154,13 +156,23 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys key, Hero * her
 	}
 	else
 		hero->moving = false;
+
 	if(hero->moving)
 		hero->position.x += (frame_time * 0.1f * hero->velocity.x * movementDirection.x);
-	*/
 
+	if(key.reset){
+		hero->position.x = start_position_x;
+		hero->position.y = start_position_y;
+		hero->moving = false;
+		hero->jumping = false;
+		hero->velocity.x = 0.0f;
+		hero->velocity.y = 0.0f;
+	}
+
+	/*
 	hero->position.x += frame_time * 0.25f * movementDirection.x * 0.01f;
 	hero->position.y += frame_time * 0.5f * movementDirection.y * 0.01f;
-
+	*/
 
 	//position += velocity * dt;
     //velocity += acceleration * dt;
@@ -222,7 +234,7 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 				horizInter = aprojx.y - bprojx.x;
 				horizLeft = true;
 			}else{
-				std::cout << "kostka uvnitr HORIZONTAL" << std::endl;
+				//std::cout << "kostka uvnitr HORIZONTAL" << std::endl;
 				horizInter = 1000.0f;//musime se pohnout v Y ose
 			}
 		}
@@ -245,28 +257,37 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 			}else if(aprojy.x <= bprojy.y && aprojy.x > bprojy.x){//B nad A
 				verticInter = bprojy.y - aprojy.x;
 			}else{
-				std::cout << "kostka uvnitr VERTICAL" << std::endl;
+				//std::cout << "kostka uvnitr VERTICAL" << std::endl;
 				verticInter = 1000.0f;//musime se pohnout v X ose
 			}
 		}
 
 		if(horizCol && verticCol){
-			std::cout << "hrac(Min(" << a.vMin.x << ", " << a.vMin.y <<"), Max(" << a.vMax.x <<", " << a.vMax.y << ")) s " << "Min(" << b.vMin.x << ", " << b.vMin.y <<"), Max(" << b.vMax.x <<", " << b.vMax.y << ")" << std::endl;
 
-			if(verticOver)std::cout << "A nad B" << std::endl;
-			else std::cout << "A pod B" << std::endl;
+			if(b.vMin.x != 0 && b.vMin.y != 23 && b.vMax.x != 32 && b.vMax.y != 24){
+				std::cout << "hrac(Min(" << a.vMin.x << ", " << a.vMin.y <<"), Max(" << a.vMax.x <<", " << a.vMax.y << ")) s " << "Min(" << b.vMin.x << ", " << b.vMin.y <<"), Max(" << b.vMax.x <<", " << b.vMax.y << ")" << std::endl;
 
-			if(horizLeft)std::cout << "A B" << std::endl;
-			else std::cout << "B A" << std::endl;
+				if(verticOver)std::cout << "A nad B" << std::endl;
+				else std::cout << "A pod B" << std::endl;
+
+				if(horizLeft)std::cout << "A B" << std::endl;
+				else std::cout << "B A" << std::endl;
+
+				std::cout << "verticInter:" << verticInter << std::endl;
+				std::cout << " horizInter:" << horizInter << std::endl;
+			}
+			
 
 			//upravit position, aby nedoslo ke kolizi
-			float gap = 0.1f;
-			std::cout << "verticInter:" << verticInter << std::endl;
-			std::cout << " horizInter:" << horizInter << std::endl;
+			float gap = 0.0f;		
+
 			if(verticInter < horizInter){
-				std::cout << "verticInter < horizInter" << std::endl;
+
+				//std::cout << "verticInter < horizInter" << std::endl;
+
 				if(verticOver){
 					hero->position.y = b.vMin.y - (a.vMax.y - a.vMin.y) - gap;
+					hero->jumping = false;
 					//hero->position.y -= verticInter;
 				}else
 					hero->position.y = b.vMax.y + gap;

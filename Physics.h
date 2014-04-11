@@ -23,6 +23,7 @@ public:
 	glm::vec2 movementDirection;
 	//info o kolizich
 	bool verticOver;
+	float gravity;
 
 	void generate(TBmp *);
 	void setMovementDirection(Keys);

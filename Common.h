@@ -7,6 +7,10 @@
 #define dataheight 480
 // velikost dat
 
+
+#define start_position_x 10.0
+#define start_position_y 10.0
+
 /**
  *	@brief vraci "pointer" do VBO
  *	@param[in] off je offset v bytech, na ktery ma vraceny pointer ukazovat
@@ -20,6 +24,8 @@ public:
 	bool left;
 	bool right;
 	bool space;
+
+	bool reset;//num0
 };
 
 

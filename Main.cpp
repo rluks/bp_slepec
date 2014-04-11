@@ -61,7 +61,7 @@ ShaderHeight heightShader;
 ShaderPoint pointShader;
 
 static DWORD frame_time;
-Keys key = {false, false, false, false, false};
+Keys key = {false, false, false, false, false, false};
 
 
 
@@ -247,15 +247,16 @@ bool InitGLObjects()
 	//textury
 	n_texture[1] = n_GLTextureRGBFloat();
 	n_texture[0] = n_GLTextureRGBFloat();
-	depthmap = LoadTextureFromPNGFile("dum.png");
+	//depthmap = LoadTextureFromPNGFile("dum.png");
 
 	//fyzika
 	TBmp * bitmap;
-	if(!(bitmap = CPngCodec::p_Load_PNG("dum.png"))){
+	if(!(bitmap = CPngCodec::p_Load_PNG("test.png"))){
 		fprintf(stderr, "error: failed to load \'.png file\'\n");
 		return false;
 	}
 	boxDebug.generate(bitmap);
+	depthmap = n_GLTextureFromBitmap(bitmap, GL_RGBA8);
 	bitmap->Delete();
 
 	//FBO
@@ -383,8 +384,8 @@ int main(int n_arg_num, const char **p_arg_list)
 	// vyrobime objekty OpenGL, nutne ke kresleni
 
 	//inicializace promennych
-	hero.position.x = 16.0;
-	hero.position.y = 20.0;
+	hero.position.x = start_position_x;
+	hero.position.y = start_position_y;
 	hero.velocity.x = 0.0;
 	hero.velocity.y = 0.0;
 
@@ -471,6 +472,9 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 		if(n_w_param == VK_SPACE)
 			key.space = false;
 
+		if(n_w_param == VK_NUMPAD0)
+			key.reset = false;
+
 		break;
 
 
@@ -493,6 +497,9 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 
 		if(n_w_param == VK_SPACE)
 			key.space = true;
+
+		if(n_w_param == VK_NUMPAD0)
+			key.reset = true;
 
 		break;
 
