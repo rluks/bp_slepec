@@ -599,7 +599,14 @@ void OnIdle(CGL30Driver &driver)
 	}
 
 	if(key.space){
-		drawDrop2(false, hero.position.x + hero.width, hero.position.y + hero.height);
+		if(hero.facingLeft)
+			drawDrop2(false, hero.position.x, hero.position.y + hero.height);
+		else
+			drawDrop2(false, hero.position.x + hero.width, hero.position.y + hero.height);
+	}
+
+	if(key.up){
+		drawDrop2(false, hero.position.x + hero.width/2.0f, hero.position.y + hero.height);
 	}
 
 	//nastavit novy pohyb na zaklade stisknutych tlacitek
@@ -614,8 +621,8 @@ void OnIdle(CGL30Driver &driver)
 
 	//vykreslit
 	hero.draw();
-	boxDebug.draw();
-	boxDebug.drawBox(hero.box);
+	//boxDebug.draw();
+	//boxDebug.drawBox(hero.box);
 
 	boxDebug.movementDirection.x = 0.0;
 	boxDebug.movementDirection.y = 0.0;
