@@ -112,28 +112,28 @@ void BoxDebug::generate(TBmp * bmpfile){
 void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys k, glm::vec2 * movement)
 {
 	if(k.up)
-		movementShift.y = -1.0;
+		movementDirection.y = -1.0;
 	if(k.down)
-		movementShift.y = 1.0;
+		movementDirection.y = 1.0;
 	if(k.right)
-		movementShift.x = 1.0;
+		movementDirection.x = 1.0;
 	if(k.left)
-		movementShift.x = -1.0;
+		movementDirection.x = -1.0;
 
 	if(k.up && k.down)
-		movementShift.y = 0.0;
+		movementDirection.y = 0.0;
 	if(k.left && k.right)
-		movementShift.x = 0.0;
+		movementDirection.x = 0.0;
 
-	movement->x += frame_time * 0.25f * movementShift.x * 0.01f;
-	movement->y += frame_time * 0.5f * movementShift.y * 0.01f;
+	movement->x += frame_time * 0.25f * movementDirection.x * 0.01f;
+	movement->y += frame_time * 0.5f * movementDirection.y * 0.01f;
 
 	//position += velocity * dt;
     //velocity += acceleration * dt;
 
 	/*
 	if(k.up)
-		movement.y += frame_time * 0.5f * movementShift.y * 0.01f;
+		movement.y += frame_time * 0.5f * movementDirection.y * 0.01f;
 	else{
 		//float gravity = (boxDebug.verticOver) ? 0.0 : 0.0000005f;
 		float gravity = 0.0000005f;

@@ -14,8 +14,6 @@
 struct Box {
 public:
 	glm::vec2 vMin, vMax;
-	std::string string();
-	glm::vec2 project(glm::vec2);
 };
 
 struct BoxDebug {
@@ -24,7 +22,7 @@ public:
 	std::vector<Box> boxes;
 	ShaderBoxes boxesShader;
 
-	glm::vec2 movementShift;//pozadovany posun
+	glm::vec2 movementDirection;
 	//info o kolizich
 	bool verticOver;
 

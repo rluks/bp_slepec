@@ -605,10 +605,10 @@ void OnIdle(CGL30Driver &driver)
 	boxDebug.SeparatingAxisTheorem(hero.box, &movement);
 	hero.draw();
 	
-	//movementShift.x -= 0.2;//jen v jednom smeru
-	//movementShift.x = (movementShift.x < 0.0) ? 0.0 : movementShift.x;
-	boxDebug.movementShift.x = 0.0;
-	boxDebug.movementShift.y = 0.0;
+	//movementDirection.x -= 0.2;//jen v jednom smeru
+	//movementDirection.x = (movementDirection.x < 0.0) ? 0.0 : movementDirection.x;
+	boxDebug.movementDirection.x = 0.0;
+	boxDebug.movementDirection.y = 0.0;
 
 	boxDebug.draw();
 	boxDebug.drawBox(hero.box);
