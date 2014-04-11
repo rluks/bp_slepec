@@ -63,7 +63,6 @@ ShaderPoint pointShader;
 static DWORD frame_time;
 Keys key = {false, false, false, false, false};
 glm::vec2 position;
-glm::vec2 velocity;
 
 
 std::vector<POINTS> pointsQueue;
@@ -386,8 +385,8 @@ int main(int n_arg_num, const char **p_arg_list)
 	//inicializace promennych
 	position.x = 16.0;
 	position.y = 20.0;
-	velocity.x = 0.0;
-	velocity.y = 0.0;
+	hero.velocity.x = 0.0;
+	hero.velocity.y = 0.0;
 
 	DWORD start_time =  GetTickCount(); // cas pro animaci
 	DWORD end_time;
@@ -580,7 +579,6 @@ void OnIdle(CGL30Driver &driver)
 	//TODO
 	//koncept hry / 1obrazovka
 	//herni logika
-	//reprezentace mapy v texture jako bmp
 	//kolize na cpu, nahrat i do gpu
 	
 	//pridani kapek
@@ -594,12 +592,11 @@ void OnIdle(CGL30Driver &driver)
 	}
 
 	if(key.space){
-		//std::cout << "space" << std::endl;
 		drawDrop2(false, position.x + hero.width, position.y + hero.height);
 	}
 
 	//nastavit novy pohyb na zaklade stisknutych tlacitek
-	boxDebug.calculateTimeBasedMovement(frame_time, key, &position, &velocity, &hero);
+	boxDebug.calculateTimeBasedMovement(frame_time, key, &position, &hero);
 	hero.updateBox(position);
 
 	//zjistit kolize pro novy pohyb

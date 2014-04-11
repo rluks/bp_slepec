@@ -18,6 +18,9 @@ public:
 	GLuint hero_tex;
 
 	Box box;
+
+	glm::vec2 velocity;
+
 	static bool jumping;
 	static bool moving;
 	
