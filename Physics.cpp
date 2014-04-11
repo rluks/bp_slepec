@@ -279,11 +279,20 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 			*/
 
 			//upravit position, aby nedoslo ke kolizi
-			float gap = 0.0f;		
+			float gap = 0.0f;	
+
+			float mostLeftX;
+			float mostRightX;
+			float mostTopY;
+			float mostBottomY;
+			collisionType type;
 
 			if(verticInter < horizInter){
 
 				//std::cout << "verticInter < horizInter" << std::endl;
+
+				mostLeftX = (a.vMin.x < b.vMin.x) ? b.vMin.x : a.vMin.x;
+				mostRightX = (a.vMax.x > b.vMax.x) ? b.vMax.x : a.vMax.x;
 
 				if(verticOver){
 					hero->position.y = b.vMin.y - (a.vMax.y - a.vMin.y) - gap;
@@ -291,52 +300,43 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 					standingOn = true;
 					//hero->position.y -= verticInter;
 
-					float mostLeftX = (a.vMin.x < b.vMin.x) ? b.vMin.x : a.vMin.x;
-					float mostRightX = (a.vMax.x > b.vMax.x) ? b.vMax.x : a.vMax.x;
-					//float mostRightX = fmin(a.vMax.x, b.vMax.x);//jen c++11
-
-					glm::vec2 point1(mostLeftX, bprojy.x);
-					glm::vec2 point2(mostRightX, bprojy.x);
-
-					collisions.push_back(Collision(AoverB, point1, point2));
+					mostTopY = bprojy.x;
+					mostBottomY = bprojy.x;
+					type = AoverB;
 
 				}else{
 					hero->position.y = b.vMax.y + gap;
 					//hero->position.y += verticInter;
 
-					float mostLeftX = (a.vMin.x < b.vMin.x) ? b.vMin.x : a.vMin.x;
-					float mostRightX = (a.vMax.x > b.vMax.x) ? b.vMax.x : a.vMax.x;
-
-					glm::vec2 point1(mostLeftX, bprojy.y);
-					glm::vec2 point2(mostRightX, bprojy.y);
-
-					collisions.push_back(Collision(AunderB, point1, point2));
+					mostTopY = bprojy.y;
+					mostBottomY = bprojy.y;
+					type = AunderB;
 				}
 			}else{
+
+				mostTopY = (a.vMin.y < b.vMin.y) ? b.vMin.y : a.vMin.y;
+				mostBottomY = (a.vMax.y > b.vMax.y) ? b.vMax.y : a.vMax.y;
+
 				if(horizLeft){
 					hero->position.x = b.vMin.x - (a.vMax.x - a.vMin.x) - gap;
 					//hero->position.x -= horizInter;
 
-					float mostTopY = (a.vMin.y < b.vMin.y) ? b.vMin.y : a.vMin.y;
-					float mostBottomY = (a.vMax.y > b.vMax.y) ? b.vMax.y : a.vMax.y;
-
-					glm::vec2 point1(bprojx.x, mostTopY);
-					glm::vec2 point2(bprojx.x, mostBottomY);
-
-					collisions.push_back(Collision(AunderB, point1, point2));
+					mostLeftX = bprojx.x;
+					mostRightX = bprojx.x;
+					type = AB;
 				}else{
 					hero->position.x = b.vMax.x + gap;
 					//hero->position.x += horizInter;
 
-					float mostTopY = (a.vMin.y < b.vMin.y) ? b.vMin.y : a.vMin.y;
-					float mostBottomY = (a.vMax.y > b.vMax.y) ? b.vMax.y : a.vMax.y;
-
-					glm::vec2 point1(bprojx.y, mostTopY);
-					glm::vec2 point2(bprojx.y, mostBottomY);
-
-					collisions.push_back(Collision(AunderB, point1, point2));
+					mostLeftX = bprojx.y;
+					mostRightX = bprojx.y;
+					type = BA;
 				}
 			}
+	
+			glm::vec2 point1(mostLeftX, mostTopY);
+			glm::vec2 point2(mostRightX, mostBottomY);
+			collisions.push_back(Collision(type, point1, point2));
 
 		}//horizCol && verticCol
 	}//for boxes

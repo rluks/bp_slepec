@@ -6,7 +6,6 @@
 #include <glm/vec2.hpp> 
 #include "glm/gtx/string_cast.hpp"
 #include <glm/detail/func_geometric.hpp>
-//#include <cmath>
 
 #include "Common.h"
 #include "Texture.h"
