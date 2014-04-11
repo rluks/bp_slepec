@@ -15,7 +15,8 @@ public:
 
 	ShaderHero heroShader;
 	GLuint heroVBO, heroVAO, heroIBO;
-	GLuint hero_tex;
+	GLuint hero_tex, hero_tex2;
+	int cnt;
 
 	Box box;
 

@@ -154,8 +154,13 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys key, Hero * her
 	else
 		hero->moving = false;
 
-	if(hero->moving)
-		hero->position.x += (frame_time * 0.1f * hero->velocity.x * movementDirection.x);
+	if((key.left && key.right) || (!key.left && !key.right))
+		hero->velocity.x = 0.0;
+
+	if(hero->moving){
+		hero->position.x += (/*frame_time * 0.1f * */hero->velocity.x * movementDirection.x);
+		//hero->velocity.x = hero->velocity.x;
+	}
 
 	if(key.reset){
 		hero->position.x = start_position_x;

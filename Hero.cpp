@@ -15,6 +15,7 @@ void Hero::init(){
 
 	heroShader.compile();
 	hero_tex = LoadTextureFromPNGFile("player1.png");
+	hero_tex2 = LoadTextureFromPNGFile("player0.png");
 
 	glGenBuffers(1, &heroVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, heroVBO);
@@ -37,6 +38,7 @@ void Hero::init(){
 	}
 	glBindVertexArray(0);
 
+	cnt = 0;
 	isInit = true;
 }
 
@@ -56,7 +58,16 @@ void Hero::draw(){
 		return;
 	}
 
-	glBindTexture(GL_TEXTURE_2D, hero_tex);
+	if(velocity.x > 0.0 || velocity.x < 0.0){
+		cnt++;
+		if(cnt < 20)
+			glBindTexture(GL_TEXTURE_2D, hero_tex);
+		else if(cnt < 40)
+			glBindTexture(GL_TEXTURE_2D, hero_tex2);
+		else
+			cnt = 0;
+	}else
+		glBindTexture(GL_TEXTURE_2D, hero_tex);
 
 	heroShader.bind(box.vMin, facingLeft);
 
