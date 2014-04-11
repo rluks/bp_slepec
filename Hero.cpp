@@ -40,7 +40,7 @@ void Hero::init(){
 	isInit = true;
 }
 
-void Hero::updateBox(glm::vec2 position){
+void Hero::updateBox(){
 	box.vMin.x = position.x;
 	box.vMin.y = position.y;
 	box.vMax.x = box.vMin.x + width;

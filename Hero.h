@@ -20,6 +20,7 @@ public:
 	Box box;
 
 	glm::vec2 velocity;
+	glm::vec2 position;
 
 	static bool jumping;
 	static bool moving;
@@ -28,7 +29,7 @@ public:
 	static unsigned int p_hero_indices[];	
 
 	void init();
-	void updateBox(glm::vec2);
+	void updateBox();
 	void draw();
 
 private:
