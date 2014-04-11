@@ -290,8 +290,12 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 					standingOn = true;
 					//hero->position.y -= verticInter;
 
-					glm::vec2 point1(aprojx.x, bprojy.x);
-					glm::vec2 point2(aprojx.y, bprojy.x);
+					float mostLeftX = (a.vMin.x < b.vMin.x) ? b.vMin.x : a.vMin.x;
+					float mostRightX = (a.vMax.x > b.vMax.x) ? b.vMax.x : a.vMax.x;
+
+					glm::vec2 point1(mostLeftX, bprojy.x);
+					glm::vec2 point2(mostRightX, bprojy.x);
+
 					collisions.push_back(Collision(AoverB, point1, point2));
 
 				}else{
