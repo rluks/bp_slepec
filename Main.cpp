@@ -61,7 +61,7 @@ ShaderHeight heightShader;
 ShaderPoint pointShader;
 
 static DWORD frame_time;
-Keys k = {false, false, false, false, false};
+Keys key = {false, false, false, false, false};
 glm::vec2 movement;//posun po obrazovce
 glm::vec2 velocityVec;
 
@@ -457,19 +457,19 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 
 		//smery pohybu
 		if(n_w_param == VK_RIGHT)
-			k.right = false;
+			key.right = false;
 		
 		if(n_w_param == VK_LEFT)
-			k.left = false;
+			key.left = false;
 
 		if(n_w_param == VK_UP)
-			k.up = false;
+			key.up = false;
 		
 		if(n_w_param == VK_DOWN)
-			k.down = false;
+			key.down = false;
 
 		if(n_w_param == VK_SPACE)
-			k.space = false;
+			key.space = false;
 
 		break;
 
@@ -480,19 +480,19 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 
 		//smery pohybu
 		if(n_w_param == VK_RIGHT)
-			k.right = true;
+			key.right = true;
 		
 		if(n_w_param == VK_LEFT)
-			k.left = true;
+			key.left = true;
 		
 		if(n_w_param == VK_UP)
-			k.up = true;
+			key.up = true;
 
 		if(n_w_param == VK_DOWN)
-			k.down = true;
+			key.down = true;
 
 		if(n_w_param == VK_SPACE)
-			k.space = true;
+			key.space = true;
 
 		break;
 
@@ -592,13 +592,13 @@ void OnIdle(CGL30Driver &driver)
 		drawDrop(false, x, y);
 	}
 
-	if(k.space){
+	if(key.space){
 		//std::cout << "space" << std::endl;
 		drawDrop2(false, movement.x + hero.width, movement.y + hero.height);
 	}
 
 	//nastavit novy pohyb na zaklade stisknutych tlacitek
-	boxDebug.calculateTimeBasedMovement(frame_time, k, &movement);
+	boxDebug.calculateTimeBasedMovement(frame_time, key, &movement);
 	hero.updateBox(movement);
 
 	//zjistit kolize pro novy pohyb
