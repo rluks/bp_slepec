@@ -1,5 +1,5 @@
-#ifndef Hero_H
-#define Hero_H
+#ifndef HERO_H
+#define HERO_H
 
 #include <GL/glew.h>
 #include <glm/vec2.hpp> 
@@ -7,7 +7,6 @@
 #include "Common.h"
 #include "Shader.h"
 #include "Texture.h"
-#include "Physics.h"
 
 struct Hero {
 public:
@@ -19,6 +18,8 @@ public:
 	GLuint hero_tex;
 
 	Box box;
+	static bool jumping;
+	static bool moving;
 	
 	static float p_hero_vertices[];
 	static unsigned int p_hero_indices[];	

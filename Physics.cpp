@@ -122,16 +122,47 @@ void BoxDebug::setMovementDirection(Keys k){
 
 	if(k.up && k.down)
 		movementDirection.y = 0.0;
-	if(k.left && k.right)
+	if((k.left && k.right) || (!k.left && !k.right))
 		movementDirection.x = 0.0;
 }
 
-void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys k, glm::vec2 * position, glm::vec2 * velocity)
+void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys key, glm::vec2 * position, glm::vec2 * velocity, Hero * hero)
 {
-	setMovementDirection(k);
+	setMovementDirection(key);
 
-	position->x += frame_time * 0.25f * movementDirection.x * 0.01f;
-	position->y += frame_time * 0.5f * movementDirection.y * 0.01f;
+	std::cout << "y:" << position->y << std::endl;
+
+	////
+	float gravity = 0.03f;
+	if(hero->jumping == false && key.space){
+		velocity->y = -0.5;
+		hero->jumping = true;
+	}
+
+	if(hero->jumping){
+		if(!verticOver){
+			position->y += velocity->y;
+			velocity->y += gravity;
+		}else{
+			hero->jumping = false;
+		}
+	}
+
+	if(hero->moving == false && movementDirection.x != 0.0){
+		hero->moving = true;
+		velocity->x = 0.1f;
+	}
+	else
+		hero->moving = false;
+	////
+
+	if(hero->moving)
+		position->x += (/*frame_time * 0.1f * */velocity->x * movementDirection.x);
+
+
+	//position->x += frame_time * 0.25f * movementDirection.x * 0.01f;
+	//position->y += frame_time * 0.5f * movementDirection.y * 0.01f;
+
 
 	//position += velocity * dt;
     //velocity += acceleration * dt;

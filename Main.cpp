@@ -248,11 +248,11 @@ bool InitGLObjects()
 	//textury
 	n_texture[1] = n_GLTextureRGBFloat();
 	n_texture[0] = n_GLTextureRGBFloat();
-	depthmap = LoadTextureFromPNGFile("dum.png");
+	depthmap = LoadTextureFromPNGFile("test.png");
 
 	//fyzika
 	TBmp * bitmap;
-	if(!(bitmap = CPngCodec::p_Load_PNG("dum.png"))){
+	if(!(bitmap = CPngCodec::p_Load_PNG("test.png"))){
 		fprintf(stderr, "error: failed to load \'.png file\'\n");
 		return false;
 	}
@@ -385,7 +385,7 @@ int main(int n_arg_num, const char **p_arg_list)
 
 	//inicializace promennych
 	position.x = 16.0;
-	position.y = 12.0;
+	position.y = 20.0;
 	velocity.x = 0.0;
 	velocity.y = 0.0;
 
@@ -599,7 +599,7 @@ void OnIdle(CGL30Driver &driver)
 	}
 
 	//nastavit novy pohyb na zaklade stisknutych tlacitek
-	boxDebug.calculateTimeBasedMovement(frame_time, key, &position, &velocity);
+	boxDebug.calculateTimeBasedMovement(frame_time, key, &position, &velocity, &hero);
 	hero.updateBox(position);
 
 	//zjistit kolize pro novy pohyb
@@ -612,8 +612,8 @@ void OnIdle(CGL30Driver &driver)
 	
 	//movementDirection.x -= 0.2;//jen v jednom smeru
 	//movementDirection.x = (movementDirection.x < 0.0) ? 0.0 : movementDirection.x;
-	boxDebug.movementDirection.x = 0.0;
-	boxDebug.movementDirection.y = 0.0;
+	//boxDebug.movementDirection.x = 0.0;
+	//boxDebug.movementDirection.y = 0.0;
 
 	//vykreslit
 	hero.draw();

@@ -1,5 +1,5 @@
-#ifndef Physics_H
-#define Physics_H
+#ifndef PHYSICS_H
+#define PHYSICS_H
 
 #include <GL/glew.h>
 #include <vector>
@@ -10,11 +10,9 @@
 #include "Common.h"
 #include "Texture.h"
 #include "Shader.h"
+#include "Hero.h"
 
-struct Box {
-public:
-	glm::vec2 vMin, vMax;
-};
+
 
 struct BoxDebug {
 public:
@@ -28,7 +26,7 @@ public:
 
 	void generate(TBmp *);
 	void setMovementDirection(Keys);
-	void calculateTimeBasedMovement(DWORD, Keys, glm::vec2 *, glm::vec2 *);
+	void calculateTimeBasedMovement(DWORD, Keys, glm::vec2 *, glm::vec2 *, Hero *);
 	void SeparatingAxisTheorem(Box, glm::vec2 *);
 	void draw();
 	void drawBox(Box);
