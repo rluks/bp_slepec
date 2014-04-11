@@ -132,10 +132,12 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys key, Hero * her
 {
 	setMovementDirection(key);
 
+	hero->facingLeft = (movementDirection.x == -1.0) ? true : false;
+
 	gravity = 0.03f;
 
 	if(hero->jumping == false && key.up){
-		hero->velocity.y = -0.5;
+		hero->velocity.y = -0.25;
 		hero->jumping = true;
 	}
 
@@ -245,7 +247,8 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 
 		if(horizCol && verticCol){
 
-			if(b.vMin.x != 0 && b.vMin.y != 23 && b.vMax.x != 32 && b.vMax.y != 24){
+			/*
+			//if(b.vMin.x != 0 && b.vMin.y != 23 && b.vMax.x != 32 && b.vMax.y != 24){
 				std::cout << "hrac(Min(" << a.vMin.x << ", " << a.vMin.y <<"), Max(" << a.vMax.x <<", " << a.vMax.y << ")) s " << "Min(" << b.vMin.x << ", " << b.vMin.y <<"), Max(" << b.vMax.x <<", " << b.vMax.y << ")" << std::endl;
 
 				if(verticOver)std::cout << "A nad B" << std::endl;
@@ -256,8 +259,8 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 
 				std::cout << "verticInter:" << verticInter << std::endl;
 				std::cout << " horizInter:" << horizInter << std::endl;
-			}
-			
+			//}
+			*/
 
 			//upravit position, aby nedoslo ke kolizi
 			float gap = 0.0f;		

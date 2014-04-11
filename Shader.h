@@ -51,9 +51,10 @@ public:
 	GLuint n_vertex_shader_hero, n_fragment_shader_hero, n_program_object_hero;
 	GLuint n_texture_sampler_uniform_hero,
 	n_depthmap_sampler_uniform_hero,
-	position_vector;
+	position_vector,
+	facing_left_uniform_hero;
 	bool compile();
-	void bind(glm::vec2);
+	void bind(glm::vec2, bool);
 };
 
 struct ShaderVelocity : public Shader {

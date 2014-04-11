@@ -58,7 +58,7 @@ void Hero::draw(){
 
 	glBindTexture(GL_TEXTURE_2D, hero_tex);
 
-	heroShader.bind(box.vMin);
+	heroShader.bind(box.vMin, facingLeft);
 
 	glBindVertexArray(heroVAO);
 	glEnable(GL_BLEND);

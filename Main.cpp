@@ -614,8 +614,8 @@ void OnIdle(CGL30Driver &driver)
 
 	//vykreslit
 	hero.draw();
-	boxDebug.draw();
-	boxDebug.drawBox(hero.box);
+	//boxDebug.draw();
+	//boxDebug.drawBox(hero.box);
 
 	boxDebug.movementDirection.x = 0.0;
 	boxDebug.movementDirection.y = 0.0;

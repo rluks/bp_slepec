@@ -24,6 +24,7 @@ public:
 
 	static bool jumping;
 	static bool moving;
+	bool facingLeft;
 	
 	static float p_hero_vertices[];
 	static unsigned int p_hero_indices[];	
