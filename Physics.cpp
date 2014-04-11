@@ -1,5 +1,14 @@
 #include "Physics.h"
 
+Collision::Collision(){
+}
+
+Collision::Collision(enum collisionType collisType, glm::vec2 p1, glm::vec2 p2) : type(collisType), point1(p1), point2(p2)
+{
+
+}
+
+
 bool BoxDebug::standingOn = false;
 
 void BoxDebug::generate(TBmp * bmpfile){
@@ -280,6 +289,11 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 					hero->jumping = false;
 					standingOn = true;
 					//hero->position.y -= verticInter;
+
+					glm::vec2 point1(aprojx.x, bprojy.x);
+					glm::vec2 point2(aprojx.y, bprojy.x);
+					collisions.push_back(Collision(AoverB, point1, point2));
+
 				}else{
 					hero->position.y = b.vMax.y + gap;
 					//hero->position.y += verticInter;
@@ -298,6 +312,43 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 	}//for boxes
 }
 
+void BoxDebug::drawCollisions(){
+	if(collisions.size() > 0){
+		pointSimpleShader.compile();
+
+		std::cout << "drawCollisions: " << std::endl;
+		for(unsigned int i = 0; i < collisions.size(); i++){
+			Collision a = collisions.at(i);
+			std::cout << i << ". type: " << a.type << " p1: " << a.point1.x << ", " << a.point1.y << " p2: " << a.point2.x << ", " << a.point2.y << std::endl;
+
+			float bod[] = {a.point1.x,  a.point1.y, a.point2.x, a.point2.y};
+
+			GLuint testVBO, testVAO;
+			glGenBuffers(1, &testVBO);
+			glBindBuffer(GL_ARRAY_BUFFER, testVBO);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(bod), bod, GL_STATIC_DRAW);
+
+			glGenVertexArrays(1, &testVAO);
+			glBindVertexArray(testVAO);
+			{
+				glBindBuffer(GL_ARRAY_BUFFER, testVBO);
+				glEnableVertexAttribArray(1);//TODO nastavujem rucne na 1, nula compile shader upravit
+				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, p_OffsetInVBO(0));
+			}
+			glBindVertexArray(0);
+
+			pointSimpleShader.bind();
+			glBindVertexArray(testVAO);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_ONE, GL_ONE);//vstup vystup barva
+			glDrawArrays(GL_POINTS, 0, 2);
+			glDisable(GL_BLEND);
+			glBindVertexArray(0);
+
+		}
+	collisions.resize(0);
+	}
+}
 
 void BoxDebug::drawBox(Box a){
 

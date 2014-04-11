@@ -598,6 +598,7 @@ void OnIdle(CGL30Driver &driver)
 		drawDrop(false, x, y);
 	}
 
+	/*
 	if(key.space){
 		if(hero.facingLeft)
 			drawDrop2(false, hero.position.x, hero.position.y + hero.height);
@@ -607,7 +608,7 @@ void OnIdle(CGL30Driver &driver)
 
 	if(key.up){
 		drawDrop2(false, hero.position.x + hero.width/2.0f, hero.position.y + hero.height);
-	}
+	}*/
 
 	//nastavit novy pohyb na zaklade stisknutych tlacitek
 	boxDebug.calculateTimeBasedMovement(frame_time, key, &hero);
@@ -621,8 +622,9 @@ void OnIdle(CGL30Driver &driver)
 
 	//vykreslit
 	hero.draw();
-	//boxDebug.draw();
-	//boxDebug.drawBox(hero.box);
+	boxDebug.draw();
+	boxDebug.drawBox(hero.box);
+	boxDebug.drawCollisions();
 
 	boxDebug.movementDirection.x = 0.0;
 	boxDebug.movementDirection.y = 0.0;

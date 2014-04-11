@@ -12,6 +12,17 @@
 #include "Shader.h"
 #include "Hero.h"
 
+enum collisionType {AB, BA, AoverB, AunderB};
+
+struct Collision {
+public:
+	collisionType type;
+	glm::vec2 point1;
+	glm::vec2 point2;
+
+	Collision();
+	Collision(enum collisionType, glm::vec2, glm::vec2);
+};
 
 
 struct BoxDebug {
@@ -19,18 +30,23 @@ public:
 	GLuint VBO, VAO, IBO;
 	std::vector<Box> boxes;
 	ShaderBoxes boxesShader;
+	ShaderPointSimple pointSimpleShader;
 
 	glm::vec2 movementDirection;
+	float gravity;
+
 	//info o kolizich
 	static bool standingOn;
-	float gravity;
+	std::vector<Collision> collisions;
 
 	void generate(TBmp *);
 	void setMovementDirection(Keys);
 	void calculateTimeBasedMovement(DWORD, Keys, Hero *);
 	void SeparatingAxisTheorem(Hero *);
+
 	void draw();
 	void drawBox(Box);
+	void drawCollisions();
 };
 
 #endif
