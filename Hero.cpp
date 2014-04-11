@@ -3,6 +3,8 @@
 float Hero::p_hero_vertices[20] = {0, 0, 0, 0, 1, /**/1, 0, width, 0, 1,/**/ 1, 1, width, height, 1,/**/ 0, 1, 0, height, 1};
 unsigned int Hero::p_hero_indices[6] = {0, 1, 2, 0, 3, 2};	
 bool Hero::isInit = false;
+bool Hero::jumping = false;
+bool Hero::moving = false;
 
 void Hero::init(){
 
@@ -12,7 +14,7 @@ void Hero::init(){
 	box.vMax.y = box.vMin.y + height;
 
 	heroShader.compile();
-	hero_tex = LoadTextureFromTGAFile("player1.tga");
+	hero_tex = LoadTextureFromPNGFile("player1.png");
 
 	glGenBuffers(1, &heroVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, heroVBO);
