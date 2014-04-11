@@ -10,6 +10,9 @@
 
 #define start_position_x 10.0
 #define start_position_y 10.0
+#define DEFAULT_GRAVITY 0.03f
+#define DEFAULT_JUMP_VELOCITY -0.25
+#define DEFAULT_WALK_VELOCITY 0.1f
 
 /**
  *	@brief vraci "pointer" do VBO

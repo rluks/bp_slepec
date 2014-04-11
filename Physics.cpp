@@ -132,12 +132,13 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys key, Hero * her
 {
 	setMovementDirection(key);
 
-	hero->facingLeft = (movementDirection.x == -1.0) ? true : false;
+	if(movementDirection.x != 0.0)
+		hero->facingLeft = (movementDirection.x == -1.0) ? true : false;
 
-	gravity = 0.03f;
+	gravity = DEFAULT_GRAVITY;
 
 	if(hero->jumping == false && key.up){
-		hero->velocity.y = -0.25;
+		hero->velocity.y = DEFAULT_JUMP_VELOCITY;
 		hero->jumping = true;
 	}
 
@@ -148,7 +149,7 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys key, Hero * her
 
 	if(hero->moving == false && movementDirection.x != 0.0){
 		hero->moving = true;
-		hero->velocity.x = 0.1f;
+		hero->velocity.x = DEFAULT_WALK_VELOCITY;
 	}
 	else
 		hero->moving = false;
