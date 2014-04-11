@@ -117,6 +117,7 @@ void BoxDebug::generate(TBmp * bmpfile){
 
 	//pripravit shader
 	boxesShader.compile();
+	pointSimpleShader.compile();
 	
 }
 
@@ -292,6 +293,7 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 
 					float mostLeftX = (a.vMin.x < b.vMin.x) ? b.vMin.x : a.vMin.x;
 					float mostRightX = (a.vMax.x > b.vMax.x) ? b.vMax.x : a.vMax.x;
+					//float mostRightX = fmin(a.vMax.x, b.vMax.x);//jen c++11
 
 					glm::vec2 point1(mostLeftX, bprojy.x);
 					glm::vec2 point2(mostRightX, bprojy.x);
@@ -301,14 +303,38 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 				}else{
 					hero->position.y = b.vMax.y + gap;
 					//hero->position.y += verticInter;
+
+					float mostLeftX = (a.vMin.x < b.vMin.x) ? b.vMin.x : a.vMin.x;
+					float mostRightX = (a.vMax.x > b.vMax.x) ? b.vMax.x : a.vMax.x;
+
+					glm::vec2 point1(mostLeftX, bprojy.y);
+					glm::vec2 point2(mostRightX, bprojy.y);
+
+					collisions.push_back(Collision(AunderB, point1, point2));
 				}
 			}else{
 				if(horizLeft){
 					hero->position.x = b.vMin.x - (a.vMax.x - a.vMin.x) - gap;
 					//hero->position.x -= horizInter;
+
+					float mostTopY = (a.vMin.y < b.vMin.y) ? b.vMin.y : a.vMin.y;
+					float mostBottomY = (a.vMax.y > b.vMax.y) ? b.vMax.y : a.vMax.y;
+
+					glm::vec2 point1(bprojx.x, mostTopY);
+					glm::vec2 point2(bprojx.x, mostBottomY);
+
+					collisions.push_back(Collision(AunderB, point1, point2));
 				}else{
 					hero->position.x = b.vMax.x + gap;
 					//hero->position.x += horizInter;
+
+					float mostTopY = (a.vMin.y < b.vMin.y) ? b.vMin.y : a.vMin.y;
+					float mostBottomY = (a.vMax.y > b.vMax.y) ? b.vMax.y : a.vMax.y;
+
+					glm::vec2 point1(bprojx.y, mostTopY);
+					glm::vec2 point2(bprojx.y, mostBottomY);
+
+					collisions.push_back(Collision(AunderB, point1, point2));
 				}
 			}
 
@@ -318,12 +344,23 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 
 void BoxDebug::drawCollisions(){
 	if(collisions.size() > 0){
-		pointSimpleShader.compile();
 
-		std::cout << "drawCollisions: " << std::endl;
 		for(unsigned int i = 0; i < collisions.size(); i++){
 			Collision a = collisions.at(i);
-			std::cout << i << ". type: " << a.type << " p1: " << a.point1.x << ", " << a.point1.y << " p2: " << a.point2.x << ", " << a.point2.y << std::endl;
+
+			std::string type;
+			if(a.type == AB)
+				type = "AB";
+			else if(a.type == BA)
+				type = "BA";
+			else if(a.type == AoverB)
+				type = "A nadB";
+			else if(a.type == AunderB)
+				type = "Apod B";
+			else 
+				type = "A je nekde kolem B ale nevim type kolize";
+
+			std::cout << i << ". type: " << type << " p1: " << a.point1.x << ", " << a.point1.y << " p2: " << a.point2.x << ", " << a.point2.y << std::endl;
 
 			float bod[] = {a.point1.x,  a.point1.y, a.point2.x, a.point2.y};
 
