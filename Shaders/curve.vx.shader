@@ -14,6 +14,7 @@ uniform float phase;
 void main()
 {
 	//prepocet ze souradneho systemu fyziky(0 horni levy roh) na zobrazeni(0 ve stredu)
+	/*
 	float s1 = (2.0 * point1.x)/32.0 - 1.0;//TODO posilat velikost mapy 32
 	float t1 = 1.0 - (2.0 * point1.y)/24.0;//TODO posilat velikost mapy 24
 
@@ -27,9 +28,20 @@ void main()
 
 	//y(t)=A*sin(2pi*f*t + phase)
 	//t = [0, 1]
-	t += amplitude * sin(6.28 * frequency * v_pos.x + phase);
+	t += 3*amplitude * sin(6.28 * frequency * v_pos.x + phase);
 
 	gl_Position = vec4(s, t, 0.0, 1.0);
 	//gl_PointSize = 2.0;
+	v_texcoord = v_tex;
+	*/
+
+	float s = point1.x + (point2.x-point1.x) * v_pos.x;
+	float t = point1.y + (point2.y-point1.y) * v_pos.y;
+	t += 10*amplitude * sin(6.28 * frequency * v_pos.x + phase);
+
+	float s0 = (2.0 * s)/32.0 - 1.0;//TODO posilat velikost mapy 32
+	float t0 = 1.0 - (2.0 * t)/24.0;//TODO posilat velikost mapy 24
+
+	gl_Position = vec4(s0, t0, 0.0, 1.0);
 	v_texcoord = v_tex;
 }
