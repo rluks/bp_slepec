@@ -8,6 +8,25 @@ Collision::Collision(enum collisionType collisType, glm::vec2 p1, glm::vec2 p2) 
 
 }
 
+std::string Collision::getTypeString(){
+
+	std::string typeString;
+
+	if(type == AB)
+		typeString = "AB";
+	else if(type == BA)
+		typeString = "BA";
+	else if(type == AoverB)
+		typeString = "A nadB";
+	else if(type == AunderB)
+		typeString = "Apod B";
+	else 
+		typeString = "A je nekde kolem B ale nevim type kolize";
+
+	return typeString;
+}
+
+float BoxDebug::pozice1D[] = {0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f};
 
 bool BoxDebug::standingOn = false;
 
@@ -79,6 +98,21 @@ void BoxDebug::generate(TBmp * bmpfile){
 	//pripravit shader
 	boxesShader.compile();
 	pointSimpleShader.compile();
+	curveShader.compile();
+
+	//pripravit hmatovy vjem
+	glGenBuffers(1, &tactileVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, tactileVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(pozice1D), pozice1D, GL_STATIC_DRAW);
+
+	glGenVertexArrays(1, &tactileVAO);
+	glBindVertexArray(tactileVAO);
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, tactileVBO);
+		glEnableVertexAttribArray(1);//TODO nastavujem rucne na 1, nula compile shader upravit
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, p_OffsetInVBO(0));
+	}
+	glBindVertexArray(0);
 	
 }
 
@@ -285,25 +319,15 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 	}//for boxes
 }
 
-void BoxDebug::drawCollisions(){
+void BoxDebug::drawCollisionsPoints(){
+	//krajni body kolize
 	if(collisions.size() > 0){
 
 		for(unsigned int i = 0; i < collisions.size(); i++){
 			Collision a = collisions.at(i);
 
-			std::string type;
-			if(a.type == AB)
-				type = "AB";
-			else if(a.type == BA)
-				type = "BA";
-			else if(a.type == AoverB)
-				type = "A nadB";
-			else if(a.type == AunderB)
-				type = "Apod B";
-			else 
-				type = "A je nekde kolem B ale nevim type kolize";
-
-			std::cout << i << ". type: " << type << " p1: " << a.point1.x << ", " << a.point1.y << " p2: " << a.point2.x << ", " << a.point2.y << std::endl;
+			std::string type = a.getTypeString();
+			//std::cout << i << ". type: " << type << " p1: " << a.point1.x << ", " << a.point1.y << " p2: " << a.point2.x << ", " << a.point2.y << std::endl;
 
 			float bod[] = {a.point1.x,  a.point1.y, a.point2.x, a.point2.y};
 
@@ -330,8 +354,35 @@ void BoxDebug::drawCollisions(){
 			glBindVertexArray(0);
 
 		}
-	collisions.resize(0);
 	}
+}
+
+void BoxDebug::drawCollisions(){
+
+	//hmatovy vjem
+	if(collisions.size() > 0){
+
+		for(unsigned int i = 0; i < collisions.size(); i++){
+			Collision a = collisions.at(i);
+
+			glm::vec3 color(0.0, 0.9, 0.9);
+			float sinus = 0.5f;
+			float frequency = 0.2f;
+			float amplitude = 0.6f;
+
+			std::cout << i << ". type: " << a.getTypeString() << " p1: " << a.point1.x << ", " << a.point1.y << " p2: " << a.point2.x << ", " << a.point2.y << std::endl;
+
+			curveShader.bind(a.point1, a.point2, amplitude, frequency, sinus, color);
+			glBindVertexArray(tactileVAO);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_ONE, GL_ONE);
+			glDrawArrays(GL_POINTS, 0, 3);
+			glDisable(GL_BLEND);
+			glBindVertexArray(0);
+		}
+	}
+
+	collisions.resize(0);
 }
 
 void BoxDebug::drawBox(Box a){

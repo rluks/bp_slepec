@@ -22,6 +22,7 @@ public:
 
 	Collision();
 	Collision(enum collisionType, glm::vec2, glm::vec2);
+	std::string getTypeString();
 };
 
 
@@ -31,6 +32,7 @@ public:
 	std::vector<Box> boxes;
 	ShaderBoxes boxesShader;
 	ShaderPointSimple pointSimpleShader;
+	ShaderCurve curveShader;
 
 	glm::vec2 movementDirection;
 	float gravity;
@@ -38,6 +40,9 @@ public:
 	//info o kolizich
 	static bool standingOn;
 	std::vector<Collision> collisions;
+
+	static float pozice1D[];
+	GLuint tactileVBO, tactileVAO;
 
 	void generate(TBmp *);
 	void setMovementDirection(Keys);
@@ -47,6 +52,7 @@ public:
 	void draw();
 	void drawBox(Box);
 	void drawCollisions();
+	void drawCollisionsPoints();
 };
 
 #endif
