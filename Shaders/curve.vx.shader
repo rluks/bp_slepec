@@ -9,7 +9,7 @@ uniform vec2 point2;
 
 uniform float amplitude;
 uniform float frequency;
-uniform float sinus;//faze sinusoidy
+uniform float phase;
 
 void main()
 {
@@ -27,9 +27,9 @@ void main()
 
 	//y(t)=A*sin(2pi*f*t + phase)
 	//t = [0, 1]
-	t += amplitude * sin(6.28 * frequency * v_pos.x + sinus);
+	t += amplitude * sin(6.28 * frequency * v_pos.x + phase);
 
 	gl_Position = vec4(s, t, 0.0, 1.0);
-	gl_PointSize = 2.0;
+	//gl_PointSize = 2.0;
 	v_texcoord = v_tex;
 }

@@ -98,7 +98,7 @@ public:
 struct ShaderCurve : public Shader {
 public:
 	GLuint n_vertex_shader_curve, n_fragment_shader_curve, n_program_object_curve;
-	GLuint point1_uniform_curve, point2_uniform_curve, amplitude_uniform_curve, frequency_uniform_curve, sinus_uniform_curve, color_uniform_curve;
+	GLuint point1_uniform_curve, point2_uniform_curve, amplitude_uniform_curve, frequency_uniform_curve, phase_uniform_curve, color_uniform_curve;
 	bool compile();
 	void bind(glm::vec2, glm::vec2, float, float, float, glm::vec3);
 };

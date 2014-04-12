@@ -318,14 +318,14 @@ bool ShaderCurve::compile(){
 
 	amplitude_uniform_curve = glGetUniformLocation(n_program_object_curve, "amplitude");
 	frequency_uniform_curve = glGetUniformLocation(n_program_object_curve, "frequency");
-	sinus_uniform_curve = glGetUniformLocation(n_program_object_curve, "sinus");
+	phase_uniform_curve = glGetUniformLocation(n_program_object_curve, "phase");
 
 	color_uniform_curve = glGetUniformLocation(n_program_object_curve, "color");
 
 	return true;
 }
 
-void ShaderCurve::bind(glm::vec2 point1, glm::vec2 point2, float amplitude, float frequency, float sinus, glm::vec3 color){
+void ShaderCurve::bind(glm::vec2 point1, glm::vec2 point2, float amplitude, float frequency, float phase, glm::vec3 color){
 	glUseProgram(n_program_object_curve);
 	{
 		glUniform2f(point1_uniform_curve, point1.x, point1.y);
@@ -333,7 +333,7 @@ void ShaderCurve::bind(glm::vec2 point1, glm::vec2 point2, float amplitude, floa
 
 		glUniform1f(amplitude_uniform_curve, amplitude);
 		glUniform1f(frequency_uniform_curve, frequency);
-		glUniform1f(sinus_uniform_curve, sinus);
+		glUniform1f(phase_uniform_curve, phase);
 
 		glUniform3f(color_uniform_curve, color.r, color.g, color.b);
 	}
