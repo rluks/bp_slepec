@@ -3,7 +3,7 @@
 Collision::Collision(){
 }
 
-Collision::Collision(enum collisionType collisType, glm::vec2 p1, glm::vec2 p2) : type(collisType), point1(p1), point2(p2)
+Collision::Collision(enum collisionType collisType, glm::vec2 p1, glm::vec2 p2, Surface s) : type(collisType), point1(p1), point2(p2), surface(s)
 {
 
 }

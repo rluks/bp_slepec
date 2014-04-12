@@ -67,6 +67,23 @@ void BoxDebug::generate(TBmp * bmpfile){
 			boxes.at(i) = a;//ulozeni vysledne zmenene kostky (resp. obdelniku)
 	}
 
+	//nastavit povrchy
+	for(unsigned int i = 0; i < boxes.size(); i++){
+		Box a = boxes.at(i);
+
+		a.surface.color = glm::vec3(0.0, 0.9, 0.9);
+		a.surface.frequency = 5.0f;
+		a.surface.amplitude = 0.03f;
+
+		boxes.at(i) = a;
+	}
+
+	/*
+	for(unsigned int i = 0; i < boxes.size(); i++){	
+		Box a = boxes.at(i);
+		std::cout << i << ". f:" << a.surface.frequency  << "a: "  <<  a.surface.amplitude << std::endl;
+	}*/
+
 	//pripravit shader
 	boxesShader.compile();
 	pointSimpleShader.compile();
@@ -292,7 +309,7 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 	
 			glm::vec2 point1(mostLeftX, mostTopY);
 			glm::vec2 point2(mostRightX, mostBottomY);
-			collisions.push_back(Collision(type, point1, point2));
+			collisions.push_back(Collision(type, point1, point2, b.surface));
 
 		}//horizCol && verticCol
 	}//for boxes
@@ -345,14 +362,11 @@ void BoxDebug::drawCollisions(){
 
 			if(a.type == AoverB){//hero stoji na prekazce
 
-				glm::vec3 color(0.0, 0.9, 0.9);
 				float sinus = 0.0f;
-				float frequency = 5.0f;
-				float amplitude = 0.03f;
-
+	
 				//std::cout << i << ". type: " << a.getTypeString() << " p1: " << a.point1.x << ", " << a.point1.y << " p2: " << a.point2.x << ", " << a.point2.y << std::endl;
 
-				curveShader.bind(a.point1, a.point2, amplitude, frequency, sinus, color);
+				curveShader.bind(a.point1, a.point2, a.surface.amplitude, a.surface.frequency, sinus, a.surface.color);
 				glBindVertexArray(tactileVAO);
 				//glEnable(GL_BLEND);
 				//glBlendFunc(GL_ONE, GL_ONE);

@@ -4,8 +4,6 @@
 #include <GL/glew.h>
 #include <vector>
 #include <glm/vec2.hpp> 
-//#include "glm/gtx/string_cast.hpp"
-//#include <glm/detail/func_geometric.hpp>
 
 #include "Common.h"
 #include "Texture.h"
@@ -14,17 +12,15 @@
 #include "Box.h"
 #include "Collision.h"
 
-
-
-
 struct BoxDebug {
 public:
+	//geometrie
 	GLuint VBO, VAO, IBO;
 	std::vector<Box> boxes;
 	ShaderBoxes boxesShader;
 	ShaderPointSimple pointSimpleShader;
-	ShaderCurve curveShader;
 
+	//hrac
 	glm::vec2 movementDirection;
 	float gravity;
 
@@ -32,14 +28,18 @@ public:
 	static bool standingOn;
 	std::vector<Collision> collisions;
 
+	//pro hmatovy vjem
 	std::vector<float> pozice1D;
 	GLuint tactileVBO, tactileVAO;
+	ShaderCurve curveShader;
 
+	//funkce
 	void generate(TBmp *);
 	void setMovementDirection(Keys);
 	void calculateTimeBasedMovement(DWORD, Keys, Hero *);
 	void SeparatingAxisTheorem(Hero *);
 
+	//vykreslovaci funkce
 	void draw();
 	void drawBox(Box);
 	void drawCollisions();

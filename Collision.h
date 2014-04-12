@@ -15,7 +15,7 @@ public:
 	Surface surface;
 
 	Collision();
-	Collision(enum collisionType, glm::vec2, glm::vec2);
+	Collision(enum collisionType, glm::vec2, glm::vec2, Surface);
 	std::string getTypeString();
 };
 
