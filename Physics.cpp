@@ -71,12 +71,14 @@ void BoxDebug::generate(TBmp * bmpfile){
 	for(unsigned int i = 0; i < boxes.size(); i++){
 		Box a = boxes.at(i);
 
-		a.surface.color = glm::vec3(0.0, 0.9, 0.9);
+		a.surface.color = glm::vec3(0.5, 0.5, 0.5);
 		a.surface.frequency = 5.0f;
-		a.surface.amplitude = 0.03f;
+		a.surface.amplitude = 0.015f;
 
 		boxes.at(i) = a;
 	}
+
+	phase = 0.0f;
 
 	/*
 	for(unsigned int i = 0; i < boxes.size(); i++){	
@@ -90,8 +92,8 @@ void BoxDebug::generate(TBmp * bmpfile){
 	curveShader.compile();
 
 	//pripravit hmatovy vjem
-	int numOfPoints = 15;
-	float numOfPointsF = 15.0f;
+	int numOfPoints = 25;
+	float numOfPointsF = 25.0f;
 	for(int i = 0; i < numOfPoints; i++){
 		float points[] = {0.0f + i/numOfPointsF, 0.0f, 0.0f, 0.1f + i/numOfPointsF, 0.0f, 0.0f};
 		pozice1D.insert(pozice1D.end(), points, points+12);
@@ -362,11 +364,15 @@ void BoxDebug::drawCollisions(){
 
 			if(a.type == AoverB){//hero stoji na prekazce
 
-				float sinus = 0.0f;
+				if(movementDirection.x != 0.0){
+					phase += 0.1f;
+					if(phase == 1.0f)
+						phase = 0.0f;
+				}
 	
 				//std::cout << i << ". type: " << a.getTypeString() << " p1: " << a.point1.x << ", " << a.point1.y << " p2: " << a.point2.x << ", " << a.point2.y << std::endl;
 
-				curveShader.bind(a.point1, a.point2, a.surface.amplitude, a.surface.frequency, sinus, a.surface.color);
+				curveShader.bind(a.point1, a.point2, a.surface.amplitude, a.surface.frequency, phase, a.surface.color);
 				glBindVertexArray(tactileVAO);
 				//glEnable(GL_BLEND);
 				//glBlendFunc(GL_ONE, GL_ONE);

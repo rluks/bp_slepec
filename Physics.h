@@ -32,6 +32,7 @@ public:
 	std::vector<float> pozice1D;
 	GLuint tactileVBO, tactileVAO;
 	ShaderCurve curveShader;
+	float phase;
 
 	//funkce
 	void generate(TBmp *);
