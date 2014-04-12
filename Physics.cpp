@@ -148,6 +148,9 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys key, Hero * her
 	if(hero->jumping || !standingOn){
 		hero->position.y += hero->velocity.y;
 		hero->velocity.y += gravity;
+
+		if(hero->velocity.y > 0.8)//rychleji uz nedetekuje kolize se zemi
+			hero->velocity.y = 0.8;
 	}
 
 	if(hero->moving == false && movementDirection.x != 0.0){
@@ -166,6 +169,7 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys key, Hero * her
 	}
 
 	if(key.reset){
+		std::cout << " RESET " << std::endl;
 		hero->position.x = start_position_x;
 		hero->position.y = start_position_y;
 		hero->moving = false;
