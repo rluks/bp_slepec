@@ -94,4 +94,11 @@ public:
 	void bind();
 };
 
+struct ShaderCurve : public Shader {
+public:
+	GLuint n_vertex_shader_curve, n_fragment_shader_curve, n_program_object_curve;
+	bool compile();
+	void bind();
+};
+
 #endif

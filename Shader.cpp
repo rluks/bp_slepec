@@ -134,8 +134,8 @@ bool Shader::compile(GLuint * n_vertex_shader, GLuint * n_fragment_shader, GLuin
 }
 
 bool ShaderBlur::compile(){
-	vertexpath  = "blur.vx.shader";
-	fragmentpath = "blur.fr.shader";
+	vertexpath  = "Shaders/blur.vx.shader";
+	fragmentpath = "Shaders/blur.fr.shader";
 
 	if(!Shader::compile(&n_vertex_shader, &n_fragment_shader, &n_program_object))
 		return false;//TODO asi spis vyjimka
@@ -158,8 +158,8 @@ void ShaderBlur::bind(int width, int height){
 
 //pass
 bool ShaderPass::compile(){
-	vertexpath  = "pass.vx.shader";
-	fragmentpath = "pass.fr.shader";
+	vertexpath  = "Shaders/pass.vx.shader";
+	fragmentpath = "Shaders/pass.fr.shader";
 	if(!Shader::compile(&n_vertex_shader_pass, &n_fragment_shader_pass, &n_program_object_pass))
 		return false;
 
@@ -182,8 +182,8 @@ void ShaderPass::bind(Matrix4f t_mvp){
 
 //hero
 bool ShaderHero::compile(){
-	vertexpath  = "hero.vx.shader";
-	fragmentpath = "hero.fr.shader";
+	vertexpath  = "Shaders/hero.vx.shader";
+	fragmentpath = "Shaders/hero.fr.shader";
 	if(!Shader::compile(&n_vertex_shader_hero, &n_fragment_shader_hero, &n_program_object_hero))
 		return false;
 
@@ -209,8 +209,8 @@ void ShaderHero::bind(glm::vec2 position, bool facingLeft){
 
 //velocity
 bool ShaderVelocity::compile(){
-	vertexpath  = "velocity.vx.shader";
-	fragmentpath = "velocity.fr.shader";
+	vertexpath  = "Shaders/velocity.vx.shader";
+	fragmentpath = "Shaders/velocity.fr.shader";
 	if(!Shader::compile(&n_vertex_shader_velocity, &n_fragment_shader_velocity, &n_program_object_velocity))
 		return false;
 
@@ -232,8 +232,8 @@ void ShaderVelocity::bind(int width, int height){
 
 //height
 bool ShaderHeight::compile(){
-	vertexpath  = "height.vx.shader";
-	fragmentpath = "height.fr.shader";
+	vertexpath  = "Shaders/height.vx.shader";
+	fragmentpath = "Shaders/height.fr.shader";
 	if(!Shader::compile(&n_vertex_shader_height, &n_fragment_shader_height, &n_program_object_height))
 		return false;
 
@@ -257,8 +257,8 @@ void ShaderHeight::bind(int width, int height){
 
 //bod
 bool ShaderPoint::compile(){
-	vertexpath  = "point.vx.shader";
-	fragmentpath = "point.fr.shader";
+	vertexpath  = "Shaders/point.vx.shader";
+	fragmentpath = "Shaders/point.fr.shader";
 	if(!Shader::compile(&n_vertex_shader_point, &n_fragment_shader_point, &n_program_object_point))
 		return false;
 
@@ -273,8 +273,8 @@ void ShaderPoint::bind(){
 
 //bod simple
 bool ShaderPointSimple::compile(){
-	vertexpath  = "pointSimple.vx.shader";
-	fragmentpath = "pointSimple.fr.shader";
+	vertexpath  = "Shaders/pointSimple.vx.shader";
+	fragmentpath = "Shaders/pointSimple.fr.shader";
 	if(!Shader::compile(&n_vertex_shader_pointSimple, &n_fragment_shader_pointSimple, &n_program_object_pointSimple))
 		return false;
 
@@ -291,8 +291,8 @@ void ShaderPointSimple::bind(){
 
 //boxes
 bool ShaderBoxes::compile(){
-	vertexpath  = "boxes.vx.shader";
-	fragmentpath = "boxes.fr.shader";
+	vertexpath  = "Shaders/boxes.vx.shader";
+	fragmentpath = "Shaders/boxes.fr.shader";
 	if(!Shader::compile(&n_vertex_shader_boxes, &n_fragment_shader_boxes, &n_program_object_boxes))
 		return false;
 
@@ -301,6 +301,23 @@ bool ShaderBoxes::compile(){
 
 void ShaderBoxes::bind(){
 	glUseProgram(n_program_object_boxes);
+	{
+
+	}
+}
+
+//krivka
+bool ShaderCurve::compile(){
+	vertexpath  = "Shaders/curve.vx.shader";
+	fragmentpath = "Shaders/curve.fr.shader";
+	if(!Shader::compile(&n_vertex_shader_curve, &n_fragment_shader_curve, &n_program_object_curve))
+		return false;
+
+	return true;
+}
+
+void ShaderCurve::bind(){
+	glUseProgram(n_program_object_curve);
 	{
 
 	}

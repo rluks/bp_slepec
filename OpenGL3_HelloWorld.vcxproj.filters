@@ -79,52 +79,58 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="blur.fr.shader">
+    <None Include="Shaders\blur.fr.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="blur.vx.shader">
+    <None Include="Shaders\blur.vx.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="pass.fr.shader">
+    <None Include="Shaders\boxes.fr.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="pass.vx.shader">
+    <None Include="Shaders\boxes.vx.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="velocity.fr.shader">
+    <None Include="Shaders\curve.fr.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="velocity.vx.shader">
+    <None Include="Shaders\curve.vx.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="height.fr.shader">
+    <None Include="Shaders\height.fr.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="height.vx.shader">
+    <None Include="Shaders\height.vx.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="point.fr.shader">
+    <None Include="Shaders\hero.fr.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="point.vx.shader">
+    <None Include="Shaders\hero.vx.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="hero.fr.shader">
+    <None Include="Shaders\pass.fr.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="hero.vx.shader">
+    <None Include="Shaders\pass.vx.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="boxes.fr.shader">
+    <None Include="Shaders\point.fr.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="boxes.vx.shader">
+    <None Include="Shaders\point.vx.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="pointSimple.fr.shader">
+    <None Include="Shaders\pointSimple.fr.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="pointSimple.vx.shader">
+    <None Include="Shaders\pointSimple.vx.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\velocity.fr.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\velocity.vx.shader">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
