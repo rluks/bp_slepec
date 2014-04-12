@@ -12,20 +12,9 @@
 #include "Shader.h"
 #include "Hero.h"
 #include "Box.h"
+#include "Collision.h"
 
-enum collisionType {AB, BA, AoverB, AunderB};
 
-struct Collision {
-public:
-	collisionType type;
-	glm::vec2 point1;
-	glm::vec2 point2;
-	Surface surface;
-
-	Collision();
-	Collision(enum collisionType, glm::vec2, glm::vec2);
-	std::string getTypeString();
-};
 
 
 struct BoxDebug {
