@@ -26,8 +26,6 @@ std::string Collision::getTypeString(){
 	return typeString;
 }
 
-float BoxDebug::pozice1D[] = {0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f};
-
 bool BoxDebug::standingOn = false;
 
 void BoxDebug::generate(TBmp * bmpfile){
@@ -101,9 +99,14 @@ void BoxDebug::generate(TBmp * bmpfile){
 	curveShader.compile();
 
 	//pripravit hmatovy vjem
+	for(int i = 0; i < 10; i++){
+		float points[] = {0.0f + i/10.0f, 0.0f, 0.0f, 0.1f + i/10.0f, 0.0f, 0.0f};
+		pozice1D.insert(pozice1D.end(), points, points+12);
+	}
+
 	glGenBuffers(1, &tactileVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, tactileVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(pozice1D), pozice1D, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, pozice1D.size() * sizeof(float), &pozice1D[0], GL_STATIC_DRAW);
 
 	glGenVertexArrays(1, &tactileVAO);
 	glBindVertexArray(tactileVAO);
@@ -326,8 +329,7 @@ void BoxDebug::drawCollisionsPoints(){
 		for(unsigned int i = 0; i < collisions.size(); i++){
 			Collision a = collisions.at(i);
 
-			std::string type = a.getTypeString();
-			//std::cout << i << ". type: " << type << " p1: " << a.point1.x << ", " << a.point1.y << " p2: " << a.point2.x << ", " << a.point2.y << std::endl;
+			//std::cout << i << ". type: " << a.getTypeString() << " p1: " << a.point1.x << ", " << a.point1.y << " p2: " << a.point2.x << ", " << a.point2.y << std::endl;
 
 			float bod[] = {a.point1.x,  a.point1.y, a.point2.x, a.point2.y};
 
@@ -370,13 +372,13 @@ void BoxDebug::drawCollisions(){
 			float frequency = 0.2f;
 			float amplitude = 0.6f;
 
-			std::cout << i << ". type: " << a.getTypeString() << " p1: " << a.point1.x << ", " << a.point1.y << " p2: " << a.point2.x << ", " << a.point2.y << std::endl;
+			//std::cout << i << ". type: " << a.getTypeString() << " p1: " << a.point1.x << ", " << a.point1.y << " p2: " << a.point2.x << ", " << a.point2.y << std::endl;
 
 			curveShader.bind(a.point1, a.point2, amplitude, frequency, sinus, color);
 			glBindVertexArray(tactileVAO);
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_ONE, GL_ONE);
-			glDrawArrays(GL_POINTS, 0, 3);
+			glDrawArrays(GL_LINES, 0, pozice1D.size() * 2);
 			glDisable(GL_BLEND);
 			glBindVertexArray(0);
 		}

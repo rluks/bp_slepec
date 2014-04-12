@@ -41,7 +41,7 @@ public:
 	static bool standingOn;
 	std::vector<Collision> collisions;
 
-	static float pozice1D[];
+	std::vector<float> pozice1D;
 	GLuint tactileVBO, tactileVAO;
 
 	void generate(TBmp *);

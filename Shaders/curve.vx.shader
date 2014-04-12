@@ -22,7 +22,8 @@ void main()
 
 	float s = s1 + (s2-s1) * v_pos.x;
 	float t = t1 + (t2-t1) * v_pos.y;
-	t+=0.3;
+	
+	t+=mod(v_pos.x, 0.2);	
 
 	gl_Position = vec4(s, t, 0.0, 1.0);
 	gl_PointSize = 2.0;
