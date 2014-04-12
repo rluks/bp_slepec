@@ -4,13 +4,14 @@
 #include <GL/glew.h>
 #include <vector>
 #include <glm/vec2.hpp> 
-#include "glm/gtx/string_cast.hpp"
-#include <glm/detail/func_geometric.hpp>
+//#include "glm/gtx/string_cast.hpp"
+//#include <glm/detail/func_geometric.hpp>
 
 #include "Common.h"
 #include "Texture.h"
 #include "Shader.h"
 #include "Hero.h"
+#include "Box.h"
 
 enum collisionType {AB, BA, AoverB, AunderB};
 
@@ -19,6 +20,7 @@ public:
 	collisionType type;
 	glm::vec2 point1;
 	glm::vec2 point2;
+	Surface surface;
 
 	Collision();
 	Collision(enum collisionType, glm::vec2, glm::vec2);

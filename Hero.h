@@ -7,6 +7,7 @@
 #include "Common.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Box.h"
 
 struct Hero {
 public:

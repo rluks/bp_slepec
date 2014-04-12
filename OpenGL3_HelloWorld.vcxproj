@@ -105,12 +105,14 @@
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Box.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Hero.h" />
     <ClInclude Include="OpenGL30Drv.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="PNGLoad.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Surface.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Tga.h" />
     <ClInclude Include="Transform.h" />

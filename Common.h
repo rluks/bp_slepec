@@ -31,10 +31,4 @@ public:
 	bool reset;//num0
 };
 
-
-struct Box {
-public:
-	glm::vec2 vMin, vMax;
-};
-
 #endif

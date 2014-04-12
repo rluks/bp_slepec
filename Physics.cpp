@@ -99,8 +99,8 @@ void BoxDebug::generate(TBmp * bmpfile){
 	curveShader.compile();
 
 	//pripravit hmatovy vjem
-	int numOfPoints = 100;
-	float numOfPointsF = 100.0f;
+	int numOfPoints = 15;
+	float numOfPointsF = 15.0f;
 	for(int i = 0; i < numOfPoints; i++){
 		float points[] = {0.0f + i/numOfPointsF, 0.0f, 0.0f, 0.1f + i/numOfPointsF, 0.0f, 0.0f};
 		pozice1D.insert(pozice1D.end(), points, points+12);
@@ -369,20 +369,23 @@ void BoxDebug::drawCollisions(){
 		for(unsigned int i = 0; i < collisions.size(); i++){
 			Collision a = collisions.at(i);
 
-			glm::vec3 color(0.0, 0.9, 0.9);
-			float sinus = 0.0f;
-			float frequency = 0.9f;
-			float amplitude = 0.06f;
+			if(a.type == AoverB){//hero stoji na prekazce
 
-			//std::cout << i << ". type: " << a.getTypeString() << " p1: " << a.point1.x << ", " << a.point1.y << " p2: " << a.point2.x << ", " << a.point2.y << std::endl;
+				glm::vec3 color(0.0, 0.9, 0.9);
+				float sinus = 0.0f;
+				float frequency = 5.0f;
+				float amplitude = 0.03f;
 
-			curveShader.bind(a.point1, a.point2, amplitude, frequency, sinus, color);
-			glBindVertexArray(tactileVAO);
-			//glEnable(GL_BLEND);
-			//glBlendFunc(GL_ONE, GL_ONE);
-			glDrawArrays(GL_LINES, 0, pozice1D.size() * 2);
-			//glDisable(GL_BLEND);
-			glBindVertexArray(0);
+				//std::cout << i << ". type: " << a.getTypeString() << " p1: " << a.point1.x << ", " << a.point1.y << " p2: " << a.point2.x << ", " << a.point2.y << std::endl;
+
+				curveShader.bind(a.point1, a.point2, amplitude, frequency, sinus, color);
+				glBindVertexArray(tactileVAO);
+				//glEnable(GL_BLEND);
+				//glBlendFunc(GL_ONE, GL_ONE);
+				glDrawArrays(GL_LINES, 0, pozice1D.size() * 2);
+				//glDisable(GL_BLEND);
+				glBindVertexArray(0);
+			}
 		}
 	}
 

@@ -77,6 +77,12 @@
     <ClInclude Include="PNGLoad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Surface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\blur.fr.shader">
