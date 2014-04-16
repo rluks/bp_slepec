@@ -17,6 +17,7 @@ void main()
 	float t = point1.y + (point2.y-point1.y) * v_pos.y;
 
 	float t_new = t + amplitude * sin(6.28 * frequency * v_pos.x + phase);
+	t_new += amplitude;
 
 	//prepocet ze souradneho systemu fyziky(0 horni levy roh) na zobrazeni(0 ve stredu)
 	float s0 = (2.0 * s)/32.0 - 1.0;//TODO posilat velikost mapy 32

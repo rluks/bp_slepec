@@ -73,23 +73,30 @@ void BoxDebug::generate(TBmp * bmpfile){
 	
 
 	//nastavit povrchy
-	surfaceShader.compile("Shaders/curve.vx.shader", "Shaders/curve.fr.shader");
+	surfaceShader.compile("Shaders/surface_curve.vx.shader", "Shaders/surface_curve.fr.shader");
 	surfaceShader2.compile("Shaders/surface_sinus.vx.shader", "Shaders/surface_sinus.fr.shader");
+	surfaceZigzag.compile("Shaders/surface_zigzag.vx.shader", "Shaders/surface_zigzag.fr.shader");
 
 	for(unsigned int i = 0; i < boxes.size(); i++){
 		Box a = boxes.at(i);
 
-		if(i % 2 == 0){
+		/*if(i % 2 == 0){
 			a.surface.color = glm::vec3(0.5, 0.5, 0.5);
 			a.surface.frequency = 2.0f;
 			a.surface.amplitude = 1.5f;
 			a.surface.surfaceShader = surfaceShader;
+		}else if(i % 2 == 1){*/
+			a.surface.color = glm::vec3(0.0, 0.9, 0.9);
+			a.surface.frequency = 0.2f;
+			a.surface.amplitude = 2.2f;
+			a.surface.surfaceShader = surfaceZigzag;
+		/*
 		}else{
 			a.surface.color = glm::vec3(0.7, 0.7, 0.7);
 			a.surface.frequency = 2.0f;
 			a.surface.amplitude = 0.5f;
 			a.surface.surfaceShader = surfaceShader2;
-		}
+		}*/
 
 		boxes.at(i) = a;
 	}
@@ -107,8 +114,8 @@ void BoxDebug::generate(TBmp * bmpfile){
 	pointSimpleShader.compile();
 
 	//pripravit hmatovy vjem
-	int numOfPoints = 1000;
-	float numOfPointsF = 1000.0f;
+	int numOfPoints = 50;
+	float numOfPointsF = 50.0f;
 	for(int i = 0; i < numOfPoints; i++){
 		float points[] = {0.0f + i/numOfPointsF, 0.0f, 0.0f, 0.1f + i/numOfPointsF, 0.0f, 0.0f};
 		pozice1D.insert(pozice1D.end(), points, points+12);

@@ -103,12 +103,6 @@
     <None Include="Shaders\boxes.vx.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Shaders\curve.fr.shader">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\curve.vx.shader">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Shaders\height.fr.shader">
       <Filter>Resource Files</Filter>
     </None>
@@ -149,6 +143,18 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Shaders\surface_sinus.vx.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\surface_curve.fr.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\surface_curve.vx.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\surface_zigzag.fr.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\surface_zigzag.vx.shader">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

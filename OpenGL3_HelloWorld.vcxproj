@@ -125,8 +125,6 @@
     <None Include="Shaders\blur.vx.shader" />
     <None Include="Shaders\boxes.fr.shader" />
     <None Include="Shaders\boxes.vx.shader" />
-    <None Include="Shaders\curve.fr.shader" />
-    <None Include="Shaders\curve.vx.shader" />
     <None Include="Shaders\height.fr.shader" />
     <None Include="Shaders\height.vx.shader" />
     <None Include="Shaders\hero.fr.shader" />
@@ -137,8 +135,12 @@
     <None Include="Shaders\point.vx.shader" />
     <None Include="Shaders\pointSimple.fr.shader" />
     <None Include="Shaders\pointSimple.vx.shader" />
+    <None Include="Shaders\surface_curve.fr.shader" />
+    <None Include="Shaders\surface_curve.vx.shader" />
     <None Include="Shaders\surface_sinus.fr.shader" />
     <None Include="Shaders\surface_sinus.vx.shader" />
+    <None Include="Shaders\surface_zigzag.fr.shader" />
+    <None Include="Shaders\surface_zigzag.vx.shader" />
     <None Include="Shaders\velocity.fr.shader" />
     <None Include="Shaders\velocity.vx.shader" />
   </ItemGroup>
