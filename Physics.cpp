@@ -67,13 +67,21 @@ void BoxDebug::generate(TBmp * bmpfile){
 			boxes.at(i) = a;//ulozeni vysledne zmenene kostky (resp. obdelniku)
 	}
 
+
+
+
+	
+
 	//nastavit povrchy
+	surfaceShader.compile("Shaders/curve.vx.shader", "Shaders/curve.fr.shader");
+
 	for(unsigned int i = 0; i < boxes.size(); i++){
 		Box a = boxes.at(i);
 
 		a.surface.color = glm::vec3(0.5, 0.5, 0.5);
-		a.surface.frequency = 5.0f;
-		a.surface.amplitude = 0.015f;
+		a.surface.frequency = 2.0f;
+		a.surface.amplitude = 1.5f;
+		a.surface.surfaceShader = surfaceShader;
 
 		boxes.at(i) = a;
 	}
@@ -86,14 +94,13 @@ void BoxDebug::generate(TBmp * bmpfile){
 		std::cout << i << ". f:" << a.surface.frequency  << "a: "  <<  a.surface.amplitude << std::endl;
 	}*/
 
-	//pripravit shader
+	//pripravit shadery
 	boxesShader.compile();
 	pointSimpleShader.compile();
-	curveShader.compile();
 
 	//pripravit hmatovy vjem
-	int numOfPoints = 25;
-	float numOfPointsF = 25.0f;
+	int numOfPoints = 1000;
+	float numOfPointsF = 1000.0f;
 	for(int i = 0; i < numOfPoints; i++){
 		float points[] = {0.0f + i/numOfPointsF, 0.0f, 0.0f, 0.1f + i/numOfPointsF, 0.0f, 0.0f};
 		pozice1D.insert(pozice1D.end(), points, points+12);
@@ -149,8 +156,8 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys key, Hero * her
 		hero->position.y += hero->velocity.y;
 		hero->velocity.y += gravity;
 
-		if(hero->velocity.y > 0.8)//rychleji uz nedetekuje kolize se zemi
-			hero->velocity.y = 0.8;
+		if(hero->velocity.y > 0.8f)//rychleji uz nedetekuje kolize se zemi
+			hero->velocity.y = 0.8f;
 	}
 
 	if(hero->moving == false && movementDirection.x != 0.0){
@@ -376,7 +383,23 @@ void BoxDebug::drawCollisions(){
 	
 				//std::cout << i << ". type: " << a.getTypeString() << " p1: " << a.point1.x << ", " << a.point1.y << " p2: " << a.point2.x << ", " << a.point2.y << std::endl;
 
-				curveShader.bind(a.point1, a.point2, a.surface.amplitude, a.surface.frequency, phase, a.surface.color);
+				//surfaceShader.bind(a.point1, a.point2, a.surface.amplitude, a.surface.frequency, phase, a.surface.color);
+				a.surface.surfaceShader.bind(a.point1, a.point2, a.surface.amplitude, a.surface.frequency, phase, a.surface.color);
+
+				GLenum err;
+				while ((err = glGetError()) != GL_NO_ERROR) {
+				std::string error;
+					switch(err) {
+                        case GL_INVALID_OPERATION:      error="INVALID_OPERATION";      break;
+                        case GL_INVALID_ENUM:           error="INVALID_ENUM";           break;
+                        case GL_INVALID_VALUE:          error="INVALID_VALUE";          break;
+                        case GL_OUT_OF_MEMORY:          error="OUT_OF_MEMORY";          break;
+                        case GL_INVALID_FRAMEBUFFER_OPERATION:  error="INVALID_FRAMEBUFFER_OPERATION";  break;
+						default: error="gl error invalid"; break;
+					}
+					std::cerr << "OpenGL error: " << error << std::endl;
+				}
+
 				glBindVertexArray(tactileVAO);
 				//glEnable(GL_BLEND);
 				//glBlendFunc(GL_ONE, GL_ONE);
