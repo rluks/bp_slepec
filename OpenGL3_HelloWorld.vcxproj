@@ -137,6 +137,8 @@
     <None Include="Shaders\point.vx.shader" />
     <None Include="Shaders\pointSimple.fr.shader" />
     <None Include="Shaders\pointSimple.vx.shader" />
+    <None Include="Shaders\surface_sinus.fr.shader" />
+    <None Include="Shaders\surface_sinus.vx.shader" />
     <None Include="Shaders\velocity.fr.shader" />
     <None Include="Shaders\velocity.vx.shader" />
   </ItemGroup>

@@ -74,14 +74,22 @@ void BoxDebug::generate(TBmp * bmpfile){
 
 	//nastavit povrchy
 	surfaceShader.compile("Shaders/curve.vx.shader", "Shaders/curve.fr.shader");
+	surfaceShader2.compile("Shaders/surface_sinus.vx.shader", "Shaders/surface_sinus.fr.shader");
 
 	for(unsigned int i = 0; i < boxes.size(); i++){
 		Box a = boxes.at(i);
 
-		a.surface.color = glm::vec3(0.5, 0.5, 0.5);
-		a.surface.frequency = 2.0f;
-		a.surface.amplitude = 1.5f;
-		a.surface.surfaceShader = surfaceShader;
+		if(i % 2 == 0){
+			a.surface.color = glm::vec3(0.5, 0.5, 0.5);
+			a.surface.frequency = 2.0f;
+			a.surface.amplitude = 1.5f;
+			a.surface.surfaceShader = surfaceShader;
+		}else{
+			a.surface.color = glm::vec3(0.7, 0.7, 0.7);
+			a.surface.frequency = 2.0f;
+			a.surface.amplitude = 0.5f;
+			a.surface.surfaceShader = surfaceShader2;
+		}
 
 		boxes.at(i) = a;
 	}
@@ -386,6 +394,7 @@ void BoxDebug::drawCollisions(){
 				//surfaceShader.bind(a.point1, a.point2, a.surface.amplitude, a.surface.frequency, phase, a.surface.color);
 				a.surface.surfaceShader.bind(a.point1, a.point2, a.surface.amplitude, a.surface.frequency, phase, a.surface.color);
 
+				/*
 				GLenum err;
 				while ((err = glGetError()) != GL_NO_ERROR) {
 				std::string error;
@@ -398,7 +407,7 @@ void BoxDebug::drawCollisions(){
 						default: error="gl error invalid"; break;
 					}
 					std::cerr << "OpenGL error: " << error << std::endl;
-				}
+				}*/
 
 				glBindVertexArray(tactileVAO);
 				//glEnable(GL_BLEND);

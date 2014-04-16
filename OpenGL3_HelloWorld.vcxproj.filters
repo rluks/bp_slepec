@@ -145,5 +145,11 @@
     <None Include="Shaders\velocity.vx.shader">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Shaders\surface_sinus.fr.shader">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\surface_sinus.vx.shader">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
