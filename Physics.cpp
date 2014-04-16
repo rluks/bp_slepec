@@ -74,29 +74,29 @@ void BoxDebug::generate(TBmp * bmpfile){
 
 	//nastavit povrchy
 	surfaceShader.compile("Shaders/surface_curve.vx.shader", "Shaders/surface_curve.fr.shader");
-	surfaceShader2.compile("Shaders/surface_sinus.vx.shader", "Shaders/surface_sinus.fr.shader");
+	surfaceSinus.compile("Shaders/surface_sinus.vx.shader", "Shaders/surface_sinus.fr.shader");
 	surfaceZigzag.compile("Shaders/surface_zigzag.vx.shader", "Shaders/surface_zigzag.fr.shader");
 
 	for(unsigned int i = 0; i < boxes.size(); i++){
 		Box a = boxes.at(i);
 
-		/*if(i % 2 == 0){
+		if(i % 3 == 0){
 			a.surface.color = glm::vec3(0.5, 0.5, 0.5);
 			a.surface.frequency = 2.0f;
-			a.surface.amplitude = 1.5f;
+			a.surface.amplitude = 0.5f;
 			a.surface.surfaceShader = surfaceShader;
-		}else if(i % 2 == 1){*/
+		
+		}else if(i % 2 == 1){
 			a.surface.color = glm::vec3(0.0, 0.9, 0.9);
 			a.surface.frequency = 0.2f;
 			a.surface.amplitude = 2.2f;
 			a.surface.surfaceShader = surfaceZigzag;
-		/*
 		}else{
-			a.surface.color = glm::vec3(0.7, 0.7, 0.7);
+			a.surface.color = glm::vec3(1.0, 0.7, 0.7);
 			a.surface.frequency = 2.0f;
 			a.surface.amplitude = 0.5f;
-			a.surface.surfaceShader = surfaceShader2;
-		}*/
+			a.surface.surfaceShader = surfaceSinus;
+		}
 
 		boxes.at(i) = a;
 	}
@@ -398,7 +398,6 @@ void BoxDebug::drawCollisions(){
 	
 				//std::cout << i << ". type: " << a.getTypeString() << " p1: " << a.point1.x << ", " << a.point1.y << " p2: " << a.point2.x << ", " << a.point2.y << std::endl;
 
-				//surfaceShader.bind(a.point1, a.point2, a.surface.amplitude, a.surface.frequency, phase, a.surface.color);
 				a.surface.surfaceShader.bind(a.point1, a.point2, a.surface.amplitude, a.surface.frequency, phase, a.surface.color);
 
 				/*

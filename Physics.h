@@ -31,7 +31,7 @@ public:
 	//pro hmatovy vjem
 	std::vector<float> pozice1D;
 	GLuint tactileVBO, tactileVAO;
-	ShaderSurface surfaceShader, surfaceShader2, surfaceZigzag;
+	ShaderSurface surfaceShader, surfaceSinus, surfaceZigzag;
 	float phase;
 
 	//funkce
