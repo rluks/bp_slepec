@@ -307,7 +307,7 @@ void ShaderBoxes::bind(){
 }
 
 //krivka
-bool ShaderCurve::compile(){
+bool ShaderSurface::compile(std::string vertexfilepath, std::string fragmentfilepath){
 	vertexpath  = "Shaders/curve.vx.shader";
 	fragmentpath = "Shaders/curve.fr.shader";
 	if(!Shader::compile(&n_vertex_shader_curve, &n_fragment_shader_curve, &n_program_object_curve))
@@ -325,7 +325,7 @@ bool ShaderCurve::compile(){
 	return true;
 }
 
-void ShaderCurve::bind(glm::vec2 point1, glm::vec2 point2, float amplitude, float frequency, float phase, glm::vec3 color){
+void ShaderSurface::bind(glm::vec2 point1, glm::vec2 point2, float amplitude, float frequency, float phase, glm::vec3 color){
 	glUseProgram(n_program_object_curve);
 	{
 		glUniform2f(point1_uniform_curve, point1.x, point1.y);
