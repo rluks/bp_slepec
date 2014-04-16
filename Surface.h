@@ -10,6 +10,9 @@ public:
 	float frequency;
 	float amplitude;
 	ShaderSurface surfaceShader;
+
+	Surface();
+	Surface(glm::vec3, float, float, ShaderSurface);
 };
 
 #endif

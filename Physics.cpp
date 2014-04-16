@@ -68,34 +68,24 @@ void BoxDebug::generate(TBmp * bmpfile){
 	}
 
 
-
-
-	
-
 	//nastavit povrchy
 	surfaceShader.compile("Shaders/surface_curve.vx.shader", "Shaders/surface_curve.fr.shader");
 	surfaceSinus.compile("Shaders/surface_sinus.vx.shader", "Shaders/surface_sinus.fr.shader");
 	surfaceZigzag.compile("Shaders/surface_zigzag.vx.shader", "Shaders/surface_zigzag.fr.shader");
 
+	Surface sinusSurface(glm::vec3(1.0, 0.7, 0.7), 2.0f, 0.5f, surfaceSinus);
+	Surface zigzagSurface(glm::vec3(0.0, 0.9, 0.9), 0.2f, 2.2f, surfaceZigzag);
+	Surface digitalSurface(glm::vec3(0.5, 0.5, 0.5), 2.0f, 0.5, surfaceShader);
+
 	for(unsigned int i = 0; i < boxes.size(); i++){
 		Box a = boxes.at(i);
 
 		if(i % 3 == 0){
-			a.surface.color = glm::vec3(0.5, 0.5, 0.5);
-			a.surface.frequency = 2.0f;
-			a.surface.amplitude = 0.5f;
-			a.surface.surfaceShader = surfaceShader;
-		
+			a.surface = digitalSurface;
 		}else if(i % 2 == 1){
-			a.surface.color = glm::vec3(0.0, 0.9, 0.9);
-			a.surface.frequency = 0.2f;
-			a.surface.amplitude = 2.2f;
-			a.surface.surfaceShader = surfaceZigzag;
+			a.surface = zigzagSurface;
 		}else{
-			a.surface.color = glm::vec3(1.0, 0.7, 0.7);
-			a.surface.frequency = 2.0f;
-			a.surface.amplitude = 0.5f;
-			a.surface.surfaceShader = surfaceSinus;
+			a.surface = sinusSurface;
 		}
 
 		boxes.at(i) = a;
