@@ -33,12 +33,12 @@ void main()
 	//
 	float s = point1.x + (point2.x-point1.x) * v_pos.x;
 	float t = point1.y + (point2.y-point1.y) * v_pos.y;
-	t+=amplitude;
+	t+=amplitude/2.0;
 
 	float s0 = (2.0 * s)/32.0 - 1.0;//TODO posilat velikost mapy 32
 	float t0 = 1.0 - (2.0 * t)/24.0;//TODO posilat velikost mapy 24
 
-	t0 += mod(v_pos.x/*+phase*/, 0.2);	
+	t0 += mod(v_pos.x+phase/10.0, 0.2)/2.0;	
 
 	gl_Position = vec4(s0, t0, 0.0, 1.0);
 	v_texcoord = v_tex;
