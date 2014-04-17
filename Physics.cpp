@@ -73,20 +73,19 @@ void BoxDebug::generate(TBmp * bmpfile){
 	surfaceSinus.compile("Shaders/surface_sinus.vx.shader", "Shaders/surface_sinus.fr.shader");
 	surfaceZigzag.compile("Shaders/surface_zigzag.vx.shader", "Shaders/surface_zigzag.fr.shader");
 
-	Surface sinusSurface(glm::vec3(1.0, 0.7, 0.7), 2.0f, 0.5f, surfaceSinus);
-	Surface zigzagSurface(glm::vec3(0.0, 0.9, 0.9), 0.2f, 2.2f, surfaceZigzag);
-	Surface digitalSurface(glm::vec3(0.5, 0.5, 0.5), 2.0f, 0.5, surfaceShader);
+	Surface sinusSurface(glm::vec3(0.7, 0.7, 0.7), 2.0f, 0.5f, surfaceSinus, 0.1f);
+	Surface zigzagSurface(glm::vec3(0.0, 0.7, 0.7), 0.2f, 2.2f, surfaceZigzag, 0.1f);
+	Surface digitalSurface(glm::vec3(0.5, 0.5, 0.5), 2.0f, 0.5, surfaceShader, 0.2f);
 
 	for(unsigned int i = 0; i < boxes.size(); i++){
 		Box a = boxes.at(i);
 
-		if(i % 3 == 0){
+		if(i % 3 == 0)
 			a.surface = digitalSurface;
-		}else if(i % 2 == 1){
+		else if(i % 2 == 1)
 			a.surface = zigzagSurface;
-		}else{
+		else
 			a.surface = sinusSurface;
-		}
 
 		boxes.at(i) = a;
 	}
@@ -380,11 +379,11 @@ void BoxDebug::drawCollisions(){
 
 			if(a.type == AoverB){//hero stoji na prekazce
 
-				if(movementDirection.x != 0.0){
-					phase += 0.1f;
+				//if(movementDirection.x != 0.0){
+					phase += a.surface.temperature;
 					if(phase == 1.0f)
 						phase = 0.0f;
-				}
+				//}
 	
 				//std::cout << i << ". type: " << a.getTypeString() << " p1: " << a.point1.x << ", " << a.point1.y << " p2: " << a.point2.x << ", " << a.point2.y << std::endl;
 
