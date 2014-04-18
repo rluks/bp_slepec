@@ -280,6 +280,7 @@ bool InitGLObjects()
 
 	//pridani kapky s true cistenim hladiny
 	drawDrop2(true, 8, 18, 0);
+	drawDrop2(true, 16, 12, 1);
 
 	return true;
 }
@@ -315,8 +316,13 @@ void DrawScene()
 	glBindVertexArray(n_vertex_array_object);
 	// rekne OpenGL odkud se berou data pro kresleni (z nasich VBO)
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE);
+
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, p_OffsetInVBO(0));
 	// nakresli objekt pomoci jedineho prikazu
+		
+	glDisable(GL_BLEND);
 
 	glBindVertexArray(0); // vratime VAO 0, abychom si nahodne VAO nezmenili (pripadne osetreni proti chybe v ovladacich nvidia kde se VAO poskodi pri volani nekterych wgl funkci)
 }
@@ -590,6 +596,16 @@ void OnIdle(CGL30Driver &driver)
 		heightShader.bind(datawidth, dataheight);	drawPingPong(0);
 	}
 
+	
+	for(int i = 0; i < 3; i++){	
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, depthmap);
+		glActiveTexture(GL_TEXTURE0);
+
+		velocityShader.bind(datawidth, dataheight);	drawPingPong(1);
+		heightShader.bind(datawidth, dataheight);	drawPingPong(1);
+	}
+
 
 	glViewport(0, 0, n_width, n_height); // viewport na velikost okna
 	glClear ( GL_COLOR_BUFFER_BIT);
@@ -604,9 +620,14 @@ void OnIdle(CGL30Driver &driver)
 		t_mvp = t_projection * t_modelview;
 	}
 
+	glBindTexture(GL_TEXTURE_2D, n_texture[n_source_tex]);
 	glm::vec3 color = glm::vec3(0.4, 1.0, 0.8);
-	//glm::vec3 color = glm::vec3(0.7, 0.5, 0.8);
 	passShader.bind(t_mvp, color); // ted kreslite do okna, chcete videt vysledek
+	DrawScene();
+
+	glBindTexture(GL_TEXTURE_2D, n_texture2[n_source_tex]);
+	glm::vec3 color2 = glm::vec3(0.7, 0.5, 0.8);
+	passShader.bind(t_mvp, color2); // ted kreslite do okna, chcete videt vysledek
 	DrawScene();
 
 	//TODO
