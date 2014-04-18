@@ -42,9 +42,10 @@ public:
 	GLuint n_vertex_shader_pass, n_fragment_shader_pass, n_program_object_pass;
 	GLuint n_mvp_matrix_uniform_pass, 
 	n_texture_sampler_uniform_pass,
-	n_depthmap_sampler_uniform_pass;
+	n_depthmap_sampler_uniform_pass,
+	color_uniform_pass;
 	bool compile();
-	void bind(Matrix4f);
+	void bind(Matrix4f, glm::vec3);
 };
 
 struct ShaderHero : public Shader {

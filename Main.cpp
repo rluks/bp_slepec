@@ -51,6 +51,7 @@ static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_obje
 
 //textury
 static GLuint n_texture[2];//r-height,g-y velocity,b-x velocity
+static GLuint n_texture2[2];//r-height,g-y velocity,b-x velocity
 static GLuint depthmap;
 
 //shadery
@@ -580,7 +581,9 @@ void OnIdle(CGL30Driver &driver)
 		t_mvp = t_projection * t_modelview;
 	}
 
-	passShader.bind(t_mvp); // ted kreslite do okna, chcete videt vysledek
+	glm::vec3 color = glm::vec3(0.4, 1.0, 0.8);
+	//glm::vec3 color = glm::vec3(0.7, 0.5, 0.8);
+	passShader.bind(t_mvp, color); // ted kreslite do okna, chcete videt vysledek
 	DrawScene();
 
 	//TODO

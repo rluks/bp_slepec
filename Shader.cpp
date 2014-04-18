@@ -166,17 +166,18 @@ bool ShaderPass::compile(){
 	n_mvp_matrix_uniform_pass = glGetUniformLocation(n_program_object_pass, "t_modelview_projection_matrix");
 	n_texture_sampler_uniform_pass = glGetUniformLocation(n_program_object_pass, "n_tex");
 	n_depthmap_sampler_uniform_pass = glGetUniformLocation(n_program_object_pass, "depthmap");
-
+	color_uniform_pass = glGetUniformLocation(n_program_object_pass, "color");
 
 	return true;
 }
 
-void ShaderPass::bind(Matrix4f t_mvp){
+void ShaderPass::bind(Matrix4f t_mvp, glm::vec3 color){
 	glUseProgram(n_program_object_pass);
 	{
 		glUniformMatrix4fv(n_mvp_matrix_uniform_pass, 1, GL_FALSE, &t_mvp[0][0]);
 		glUniform1i(n_texture_sampler_uniform_pass, 0);
 		glUniform1i(n_depthmap_sampler_uniform_pass, 1);
+		glUniform3f(color_uniform_pass, color.r, color.g, color.b);
 	}
 }
 
