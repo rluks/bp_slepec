@@ -75,7 +75,7 @@ void BoxDebug::generate(TBmp * bmpfile){
 
 	Surface sinusSurface(glm::vec3(0.7, 0.7, 0.7), 2.0f, 0.5f, surfaceSinus, 0.1f);
 	Surface zigzagSurface(glm::vec3(0.0, 0.7, 0.7), 0.2f, 2.2f, surfaceZigzag, 0.1f);
-	Surface digitalSurface(glm::vec3(0.5, 0.5, 0.5), 2.0f, 0.5, surfaceShader, 0.2f);
+	Surface digitalSurface(glm::vec3(0.5, 0.8, 0.5), 2.0f, 0.5, surfaceShader, 0.2f);
 
 	for(unsigned int i = 0; i < boxes.size(); i++){
 		Box a = boxes.at(i);
