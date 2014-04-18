@@ -39,8 +39,9 @@ static bool b_running = true;
 void OnIdle(CGL30Driver &driver);
 void onResize(int n_x, int n_y, int n_new_width, int n_new_height);
 LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_param);
-void drawPingPong();
+void drawPingPong(int);
 void drawDrop(bool, float, float);
+void drawDrop2(bool, float, float, int);
 //void clearTextureRGBA(GLuint tex, float r, float g, float b, float a)
 // prototypy funkci
 
@@ -87,15 +88,23 @@ void clearTextureRGBA(GLuint tex, float r, float g, float b, float a){
 }
 
 
-void drawDrop2(bool clear, float x, float y){
+void drawDrop2(bool clear, float x, float y, int textnum){
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[0], 0);
+
+	if(textnum == 0)
+		glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[0], 0);
+	else
+		glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture2[0], 0);
+
 	glViewport(0, 0, datawidth, dataheight);
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	if(clear)
 		glClear ( GL_COLOR_BUFFER_BIT);
-	
-	glBindTexture(GL_TEXTURE_2D, n_texture[0]);
+
+	if(textnum == 0)
+		glBindTexture(GL_TEXTURE_2D, n_texture[0]);
+	else
+		glBindTexture(GL_TEXTURE_2D, n_texture2[0]);
 
 	{//bod
 
@@ -248,7 +257,8 @@ bool InitGLObjects()
 	//textury
 	n_texture[1] = n_GLTextureRGBFloat();
 	n_texture[0] = n_GLTextureRGBFloat();
-	//depthmap = LoadTextureFromPNGFile("dum.png");
+	n_texture2[1] = n_GLTextureRGBFloat();
+	n_texture2[0] = n_GLTextureRGBFloat();
 
 	//fyzika
 	TBmp * bitmap;
@@ -269,7 +279,7 @@ bool InitGLObjects()
 	n_source_tex = 0;
 
 	//pridani kapky s true cistenim hladiny
-	drawDrop(true, -0.5, -0.5);
+	drawDrop2(true, 8, 18, 0);
 
 	return true;
 }
@@ -526,19 +536,32 @@ void onResize(int n_x, int n_y, int n_new_width, int n_new_height)
 
 
 
-void drawPingPong(){
+void drawPingPong(int textnum){
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[1 - n_source_tex], 0); // kresleni do nulte urovne textury
+
+	if(textnum == 0)
+		glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[1 - n_source_tex], 0); // kresleni do nulte urovne textury
+	else
+		glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture2[1 - n_source_tex], 0); // kresleni do nulte urovne textury
+
 
 	glViewport(0, 0, datawidth, dataheight); // viewport na velikost FBO
 	glClear ( GL_COLOR_BUFFER_BIT);
-	glBindTexture(GL_TEXTURE_2D, n_texture[n_source_tex]);
+
+	if(textnum == 0)
+		glBindTexture(GL_TEXTURE_2D, n_texture[n_source_tex]);
+	else
+		glBindTexture(GL_TEXTURE_2D, n_texture2[n_source_tex]);
 
 	DrawScene();
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, n_texture[1 - n_source_tex]);
+
+	if(textnum == 0)
+		glBindTexture(GL_TEXTURE_2D, n_texture[1 - n_source_tex]);
+	else
+		glBindTexture(GL_TEXTURE_2D, n_texture2[1 - n_source_tex]);
 
 	glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -563,8 +586,8 @@ void OnIdle(CGL30Driver &driver)
 		glBindTexture(GL_TEXTURE_2D, depthmap);
 		glActiveTexture(GL_TEXTURE0);
 
-		velocityShader.bind(datawidth, dataheight);	drawPingPong();
-		heightShader.bind(datawidth, dataheight);	drawPingPong();
+		velocityShader.bind(datawidth, dataheight);	drawPingPong(0);
+		heightShader.bind(datawidth, dataheight);	drawPingPong(0);
 	}
 
 
@@ -597,21 +620,22 @@ void OnIdle(CGL30Driver &driver)
 		pointsQueue.pop_back();
 		float x = (float)p.x/datawidth * 2.0f - 1.0f;
 		float y = 1.0f - (float)p.y/dataheight * 2.0f;
-		std::cout << "kapka na souradnicich - x: " << x << " |y: " << y << std::endl;
+		std::cout << "kapka na souradnicich - px: " << p.x << " |py: " << p.y << std::endl;
+		//std::cout << "kapka na souradnicich - x: " << x << " |y: " << y << std::endl;
 		drawDrop(false, x, y);
 	}
 
-	/*
+
 	if(key.space){
 		if(hero.facingLeft)
-			drawDrop2(false, hero.position.x, hero.position.y + hero.height);
+			drawDrop2(false, hero.position.x, hero.position.y + hero.height, 0);
 		else
-			drawDrop2(false, hero.position.x + hero.width, hero.position.y + hero.height);
+			drawDrop2(false, hero.position.x + hero.width, hero.position.y + hero.height, 0);
 	}
 
 	if(key.up){
-		drawDrop2(false, hero.position.x + hero.width/2.0f, hero.position.y + hero.height);
-	}*/
+		drawDrop2(false, hero.position.x + hero.width/2.0f, hero.position.y + hero.height, 0);
+	}
 
 	//nastavit novy pohyb na zaklade stisknutych tlacitek
 	boxDebug.calculateTimeBasedMovement(frame_time, key, &hero);
