@@ -401,6 +401,7 @@ int main(int n_arg_num, const char **p_arg_list)
 	// vyrobime objekty OpenGL, nutne ke kresleni
 
 	//inicializace promennych
+	srand (static_cast <unsigned> (time(0)));
 	hero.position.x = start_position_x;
 	hero.position.y = start_position_y;
 	hero.velocity.x = 0.0;
@@ -626,7 +627,7 @@ void OnIdle(CGL30Driver &driver)
 	DrawScene();
 
 	glBindTexture(GL_TEXTURE_2D, n_texture2[n_source_tex]);
-	glm::vec3 color2 = glm::vec3(0.7, 0.5, 0.8);
+	glm::vec3 color2 = glm::vec3(1.0, 0.2, 0.2);
 	passShader.bind(t_mvp, color2); // ted kreslite do okna, chcete videt vysledek
 	DrawScene();
 
@@ -646,6 +647,10 @@ void OnIdle(CGL30Driver &driver)
 		drawDrop(false, x, y);
 	}
 
+	//zdroj zvuku	
+	float flickering = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	if(flickering > 0.99f)
+		drawDrop2(false, source_position_x, source_position_y, 1);
 
 	if(key.space){
 		if(hero.facingLeft)
@@ -670,8 +675,8 @@ void OnIdle(CGL30Driver &driver)
 
 	//vykreslit
 	hero.draw();
-	boxDebug.draw();
-	boxDebug.drawBox(hero.box);
+	//boxDebug.draw();
+	//boxDebug.drawBox(hero.box);
 	boxDebug.drawCollisions();
 
 	boxDebug.movementDirection.x = 0.0;
