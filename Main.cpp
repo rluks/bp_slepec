@@ -51,8 +51,8 @@ static const GLenum p_draw_buffers[] = {GL_COLOR_ATTACHMENT0};
 static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_object;
 
 //textury
-static GLuint n_texture[2];//r-height,g-y velocity,b-x velocity
-static GLuint n_texture2[2];//r-height,g-y velocity,b-x velocity
+static GLuint n_texture[2][2];//r-height,g-y velocity,b-x velocity
+//static GLuint n_texture2[2];//r-height,g-y velocity,b-x velocity
 static GLuint depthmap;
 
 //shadery
@@ -77,34 +77,19 @@ BoxDebug boxDebug;
 static int cnt = 0;
 
 
-
-void clearTextureRGBA(GLuint tex, float r, float g, float b, float a){
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[0], 0);
-	glViewport(0, 0, datawidth, dataheight);
-	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glClear ( GL_COLOR_BUFFER_BIT);
-	glBindTexture(GL_TEXTURE_2D, n_texture[0]);
-}
-
-
 void drawDrop2(bool clear, float x, float y, int textnum){
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 
-	if(textnum == 0)
-		glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[0], 0);
-	else
-		glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture2[0], 0);
+	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[textnum][0], 0);
 
 	glViewport(0, 0, datawidth, dataheight);
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	if(clear)
 		glClear ( GL_COLOR_BUFFER_BIT);
 
-	if(textnum == 0)
-		glBindTexture(GL_TEXTURE_2D, n_texture[0]);
-	else
-		glBindTexture(GL_TEXTURE_2D, n_texture2[0]);
+
+	glBindTexture(GL_TEXTURE_2D, n_texture[textnum][0]);
+
 
 	{//bod
 
@@ -142,13 +127,13 @@ void drawDrop2(bool clear, float x, float y, int textnum){
 
 void drawDrop(bool clear, float x, float y){
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[0], 0);
+	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[0][0], 0);
 	glViewport(0, 0, datawidth, dataheight);
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	if(clear)
 		glClear ( GL_COLOR_BUFFER_BIT);
 	
-	glBindTexture(GL_TEXTURE_2D, n_texture[0]);
+	glBindTexture(GL_TEXTURE_2D, n_texture[0][0]);
 
 	{//bod
 		float bod[] = {x, y};
@@ -255,10 +240,10 @@ bool InitGLObjects()
 
 	
 	//textury
-	n_texture[1] = n_GLTextureRGBFloat();
-	n_texture[0] = n_GLTextureRGBFloat();
-	n_texture2[1] = n_GLTextureRGBFloat();
-	n_texture2[0] = n_GLTextureRGBFloat();
+	n_texture[0][1] = n_GLTextureRGBFloat();
+	n_texture[0][0] = n_GLTextureRGBFloat();
+	n_texture[1][1] = n_GLTextureRGBFloat();
+	n_texture[1][0] = n_GLTextureRGBFloat();
 
 	//fyzika
 	TBmp * bitmap;
@@ -304,7 +289,7 @@ void CleanupGLObjects()
 
 	//TODO smazat po sobe
 
-	glDeleteTextures(1, n_texture);
+	//glDeleteTextures(1, n_texture);
 	// smaze textury
 }
 
@@ -546,30 +531,16 @@ void onResize(int n_x, int n_y, int n_new_width, int n_new_height)
 void drawPingPong(int textnum){
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-
-	if(textnum == 0)
-		glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[1 - n_source_tex], 0); // kresleni do nulte urovne textury
-	else
-		glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture2[1 - n_source_tex], 0); // kresleni do nulte urovne textury
-
+	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[textnum][1 - n_source_tex], 0); // kresleni do nulte urovne textury
 
 	glViewport(0, 0, datawidth, dataheight); // viewport na velikost FBO
 	glClear ( GL_COLOR_BUFFER_BIT);
 
-	if(textnum == 0)
-		glBindTexture(GL_TEXTURE_2D, n_texture[n_source_tex]);
-	else
-		glBindTexture(GL_TEXTURE_2D, n_texture2[n_source_tex]);
-
+	glBindTexture(GL_TEXTURE_2D, n_texture[textnum][n_source_tex]);
 	DrawScene();
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-
-	if(textnum == 0)
-		glBindTexture(GL_TEXTURE_2D, n_texture[1 - n_source_tex]);
-	else
-		glBindTexture(GL_TEXTURE_2D, n_texture2[1 - n_source_tex]);
-
+	glBindTexture(GL_TEXTURE_2D, n_texture[textnum][1 - n_source_tex]);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	n_source_tex = 1 - n_source_tex; // ping-pong
@@ -621,12 +592,12 @@ void OnIdle(CGL30Driver &driver)
 		t_mvp = t_projection * t_modelview;
 	}
 
-	glBindTexture(GL_TEXTURE_2D, n_texture[n_source_tex]);
+	glBindTexture(GL_TEXTURE_2D, n_texture[0][n_source_tex]);
 	glm::vec3 color = glm::vec3(0.4, 1.0, 0.8);
 	passShader.bind(t_mvp, color); // ted kreslite do okna, chcete videt vysledek
 	DrawScene();
 
-	glBindTexture(GL_TEXTURE_2D, n_texture2[n_source_tex]);
+	glBindTexture(GL_TEXTURE_2D, n_texture[1][n_source_tex]);
 	glm::vec3 color2 = glm::vec3(1.0, 0.2, 0.2);
 	passShader.bind(t_mvp, color2); // ted kreslite do okna, chcete videt vysledek
 	DrawScene();
@@ -675,8 +646,8 @@ void OnIdle(CGL30Driver &driver)
 
 	//vykreslit
 	hero.draw();
-	//boxDebug.draw();
-	//boxDebug.drawBox(hero.box);
+	boxDebug.draw();
+	boxDebug.drawBox(hero.box);
 	boxDebug.drawCollisions();
 
 	boxDebug.movementDirection.x = 0.0;
