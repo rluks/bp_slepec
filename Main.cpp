@@ -658,9 +658,23 @@ void OnIdle(CGL30Driver &driver)
 	//poupravit novy pohyb, aby nedoslo ke kolizi
 	boxDebug.SeparatingAxisTheorem(&hero);
 
-	//aplikovat pohyb
+
 	if(reachedExit(hero.box)){
 		std::cout << "menim level" << std::endl;
+		
+		//fyzika
+		TBmp * bitmap;
+		if(!(bitmap = CPngCodec::p_Load_PNG("test2.png"))){
+			fprintf(stderr, "error: failed to load \'.png file\'\n");
+			//return false;
+		}
+		boxDebug.generate(bitmap);
+		depthmap = n_GLTextureFromBitmap(bitmap, GL_RGBA8);
+		bitmap->Delete();
+
+		//pridani kapky s true cistenim hladiny
+		drawDrop2(true, 8, 18, 0);
+		drawDrop2(true, 16, 12, 1);
 	}
 
 	//vykreslit
