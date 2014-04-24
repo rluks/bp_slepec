@@ -42,7 +42,7 @@ public:
 
 	//vykreslovaci funkce
 	void draw();
-	void drawBox(Box);
+	void drawBox(Box, glm::vec3);
 	void drawCollisions();
 	void drawCollisionsPoints();
 };

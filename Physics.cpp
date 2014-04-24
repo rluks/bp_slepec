@@ -417,7 +417,7 @@ void BoxDebug::drawCollisions(){
 	collisions.resize(0);
 }
 
-void BoxDebug::drawBox(Box a){
+void BoxDebug::drawBox(Box a, glm::vec3 color){
 
 	float a_vertices[] = {a.vMin.x, a.vMin.y, 1, /**/a.vMax.x , a.vMin.y, 1,/**/a.vMax.x, a.vMax.y, 1,/**/a.vMin.x, a.vMax.y, 1};
 	int a_indices[] = {0, 1, 1, 2, 2, 3, 3, 0, 0, 2, 1, 3};
@@ -440,7 +440,7 @@ void BoxDebug::drawBox(Box a){
 	}
 	glBindVertexArray(0);
 
-	boxesShader.bind();
+	boxesShader.bind(color);
 
 	glBindVertexArray(VAO);
 	glDrawElements(GL_LINES, 12, GL_UNSIGNED_INT, p_OffsetInVBO(0));
@@ -478,7 +478,8 @@ void BoxDebug::draw(){
 		}
 		glBindVertexArray(0);
 
-		boxesShader.bind();
+		glm::vec3 color(1.0, 0.3, 0.6);
+		boxesShader.bind(color);
 
 		glBindVertexArray(VAO);
 		glDrawElements(GL_LINES, boxes.size()*12, GL_UNSIGNED_INT, p_OffsetInVBO(0));

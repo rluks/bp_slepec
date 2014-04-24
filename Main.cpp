@@ -76,6 +76,8 @@ Hero hero;
 BoxDebug boxDebug;
 static int cnt = 0;
 
+Box levelExit;
+
 
 void drawDrop2(bool clear, float x, float y, int textnum){
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
@@ -238,6 +240,10 @@ bool InitGLObjects()
 
 	hero.init();
 
+	levelExit.vMin.x = 28;
+	levelExit.vMin.y = 20;
+	levelExit.vMax.x = 29;
+	levelExit.vMax.y = 21;
 	
 	//textury
 	n_texture[0][1] = n_GLTextureRGBFloat();
@@ -546,6 +552,15 @@ void drawPingPong(int textnum){
 	n_source_tex = 1 - n_source_tex; // ping-pong
 }
 
+bool reachedExit(Box heroBox){
+
+	//pokud exit box lezi v hero box
+	if(levelExit.vMin.x >= heroBox.vMin.x && levelExit.vMin.y >= heroBox.vMin.y && levelExit.vMax.x <= heroBox.vMax.x && levelExit.vMax.y <= heroBox.vMax.y)
+		return true;
+	else
+		return false;
+}
+
 /**
  *	@brief tato funkce se vola ve smycce pokazde kdyz nejsou zadne nove zpravy; lze vyuzit ke kresleni animace
  *	@param[in] driver je reference na OpenGL driver
@@ -559,6 +574,7 @@ void OnIdle(CGL30Driver &driver)
 
 	glBindTexture(GL_TEXTURE_2D, 0);//nechci omylem vykreslovat posledni bind. texturu
 	
+	//hrac - zdroj zvuku
 	for(int i = 0; i < 3; i++){	
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, depthmap);
@@ -568,7 +584,7 @@ void OnIdle(CGL30Driver &driver)
 		heightShader.bind(datawidth, dataheight);	drawPingPong(0);
 	}
 
-	
+	//prostredi - zdroj zvuku
 	for(int i = 0; i < 3; i++){	
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, depthmap);
@@ -643,12 +659,19 @@ void OnIdle(CGL30Driver &driver)
 	boxDebug.SeparatingAxisTheorem(&hero);
 
 	//aplikovat pohyb
+	if(reachedExit(hero.box)){
+		std::cout << "menim level" << std::endl;
+	}
 
 	//vykreslit
 	hero.draw();
 	boxDebug.draw();
-	boxDebug.drawBox(hero.box);
+	glm::vec3 heroBoxColor(1.0, 0.6, 0.4);
+	boxDebug.drawBox(hero.box, heroBoxColor);
 	boxDebug.drawCollisions();
+
+	glm::vec3 levelExitColor(0.4, 0.6, 0.8);
+	boxDebug.drawBox(levelExit, levelExitColor);
 
 	boxDebug.movementDirection.x = 0.0;
 	boxDebug.movementDirection.y = 0.0;

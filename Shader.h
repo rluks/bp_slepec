@@ -92,8 +92,9 @@ public:
 struct ShaderBoxes : public Shader {
 public:
 	GLuint n_vertex_shader_boxes, n_fragment_shader_boxes, n_program_object_boxes;
+	GLuint color_unifrom_boxes;
 	bool compile();
-	void bind();
+	void bind(glm::vec3);
 };
 
 struct ShaderSurface : public Shader {

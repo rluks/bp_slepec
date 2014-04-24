@@ -297,13 +297,15 @@ bool ShaderBoxes::compile(){
 	if(!Shader::compile(&n_vertex_shader_boxes, &n_fragment_shader_boxes, &n_program_object_boxes))
 		return false;
 
+	color_unifrom_boxes = glGetUniformLocation(n_program_object_boxes, "color");
+
 	return true;
 }
 
-void ShaderBoxes::bind(){
+void ShaderBoxes::bind(glm::vec3 color){
 	glUseProgram(n_program_object_boxes);
 	{
-
+			glUniform3f(color_unifrom_boxes, color.r, color.g, color.b);
 	}
 }
 
