@@ -22,6 +22,7 @@
 #include "Common.h"
 #include "Physics.h"
 #include "Hero.h"
+#include "Level.h"
 
 
 
@@ -76,7 +77,9 @@ Hero hero;
 BoxDebug boxDebug;
 static int cnt = 0;
 
-Box levelExit;
+std::vector<Level> levels;
+unsigned int currentLevel;
+
 
 
 void drawDrop2(bool clear, float x, float y, int textnum){
@@ -238,12 +241,29 @@ bool InitGLObjects()
 	heightShader.compile();
 	pointShader.compile();
 
-	hero.init();
-
+	//urovne
+	//0
+	Box levelExit;
 	levelExit.vMin.x = 28;
 	levelExit.vMin.y = 20;
 	levelExit.vMax.x = 29;
 	levelExit.vMax.y = 21;
+	Level levelZero(glm::vec2(start_position_x, start_position_y), "test.png", levelExit);
+	levelZero.addSoundSource(glm::vec2(source_position_x, source_position_y));
+	levels.push_back(levelZero);
+
+	//1
+	levelExit.vMin.x = 15;
+	levelExit.vMin.y = 20;
+	levelExit.vMax.x = 16;
+	levelExit.vMax.y = 21;
+	Level levelOne(glm::vec2(10, 20), "test2.png", levelExit);
+	levelOne.addSoundSource(glm::vec2(8, 8));
+	levelOne.addSoundSource(glm::vec2(4, 4));
+	levelOne.addSoundSource(glm::vec2(4, 8));
+	levels.push_back(levelOne);
+
+	hero.init();
 	
 	//textury
 	n_texture[0][1] = n_GLTextureRGBFloat();
@@ -253,7 +273,7 @@ bool InitGLObjects()
 
 	//fyzika
 	TBmp * bitmap;
-	if(!(bitmap = CPngCodec::p_Load_PNG("test.png"))){
+	if(!(bitmap = CPngCodec::p_Load_PNG(levelZero.mapFilepath.c_str()))){
 		fprintf(stderr, "error: failed to load \'.png file\'\n");
 		return false;
 	}
@@ -270,8 +290,9 @@ bool InitGLObjects()
 	n_source_tex = 0;
 
 	//pridani kapky s true cistenim hladiny
-	drawDrop2(true, 8, 18, 0);
-	drawDrop2(true, 16, 12, 1);
+	drawDrop2(true, levelZero.heroStartPosition.x, levelZero.heroStartPosition.y, 0);
+	glm::vec2 soundSource = levelZero.soundSourcePositions.at(0);
+	drawDrop2(true, soundSource.x, soundSource.y, 1);
 
 	return true;
 }
@@ -397,6 +418,7 @@ int main(int n_arg_num, const char **p_arg_list)
 	hero.position.y = start_position_y;
 	hero.velocity.x = 0.0;
 	hero.velocity.y = 0.0;
+	currentLevel = 0;
 
 	DWORD start_time =  GetTickCount(); // cas pro animaci
 	DWORD end_time;
@@ -554,6 +576,7 @@ void drawPingPong(int textnum){
 
 bool reachedExit(Box heroBox){
 
+	Box levelExit = levels.at(currentLevel).exit;
 	//pokud exit box lezi v hero box
 	if(levelExit.vMin.x >= heroBox.vMin.x && levelExit.vMin.y >= heroBox.vMin.y && levelExit.vMax.x <= heroBox.vMax.x && levelExit.vMax.y <= heroBox.vMax.y)
 		return true;
@@ -615,13 +638,8 @@ void OnIdle(CGL30Driver &driver)
 
 	glBindTexture(GL_TEXTURE_2D, n_texture[1][n_source_tex]);
 	glm::vec3 color2 = glm::vec3(1.0, 0.2, 0.2);
-	passShader.bind(t_mvp, color2); // ted kreslite do okna, chcete videt vysledek
+	passShader.bind(t_mvp, color2);
 	DrawScene();
-
-	//TODO
-	//koncept hry / 1obrazovka
-	//herni logika
-	//kolize na cpu, nahrat i do gpu
 	
 	//pridani kapek
 	while(pointsQueue.size() > 0){
@@ -635,9 +653,14 @@ void OnIdle(CGL30Driver &driver)
 	}
 
 	//zdroj zvuku	
-	float flickering = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-	if(flickering > 0.99f)
-		drawDrop2(false, source_position_x, source_position_y, 1);
+	for(unsigned int i = 0; i < levels.at(currentLevel).soundSourcePositions.size(); i++){
+
+		float flickering = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+
+		if(flickering > 0.99f)
+			drawDrop2(false, levels.at(currentLevel).soundSourcePositions.at(i).x, levels.at(currentLevel).soundSourcePositions.at(i).y, 1);
+	}
+	
 
 	if(key.space){
 		if(hero.facingLeft)
@@ -661,10 +684,18 @@ void OnIdle(CGL30Driver &driver)
 
 	if(reachedExit(hero.box)){
 		std::cout << "menim level" << std::endl;
+		currentLevel++;
+
+		if(currentLevel+1 > levels.size()){
+			std::cout << "dohrany vsechny urovne" << std::endl;
+			system("PAUSE");
+		}
+
+		Level newLevel = levels.at(currentLevel);
 		
 		//fyzika
 		TBmp * bitmap;
-		if(!(bitmap = CPngCodec::p_Load_PNG("test2.png"))){
+		if(!(bitmap = CPngCodec::p_Load_PNG(newLevel.mapFilepath.c_str()))){
 			fprintf(stderr, "error: failed to load \'.png file\'\n");
 			//return false;
 		}
@@ -673,8 +704,11 @@ void OnIdle(CGL30Driver &driver)
 		bitmap->Delete();
 
 		//pridani kapky s true cistenim hladiny
-		drawDrop2(true, 8, 18, 0);
-		drawDrop2(true, 16, 12, 1);
+		drawDrop2(true, newLevel.heroStartPosition.x, newLevel.heroStartPosition.y, 0);
+		glm::vec2 soundSource = newLevel.soundSourcePositions.at(0);
+		drawDrop2(true, soundSource.x, soundSource.y, 1);
+
+		hero.position = newLevel.heroStartPosition;
 	}
 
 	//vykreslit
@@ -685,7 +719,7 @@ void OnIdle(CGL30Driver &driver)
 	boxDebug.drawCollisions();
 
 	glm::vec3 levelExitColor(0.4, 0.6, 0.8);
-	boxDebug.drawBox(levelExit, levelExitColor);
+	boxDebug.drawBox(levels.at(currentLevel).exit, levelExitColor);
 
 	boxDebug.movementDirection.x = 0.0;
 	boxDebug.movementDirection.y = 0.0;
