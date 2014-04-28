@@ -43,7 +43,7 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 void drawPingPong(int);
 void drawDrop(bool, float, float);
 void drawDrop2(bool, float, float, int);
-//void clearTextureRGBA(GLuint tex, float r, float g, float b, float a)
+void clearTexture(int);
 // prototypy funkci
 
 GLuint fbo;
@@ -79,6 +79,23 @@ static int cnt = 0;
 
 std::vector<Level> levels;
 unsigned int currentLevel;
+
+void clearTexture(int textnum){
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+
+	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[textnum][0], 0);
+
+	glViewport(0, 0, datawidth, dataheight);
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+
+	glClear ( GL_COLOR_BUFFER_BIT);
+
+	glBindTexture(GL_TEXTURE_2D, n_texture[textnum][0]);
+
+
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
+}
 
 
 
@@ -289,10 +306,10 @@ bool InitGLObjects()
 
 	n_source_tex = 0;
 
-	//pridani kapky s true cistenim hladiny
-	drawDrop2(true, levelZero.heroStartPosition.x, levelZero.heroStartPosition.y, 0);
-	glm::vec2 soundSource = levelZero.soundSourcePositions.at(0);
-	drawDrop2(true, soundSource.x, soundSource.y, 1);
+	//cisteni vln
+	clearTexture(0);
+	clearTexture(1);
+
 
 	return true;
 }
@@ -708,10 +725,9 @@ void OnIdle(CGL30Driver &driver)
 		depthmap = n_GLTextureFromBitmap(bitmap, GL_RGBA8);
 		bitmap->Delete();
 
-		//pridani kapky s true cistenim hladiny
-		drawDrop2(true, newLevel.heroStartPosition.x, newLevel.heroStartPosition.y, 0);
-		glm::vec2 soundSource = newLevel.soundSourcePositions.at(0);
-		drawDrop2(true, soundSource.x, soundSource.y, 1);
+		//cisteni vln
+		clearTexture(0);
+		clearTexture(1);
 
 		hero.position = newLevel.heroStartPosition;
 	}
