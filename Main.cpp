@@ -246,19 +246,19 @@ bool InitGLObjects()
 	Box levelExit;
 	levelExit.vMin.x = 28;
 	levelExit.vMin.y = 20;
-	levelExit.vMax.x = 29;
-	levelExit.vMax.y = 21;
-	Level levelZero(glm::vec2(start_position_x, start_position_y), "test.png", levelExit);
-	levelZero.addSoundSource(glm::vec2(source_position_x, source_position_y));
+	levelExit.vMax.x = levelExit.vMin.x+1;
+	levelExit.vMax.y = levelExit.vMin.y+1;
+	Level levelZero(glm::vec2(start_position_x, start_position_y), "0.png", levelExit);
+	levelZero.addSoundSource(glm::vec2(4, 4));
 	levels.push_back(levelZero);
 
 	//1
-	levelExit.vMin.x = 15;
+	levelExit.vMin.x = 28;
 	levelExit.vMin.y = 20;
-	levelExit.vMax.x = 16;
-	levelExit.vMax.y = 21;
-	Level levelOne(glm::vec2(10, 20), "test2.png", levelExit);
-	levelOne.addSoundSource(glm::vec2(8, 8));
+	levelExit.vMax.x = levelExit.vMin.x+1;
+	levelExit.vMax.y = levelExit.vMin.y+1;
+	Level levelOne(glm::vec2(start_position_x, start_position_y), "1.png", levelExit);
+	//levelZero.addSoundSource(glm::vec2(levelExit.vMin.x+0.5, levelExit.vMin.y+0.5));
 	levelOne.addSoundSource(glm::vec2(4, 4));
 	levelOne.addSoundSource(glm::vec2(4, 8));
 	levels.push_back(levelOne);
@@ -652,10 +652,15 @@ void OnIdle(CGL30Driver &driver)
 		drawDrop(false, x, y);
 	}
 
+	//vychod
+	float flickering = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	if(flickering > 0.99f)
+		drawDrop2(false, levels.at(currentLevel).exit.vMin.x+0.5, levels.at(currentLevel).exit.vMin.y+0.5, 0);
+
 	//zdroj zvuku	
 	for(unsigned int i = 0; i < levels.at(currentLevel).soundSourcePositions.size(); i++){
 
-		float flickering = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+		flickering = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 
 		if(flickering > 0.99f)
 			drawDrop2(false, levels.at(currentLevel).soundSourcePositions.at(i).x, levels.at(currentLevel).soundSourcePositions.at(i).y, 1);
