@@ -53,7 +53,6 @@ static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_obje
 
 //textury
 static GLuint n_texture[2][2];//r-height,g-y velocity,b-x velocity
-//static GLuint n_texture2[2];//r-height,g-y velocity,b-x velocity
 static GLuint depthmap;
 
 //shadery
@@ -326,14 +325,19 @@ void CleanupGLObjects()
 	glDeleteVertexArrays(1, &n_vertex_array_object);
 	// smaze vertex array objekt
 
-	//glDeleteShader(n_vertex_shader);//TODO
-	//glDeleteShader(n_fragment_shader);
-	//glDeleteProgram(n_program_object);
+	hero.cleanupOpenGL();
+	boxDebug.cleanupOpenGL();
+	// smaze dalsi opengl objekty
+
+	blurShader.deleteShader();
+	passShader.deleteShader();
+	velocityShader.deleteShader();
+	heightShader.deleteShader();
+	pointShader.deleteShader();
 	// smaze shadery
 
-	//TODO smazat po sobe
-
-	//glDeleteTextures(1, n_texture);
+	glDeleteTextures(4, n_texture[0]);
+	glDeleteTextures(1, &depthmap);
 	// smaze textury
 }
 
@@ -461,9 +465,12 @@ int main(int n_arg_num, const char **p_arg_list)
 	}
 	// smycka zprav, s funkci OnIdle()
 
+	std::cout << "clean up..." << std::endl;
 	CleanupGLObjects();
 	// uvolnime OpenGL objekty
 
+	std::cout << "...finished" << std::endl;
+	//system("PAUSE");
 	return 0;
 }
 
@@ -707,7 +714,11 @@ void OnIdle(CGL30Driver &driver)
 
 		if(currentLevel+1 > levels.size()){
 			std::cout << "dohrany vsechny urovne" << std::endl;
-			system("PAUSE");
+			//system("PAUSE");
+			b_running = false;
+			system("menu.exe");
+			//exit(0);
+			return;
 		}
 
 		Level newLevel = levels.at(currentLevel);

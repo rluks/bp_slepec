@@ -26,6 +26,7 @@ protected:
 
 public:
 	bool compile(GLuint *, GLuint *, GLuint *);
+	void deleteShader(GLuint *, GLuint *, GLuint *);
 };
 
 struct ShaderBlur : public Shader {
@@ -35,6 +36,7 @@ public:
 	//GLuint n_mvp_matrix_uniform, n_time_uniform;
 	bool compile();
 	void bind(int, int);
+	void deleteShader();
 };
 
 struct ShaderPass : public Shader {
@@ -46,6 +48,7 @@ public:
 	color_uniform_pass;
 	bool compile();
 	void bind(Matrix4f, glm::vec3);
+	void deleteShader();
 };
 
 struct ShaderHero : public Shader {
@@ -57,6 +60,7 @@ public:
 	facing_left_uniform_hero;
 	bool compile();
 	void bind(glm::vec2, bool);
+	void deleteShader();
 };
 
 struct ShaderVelocity : public Shader {
@@ -65,6 +69,7 @@ public:
 	GLuint n_texture_sampler_uniform_velocity, n_depthmap_sampler_uniform, pixel_size;
 	bool compile();
 	void bind(int, int);
+	void deleteShader();
 };
 
 struct ShaderHeight : public Shader {
@@ -73,6 +78,7 @@ public:
 	GLuint n_texture_sampler_uniform_height, n_depthmap_sampler_uniform_height, pixel_size;
 	bool compile();
 	void bind(int, int);
+	void deleteShader();
 };
 
 struct ShaderPoint : public Shader {
@@ -80,6 +86,7 @@ public:
 	GLuint n_vertex_shader_point, n_fragment_shader_point, n_program_object_point;
 	bool compile();
 	void bind();
+	void deleteShader();
 };
 
 struct ShaderPointSimple : public Shader {
@@ -87,6 +94,7 @@ public:
 	GLuint n_vertex_shader_pointSimple, n_fragment_shader_pointSimple, n_program_object_pointSimple;
 	bool compile();
 	void bind();
+	void deleteShader();
 };
 
 struct ShaderBoxes : public Shader {
@@ -95,6 +103,7 @@ public:
 	GLuint color_unifrom_boxes;
 	bool compile();
 	void bind(glm::vec3);
+	void deleteShader();
 };
 
 struct ShaderSurface : public Shader {
@@ -103,6 +112,7 @@ public:
 	GLuint point1_uniform_curve, point2_uniform_curve, amplitude_uniform_curve, frequency_uniform_curve, phase_uniform_curve, color_uniform_curve;
 	bool compile(std::string, std::string);
 	void bind(glm::vec2, glm::vec2, float, float, float, glm::vec3);
+	void deleteShader();
 };
 
 #endif

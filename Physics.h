@@ -45,6 +45,9 @@ public:
 	void drawBox(Box, glm::vec3);
 	void drawCollisions();
 	void drawCollisionsPoints();
+
+	//maze opengl objekty
+	void cleanupOpenGL();
 };
 
 #endif

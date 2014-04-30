@@ -486,3 +486,11 @@ void BoxDebug::draw(){
 		glBindVertexArray(0);
 	}
 }
+
+void BoxDebug::cleanupOpenGL(){
+	boxesShader.deleteShader();
+	pointSimpleShader.deleteShader();
+	surfaceShader.deleteShader();
+	surfaceSinus.deleteShader();
+	surfaceZigzag.deleteShader();
+}

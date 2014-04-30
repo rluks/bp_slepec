@@ -78,3 +78,7 @@ void Hero::draw(){
 	glDisable(GL_BLEND);
 	glBindVertexArray(0);
 }
+
+void Hero::cleanupOpenGL(){
+	heroShader.deleteShader();
+}

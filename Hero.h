@@ -35,6 +35,9 @@ public:
 	void updateBox();
 	void draw();
 
+	//maze opengl objekty
+	void cleanupOpenGL();
+
 private:
 		static bool isInit;
 };

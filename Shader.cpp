@@ -133,6 +133,13 @@ bool Shader::compile(GLuint * n_vertex_shader, GLuint * n_fragment_shader, GLuin
 	return true;
 }
 
+void Shader::deleteShader(GLuint * n_vertex_shader, GLuint * n_fragment_shader, GLuint * n_program_object){
+	glDeleteShader(*n_vertex_shader);
+	glDeleteShader(*n_fragment_shader);
+	glDeleteProgram(*n_program_object);
+}
+
+
 bool ShaderBlur::compile(){
 	vertexpath  = "Shaders/blur.vx.shader";
 	fragmentpath = "Shaders/blur.fr.shader";
@@ -154,6 +161,10 @@ void ShaderBlur::bind(int width, int height){
 		glUniform1i(n_texture_sampler_uniform, 0);
 		glUniform3f(pixel_size, 1.0f/width, 1.0f/height, 0.0f);
 	}
+}
+
+void ShaderBlur::deleteShader(){
+	Shader::deleteShader(&n_vertex_shader, &n_fragment_shader, &n_program_object);
 }
 
 //pass
@@ -179,6 +190,10 @@ void ShaderPass::bind(Matrix4f t_mvp, glm::vec3 color){
 		glUniform1i(n_depthmap_sampler_uniform_pass, 1);
 		glUniform3f(color_uniform_pass, color.r, color.g, color.b);
 	}
+}
+
+void ShaderPass::deleteShader(){
+	Shader::deleteShader(&n_vertex_shader_pass, &n_fragment_shader_pass, &n_program_object_pass);
 }
 
 //hero
@@ -208,6 +223,10 @@ void ShaderHero::bind(glm::vec2 position, bool facingLeft){
 	}
 }
 
+void ShaderHero::deleteShader(){
+	Shader::deleteShader(&n_vertex_shader_hero, &n_fragment_shader_hero, &n_program_object_hero);
+}
+
 //velocity
 bool ShaderVelocity::compile(){
 	vertexpath  = "Shaders/velocity.vx.shader";
@@ -230,6 +249,11 @@ void ShaderVelocity::bind(int width, int height){
 		glUniform3f(pixel_size, 1.0f/width, 1.0f/height, 0.0f);
 	}
 }
+
+void ShaderVelocity::deleteShader(){
+	Shader::deleteShader(&n_vertex_shader_velocity, &n_fragment_shader_velocity, &n_program_object_velocity);
+}
+
 
 //height
 bool ShaderHeight::compile(){
@@ -254,7 +278,9 @@ void ShaderHeight::bind(int width, int height){
 	}
 }
 
-
+void ShaderHeight::deleteShader(){
+	Shader::deleteShader(&n_vertex_shader_height, &n_fragment_shader_height, &n_program_object_height);
+}
 
 //bod
 bool ShaderPoint::compile(){
@@ -270,6 +296,10 @@ void ShaderPoint::bind(){
 	glUseProgram(n_program_object_point);
 	{
 	}
+}
+
+void ShaderPoint::deleteShader(){
+	Shader::deleteShader(&n_vertex_shader_point, &n_fragment_shader_point, &n_program_object_point);
 }
 
 //bod simple
@@ -288,6 +318,9 @@ void ShaderPointSimple::bind(){
 	}
 }
 
+void ShaderPointSimple::deleteShader(){
+	Shader::deleteShader(&n_vertex_shader_pointSimple, &n_fragment_shader_pointSimple, &n_program_object_pointSimple);
+}
 
 
 //boxes
@@ -307,6 +340,10 @@ void ShaderBoxes::bind(glm::vec3 color){
 	{
 			glUniform3f(color_unifrom_boxes, color.r, color.g, color.b);
 	}
+}
+
+void ShaderBoxes::deleteShader(){
+	Shader::deleteShader(&n_vertex_shader_boxes, &n_fragment_shader_boxes, &n_program_object_boxes);
 }
 
 //krivka
@@ -340,4 +377,8 @@ void ShaderSurface::bind(glm::vec2 point1, glm::vec2 point2, float amplitude, fl
 
 		glUniform3f(color_uniform_curve, color.r, color.g, color.b);
 	}
+}
+
+void ShaderSurface::deleteShader(){
+	Shader::deleteShader(&n_vertex_shader_curve, &n_fragment_shader_curve, &n_program_object_curve);
 }
