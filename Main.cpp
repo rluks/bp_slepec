@@ -77,7 +77,7 @@ BoxDebug boxDebug;
 static int cnt = 0;
 
 std::vector<Level> levels;
-unsigned int currentLevel;
+unsigned int currentLevelIndex;
 
 void clearTexture(int textnum){
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
@@ -439,7 +439,7 @@ int main(int n_arg_num, const char **p_arg_list)
 	hero.position.y = start_position_y;
 	hero.velocity.x = 0.0;
 	hero.velocity.y = 0.0;
-	currentLevel = 0;
+	currentLevelIndex = 0;
 
 	DWORD start_time =  GetTickCount(); // cas pro animaci
 	DWORD end_time;
@@ -600,7 +600,7 @@ void drawPingPong(int textnum){
 
 bool reachedExit(Box heroBox){
 
-	Box levelExit = levels.at(currentLevel).exit;
+	Box levelExit = levels.at(currentLevelIndex).exit;
 	//pokud exit box lezi v hero box
 	if(levelExit.vMin.x >= heroBox.vMin.x && levelExit.vMin.y >= heroBox.vMin.y && levelExit.vMax.x <= heroBox.vMax.x && levelExit.vMax.y <= heroBox.vMax.y)
 		return true;
@@ -676,16 +676,18 @@ void OnIdle(CGL30Driver &driver)
 		drawDrop(false, x, y);
 	}
 
+	Level currentLevel = levels.at(currentLevelIndex);
+
 	//vychod
 	float flickering = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 	if(flickering > 0.98f)
-		drawDrop2(false, levels.at(currentLevel).exit.vMin.x+0.5f, levels.at(currentLevel).exit.vMin.y+0.5f, 0);
+		drawDrop2(false, currentLevel.exit.vMin.x+0.5f, currentLevel.exit.vMin.y+0.5f, 0);
 
 	//zdroj zvuku	
-	for(unsigned int i = 0; i < levels.at(currentLevel).soundSourcePositions.size(); i++){
+	for(unsigned int i = 0; i < currentLevel.soundSourcePositions.size(); i++){
 		flickering = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 		if(flickering > 0.99f)
-			drawDrop2(false, levels.at(currentLevel).soundSourcePositions.at(i).x, levels.at(currentLevel).soundSourcePositions.at(i).y, 1);
+			drawDrop2(false, currentLevel.soundSourcePositions.at(i).x, currentLevel.soundSourcePositions.at(i).y, 1);
 	}
 
 	if(key.space){
@@ -707,26 +709,22 @@ void OnIdle(CGL30Driver &driver)
 	//poupravit novy pohyb, aby nedoslo ke kolizi
 	boxDebug.SeparatingAxisTheorem(&hero);
 
-
 	if(reachedExit(hero.box)){
 		std::cout << "menim level" << std::endl;
-		currentLevel++;
+		currentLevelIndex++;
 
-		if(currentLevel+1 > levels.size()){
+		if(currentLevelIndex+1 > levels.size()){
 			std::cout << "dohrany vsechny urovne" << std::endl;
 			//system("PAUSE");
 			b_running = false;
 			system("menu.exe");
-			//exit(0);
-			//return;
-
 		}else{
 
-			Level newLevel = levels.at(currentLevel);
+			currentLevel = levels.at(currentLevelIndex);
 		
 			//fyzika
 			TBmp * bitmap;
-			if(!(bitmap = CPngCodec::p_Load_PNG(newLevel.mapFilepath.c_str()))){
+			if(!(bitmap = CPngCodec::p_Load_PNG(currentLevel.mapFilepath.c_str()))){
 				fprintf(stderr, "error: failed to load \'.png file\'\n");
 				//return false;
 			}
@@ -738,19 +736,19 @@ void OnIdle(CGL30Driver &driver)
 			clearTexture(0);
 			clearTexture(1);
 
-			hero.position = newLevel.heroStartPosition;
+			hero.position = currentLevel.heroStartPosition;
 		}
 	}
 
 	//vykreslit
 	hero.draw();
-	//boxDebug.draw();
+	boxDebug.draw();
 	glm::vec3 heroBoxColor(1.0, 0.6, 0.4);
-	//boxDebug.drawBox(hero.box, heroBoxColor);
+	boxDebug.drawBox(hero.box, heroBoxColor);
 	boxDebug.drawCollisions();
 
 	glm::vec3 levelExitColor(0.4, 0.6, 0.8);
-	//boxDebug.drawBox(levels.at(currentLevel).exit, levelExitColor);
+	boxDebug.drawBox(currentLevel.exit, levelExitColor);
 
 	boxDebug.movementDirection.x = 0.0;
 	boxDebug.movementDirection.y = 0.0;
