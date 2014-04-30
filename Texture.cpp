@@ -206,6 +206,7 @@ GLuint LoadTextureFromPNGFile(const char * imagepath){
 	TBmp * bitmap;
 	if(!(bitmap = CPngCodec::p_Load_PNG(imagepath))){
 		fprintf(stderr, "error: failed to load \'.png file\'\n");
+		system("PAUSE");
 		return false;
 	}
 	

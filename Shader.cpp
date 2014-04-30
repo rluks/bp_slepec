@@ -4,7 +4,7 @@ std::string getTextFileString(std::string name){
 
 	FILE* fp = fopen(name.c_str(), "rt");
 	if(!fp){
-		std::cerr << "Cannot load file" << std::endl;
+		std::cerr << "Cannot load shader file" << std::endl;
 		system("PAUSE");
 		return false;
 	}
