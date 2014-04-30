@@ -671,18 +671,15 @@ void OnIdle(CGL30Driver &driver)
 
 	//vychod
 	float flickering = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-	if(flickering > 0.99f)
-		drawDrop2(false, levels.at(currentLevel).exit.vMin.x+0.5, levels.at(currentLevel).exit.vMin.y+0.5, 0);
+	if(flickering > 0.98f)
+		drawDrop2(false, levels.at(currentLevel).exit.vMin.x+0.5f, levels.at(currentLevel).exit.vMin.y+0.5f, 0);
 
 	//zdroj zvuku	
 	for(unsigned int i = 0; i < levels.at(currentLevel).soundSourcePositions.size(); i++){
-
 		flickering = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-
 		if(flickering > 0.99f)
 			drawDrop2(false, levels.at(currentLevel).soundSourcePositions.at(i).x, levels.at(currentLevel).soundSourcePositions.at(i).y, 1);
 	}
-	
 
 	if(key.space){
 		if(hero.facingLeft)
@@ -734,13 +731,13 @@ void OnIdle(CGL30Driver &driver)
 
 	//vykreslit
 	hero.draw();
-	boxDebug.draw();
+	//boxDebug.draw();
 	glm::vec3 heroBoxColor(1.0, 0.6, 0.4);
-	boxDebug.drawBox(hero.box, heroBoxColor);
+	//boxDebug.drawBox(hero.box, heroBoxColor);
 	boxDebug.drawCollisions();
 
 	glm::vec3 levelExitColor(0.4, 0.6, 0.8);
-	boxDebug.drawBox(levels.at(currentLevel).exit, levelExitColor);
+	//boxDebug.drawBox(levels.at(currentLevel).exit, levelExitColor);
 
 	boxDebug.movementDirection.x = 0.0;
 	boxDebug.movementDirection.y = 0.0;
