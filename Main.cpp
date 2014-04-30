@@ -718,26 +718,28 @@ void OnIdle(CGL30Driver &driver)
 			b_running = false;
 			system("menu.exe");
 			//exit(0);
-			return;
-		}
+			//return;
 
-		Level newLevel = levels.at(currentLevel);
+		}else{
+
+			Level newLevel = levels.at(currentLevel);
 		
-		//fyzika
-		TBmp * bitmap;
-		if(!(bitmap = CPngCodec::p_Load_PNG(newLevel.mapFilepath.c_str()))){
-			fprintf(stderr, "error: failed to load \'.png file\'\n");
-			//return false;
+			//fyzika
+			TBmp * bitmap;
+			if(!(bitmap = CPngCodec::p_Load_PNG(newLevel.mapFilepath.c_str()))){
+				fprintf(stderr, "error: failed to load \'.png file\'\n");
+				//return false;
+			}
+			boxDebug.generate(bitmap);
+			depthmap = n_GLTextureFromBitmap(bitmap, GL_RGBA8);
+			bitmap->Delete();
+
+			//cisteni vln
+			clearTexture(0);
+			clearTexture(1);
+
+			hero.position = newLevel.heroStartPosition;
 		}
-		boxDebug.generate(bitmap);
-		depthmap = n_GLTextureFromBitmap(bitmap, GL_RGBA8);
-		bitmap->Delete();
-
-		//cisteni vln
-		clearTexture(0);
-		clearTexture(1);
-
-		hero.position = newLevel.heroStartPosition;
 	}
 
 	//vykreslit
