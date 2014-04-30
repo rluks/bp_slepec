@@ -11,9 +11,10 @@ public:
 	float amplitude;
 	ShaderSurface surfaceShader;
 	float temperature;
+	bool kills;
 
 	Surface();
-	Surface(glm::vec3, float, float, ShaderSurface, float);
+	Surface(glm::vec3, float, float, ShaderSurface, float, bool);
 };
 
 #endif
