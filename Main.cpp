@@ -265,7 +265,7 @@ bool InitGLObjects()
 	levelExit.vMin.y = 20;
 	levelExit.vMax.x = levelExit.vMin.x+1;
 	levelExit.vMax.y = levelExit.vMin.y+1;
-	Level levelZero(glm::vec2(start_position_x, start_position_y), "0.png", levelExit);
+	Level levelZero(glm::vec2(start_position_x, start_position_y), "Textures/0.png", levelExit);
 	levelZero.addSoundSource(glm::vec2(4, 4));
 	levels.push_back(levelZero);
 
@@ -274,7 +274,7 @@ bool InitGLObjects()
 	levelExit.vMin.y = 20;
 	levelExit.vMax.x = levelExit.vMin.x+1;
 	levelExit.vMax.y = levelExit.vMin.y+1;
-	Level levelOne(glm::vec2(start_position_x, start_position_y), "1.png", levelExit);
+	Level levelOne(glm::vec2(start_position_x, start_position_y), "Textures/1.png", levelExit);
 	//levelZero.addSoundSource(glm::vec2(levelExit.vMin.x+0.5, levelExit.vMin.y+0.5));
 	levelOne.addSoundSource(glm::vec2(4, 4));
 	levelOne.addSoundSource(glm::vec2(4, 8));

@@ -14,8 +14,8 @@ void Hero::init(){
 	box.vMax.y = box.vMin.y + height;
 
 	heroShader.compile();
-	hero_tex = LoadTextureFromPNGFile("player1.png");
-	hero_tex2 = LoadTextureFromPNGFile("player0.png");
+	hero_tex = LoadTextureFromPNGFile("Textures/player1.png");
+	hero_tex2 = LoadTextureFromPNGFile("Textures/player0.png");
 
 	glGenBuffers(1, &heroVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, heroVBO);
