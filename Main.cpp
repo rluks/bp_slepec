@@ -52,7 +52,7 @@ static const GLenum p_draw_buffers[] = {GL_COLOR_ATTACHMENT0};
 static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_object;
 
 //textury
-static GLuint n_texture[2][2];//r-height,g-y velocity,b-x velocity
+static GLuint n_texture[3][2];//r-height,g-y velocity,b-x velocity
 static GLuint depthmap;
 
 //shadery
@@ -282,10 +282,13 @@ bool InitGLObjects()
 	hero.init();
 	
 	//textury
-	n_texture[0][1] = n_GLTextureRGBFloat();
-	n_texture[0][0] = n_GLTextureRGBFloat();
-	n_texture[1][1] = n_GLTextureRGBFloat();
-	n_texture[1][0] = n_GLTextureRGBFloat();
+	for(unsigned int i = 0; i < 3; i++){
+		n_texture[i][1] = n_GLTextureRGBFloat();
+		n_texture[i][0] = n_GLTextureRGBFloat();
+		std::cout << "i" << i << std::endl;
+	}
+	//n_texture[1][1] = n_GLTextureRGBFloat();
+	//n_texture[1][0] = n_GLTextureRGBFloat();
 
 	//fyzika
 	TBmp * bitmap;
@@ -308,6 +311,7 @@ bool InitGLObjects()
 	//cisteni vln
 	clearTexture(0);
 	clearTexture(1);
+	clearTexture(2);
 
 
 	return true;
@@ -635,6 +639,7 @@ Level changeLevel(){
 		//cisteni vln
 		clearTexture(0);
 		clearTexture(1);
+		clearTexture(2);
 
 		hero.position = currentLevel.heroStartPosition;
 
@@ -675,6 +680,16 @@ void OnIdle(CGL30Driver &driver)
 		heightShader.bind(datawidth, dataheight);	drawPingPong(1);
 	}
 
+	//prostredi - vychod
+	for(int i = 0; i < 15; i++){	
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, depthmap);
+		glActiveTexture(GL_TEXTURE0);
+
+		velocityShader.bind(datawidth, dataheight);	drawPingPong(2);
+		heightShader.bind(datawidth, dataheight);	drawPingPong(2);
+	}
+
 
 	glViewport(0, 0, n_width, n_height); // viewport na velikost okna
 	glClear ( GL_COLOR_BUFFER_BIT);
@@ -698,6 +713,11 @@ void OnIdle(CGL30Driver &driver)
 	glm::vec3 color2 = glm::vec3(1.0, 0.2, 0.2);
 	passShader.bind(t_mvp, color2);
 	DrawScene();
+
+	glBindTexture(GL_TEXTURE_2D, n_texture[2][n_source_tex]);
+	glm::vec3 color3 = glm::vec3(0.4, 0.2, 1.0);
+	passShader.bind(t_mvp, color3);
+	DrawScene();
 	
 	//pridani kapek
 	while(pointsQueue.size() > 0){
@@ -715,7 +735,7 @@ void OnIdle(CGL30Driver &driver)
 	//vychod
 	float flickering = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 	if(flickering > 0.98f)
-		drawDrop2(false, currentLevel.exit.vMin.x+0.5f, currentLevel.exit.vMin.y+0.5f, 0);
+		drawDrop2(false, currentLevel.exit.vMin.x+0.5f, currentLevel.exit.vMin.y+0.5f, 2);
 
 	//zdroj zvuku	
 	for(unsigned int i = 0; i < currentLevel.soundSourcePositions.size(); i++){
