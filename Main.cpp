@@ -608,6 +608,40 @@ bool reachedExit(Box heroBox){
 		return false;
 }
 
+Level changeLevel(){
+	currentLevelIndex++;
+	Level currentLevel;
+
+	if(currentLevelIndex+1 > levels.size()){
+		std::cout << "dohrany vsechny urovne" << std::endl;
+		//system("PAUSE");
+		b_running = false;
+		system("menu.exe");
+		;
+	}else{
+
+		currentLevel = levels.at(currentLevelIndex);
+		
+		//fyzika
+		TBmp * bitmap;
+		if(!(bitmap = CPngCodec::p_Load_PNG(currentLevel.mapFilepath.c_str()))){
+			fprintf(stderr, "error: failed to load \'.png file\'\n");
+			//return false;
+		}
+		boxDebug.generate(bitmap);
+		depthmap = n_GLTextureFromBitmap(bitmap, GL_RGBA8);
+		bitmap->Delete();
+
+		//cisteni vln
+		clearTexture(0);
+		clearTexture(1);
+
+		hero.position = currentLevel.heroStartPosition;
+
+		return currentLevel;
+	}
+}
+
 /**
  *	@brief tato funkce se vola ve smycce pokazde kdyz nejsou zadne nove zpravy; lze vyuzit ke kresleni animace
  *	@param[in] driver je reference na OpenGL driver
@@ -690,6 +724,7 @@ void OnIdle(CGL30Driver &driver)
 			drawDrop2(false, currentLevel.soundSourcePositions.at(i).x, currentLevel.soundSourcePositions.at(i).y, 1);
 	}
 
+	//tukani hulkou
 	if(key.space){
 		if(hero.facingLeft)
 			drawDrop2(false, hero.position.x, hero.position.y + hero.height, 0);
@@ -697,6 +732,7 @@ void OnIdle(CGL30Driver &driver)
 			drawDrop2(false, hero.position.x + hero.width, hero.position.y + hero.height, 0);
 	}
 
+	//skok-vkladani kapek pro testovani
 	if(key.up){
 		drawDrop2(false, hero.position.x + hero.width/2.0f, hero.position.y + hero.height, 0);
 	}
@@ -709,49 +745,26 @@ void OnIdle(CGL30Driver &driver)
 	//poupravit novy pohyb, aby nedoslo ke kolizi
 	boxDebug.SeparatingAxisTheorem(&hero);
 
-	if(reachedExit(hero.box)){
-		std::cout << "menim level" << std::endl;
-		currentLevelIndex++;
-
-		if(currentLevelIndex+1 > levels.size()){
-			std::cout << "dohrany vsechny urovne" << std::endl;
-			//system("PAUSE");
-			b_running = false;
-			system("menu.exe");
-		}else{
-
-			currentLevel = levels.at(currentLevelIndex);
-		
-			//fyzika
-			TBmp * bitmap;
-			if(!(bitmap = CPngCodec::p_Load_PNG(currentLevel.mapFilepath.c_str()))){
-				fprintf(stderr, "error: failed to load \'.png file\'\n");
-				//return false;
-			}
-			boxDebug.generate(bitmap);
-			depthmap = n_GLTextureFromBitmap(bitmap, GL_RGBA8);
-			bitmap->Delete();
-
-			//cisteni vln
-			clearTexture(0);
-			clearTexture(1);
-
-			hero.position = currentLevel.heroStartPosition;
-		}
-	}
-
-	//vykreslit
+	//vykreslit postavu
 	hero.draw();
+
+	//vykreslit geometrii
 	boxDebug.draw();
 	glm::vec3 heroBoxColor(1.0, 0.6, 0.4);
 	boxDebug.drawBox(hero.box, heroBoxColor);
-	boxDebug.drawCollisions();
-
 	glm::vec3 levelExitColor(0.4, 0.6, 0.8);
 	boxDebug.drawBox(currentLevel.exit, levelExitColor);
 
+	//vykreslit hmat
+	boxDebug.drawCollisions();
+
 	boxDebug.movementDirection.x = 0.0;
 	boxDebug.movementDirection.y = 0.0;
+
+	if(reachedExit(hero.box)){
+		std::cout << "menim level" << std::endl;
+		currentLevel = changeLevel();
+	}
 
 	driver.Blit(); // preklopi buffery, zobrazi co jsme nakreslili
 }
