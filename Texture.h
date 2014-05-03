@@ -27,20 +27,13 @@
 
 #include "Common.h"
 
-struct BMPFile {
-public:
-	unsigned int imageSize;
-	unsigned int n_width, n_height;
-	unsigned char * p_buffer;
-};
-
 //from bmp
 GLuint n_GLTextureFromBitmap(const TBmp *, GLenum n_internal_format);
 
-GLuint loadBMP_custom(const char * imagepath);
-int loadBMP_customData(const char * imagepath, TBmp * bmpfile);
-
+//png
 GLuint LoadTextureFromPNGFile(const char *);
+
+//tga
 GLuint LoadTextureFromTGAFile(const char *);
 
 //red
