@@ -264,7 +264,7 @@ bool InitGLObjects()
 	levelExit.vMin.y = 20;
 	levelExit.vMax.x = levelExit.vMin.x+1;
 	levelExit.vMax.y = levelExit.vMin.y+1;
-	Level levelZero(glm::vec2(start_position_x, start_position_y), "Textures/0.png", levelExit);
+	Level levelZero(glm::vec2(start_position_x, start_position_y), "Textures/test.png", levelExit);
 	levelZero.addSoundSource(glm::vec2(4, 4));
 	levels.push_back(levelZero);
 
@@ -430,6 +430,8 @@ int main(int n_arg_num, const char **p_arg_list)
 		return -1;
 	}
 	// zkontroluje zda jsou podporovane pozadovane rozsireni
+
+	printf("\nGLSL version: %s\n", (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 	if(!InitGLObjects()) {
 		fprintf(stderr, "error: failed to initialize OpenGL objects\n"); // neco se nepovedlo (chyba pri kompilaci shaderu / chyba pri nacitani obrazku textury)
@@ -769,11 +771,11 @@ void OnIdle(CGL30Driver &driver)
 	hero.draw();
 
 	//vykreslit geometrii
-	boxDebug.draw();
+	//boxDebug.draw();
 	glm::vec3 heroBoxColor(1.0, 0.6, 0.4);
-	boxDebug.drawBox(hero.box, heroBoxColor);
+	//boxDebug.drawBox(hero.box, heroBoxColor);
 	glm::vec3 levelExitColor(0.4, 0.6, 0.8);
-	boxDebug.drawBox(currentLevel.exit, levelExitColor);
+	//boxDebug.drawBox(currentLevel.exit, levelExitColor);
 
 	//vykreslit hmat
 	boxDebug.drawCollisions();
