@@ -264,7 +264,7 @@ bool InitGLObjects()
 	levelExit.vMin.y = 20;
 	levelExit.vMax.x = levelExit.vMin.x+1;
 	levelExit.vMax.y = levelExit.vMin.y+1;
-	Level levelZero(glm::vec2(start_position_x, start_position_y), "Textures/test.png", levelExit);
+	Level levelZero(glm::vec2(start_position_x, start_position_y), "Textures/dum.png", levelExit);
 	levelZero.addSoundSource(glm::vec2(4, 4));
 	levels.push_back(levelZero);
 
