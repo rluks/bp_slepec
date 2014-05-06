@@ -16,6 +16,7 @@ void Hero::init(){
 	heroShader.compile();
 	hero_tex = LoadTextureFromPNGFile("Textures/player1.png");
 	hero_tex2 = LoadTextureFromPNGFile("Textures/player0.png");
+	hero_tex_jump = LoadTextureFromPNGFile("Textures/player_jump.png");
 
 	glGenBuffers(1, &heroVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, heroVBO);
@@ -68,6 +69,9 @@ void Hero::draw(){
 			cnt = 0;
 	}else
 		glBindTexture(GL_TEXTURE_2D, hero_tex);
+
+	if(jumping)
+		glBindTexture(GL_TEXTURE_2D, hero_tex_jump);
 
 	heroShader.bind(box.vMin, facingLeft);
 
