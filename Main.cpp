@@ -267,7 +267,7 @@ bool InitGLObjects()
 	levelExit.vMin.y = 20;
 	levelExit.vMax.x = levelExit.vMin.x+1;
 	levelExit.vMax.y = levelExit.vMin.y+1;
-	Level levelZero(glm::vec2(start_position_x, start_position_y), "Textures/0.png", levelExit);
+	Level levelZero(glm::vec2(3.5, 20), "Textures/0.png", levelExit);
 	levelZero.addSoundSource(glm::vec2(4, 4));
 	levels.push_back(levelZero);
 
@@ -276,13 +276,14 @@ bool InitGLObjects()
 	levelExit.vMin.y = 20;
 	levelExit.vMax.x = levelExit.vMin.x+1;
 	levelExit.vMax.y = levelExit.vMin.y+1;
-	Level levelOne(glm::vec2(start_position_x, start_position_y), "Textures/1.png", levelExit);
+	Level levelOne(glm::vec2(3.5, 10), "Textures/1.png", levelExit);
 	//levelZero.addSoundSource(glm::vec2(levelExit.vMin.x+0.5, levelExit.vMin.y+0.5));
 	levelOne.addSoundSource(glm::vec2(4, 4));
 	levelOne.addSoundSource(glm::vec2(4, 8));
 	levels.push_back(levelOne);
 
 	hero.init();
+	hero.position = levelZero.heroStartPosition;
 	
 	//textury
 	for(unsigned int i = 0; i < 3; i++){
@@ -451,8 +452,6 @@ int main(int n_arg_num, const char **p_arg_list)
 
 	//inicializace promennych
 	srand (static_cast <unsigned> (time(0)));
-	hero.position.x = start_position_x;
-	hero.position.y = start_position_y;
 	hero.velocity.x = 0.0;
 	hero.velocity.y = 0.0;
 	currentLevelIndex = 0;
@@ -656,6 +655,18 @@ Level changeLevel(){
 	
 }
 
+void resetLevel(Hero * hero){
+
+	hero->moving = false;
+	hero->jumping = false;
+	hero->velocity.x = 0.0f;
+	hero->velocity.y = 0.0f;
+
+	clearTexture(0);
+	clearTexture(1);
+	clearTexture(2);
+}
+
 /**
  *	@brief tato funkce se vola ve smycce pokazde kdyz nejsou zadne nove zpravy; lze vyuzit ke kresleni animace
  *	@param[in] driver je reference na OpenGL driver
@@ -795,5 +806,10 @@ void OnIdle(CGL30Driver &driver)
 		currentLevel = changeLevel();
 	}
 
+	if(key.reset){
+		std::cout << " RESET " << std::endl;
+		resetLevel(&hero);
+		hero.position = currentLevel.heroStartPosition;
+	}
 	driver.Blit(); // preklopi buffery, zobrazi co jsme nakreslili
 }

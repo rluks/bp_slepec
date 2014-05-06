@@ -7,17 +7,9 @@
 #define dataheight 480
 // velikost dat
 
-
-#define start_position_x 10.0
-#define start_position_y 0.0
-
 #define DEFAULT_GRAVITY 0.03f
 #define DEFAULT_JUMP_VELOCITY -0.33f
 #define DEFAULT_WALK_VELOCITY 0.1f
-
-//zdroj zvuku
-#define source_position_x 5 
-#define source_position_y 5 
 
 /**
  *	@brief vraci "pointer" do VBO

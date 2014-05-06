@@ -179,16 +179,6 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys key, Hero * her
 		//hero->velocity.x = hero->velocity.x;
 	}
 
-	if(key.reset){
-		std::cout << " RESET " << std::endl;
-		hero->position.x = start_position_x;
-		hero->position.y = start_position_y;
-		hero->moving = false;
-		hero->jumping = false;
-		hero->velocity.x = 0.0f;
-		hero->velocity.y = 0.0f;
-	}
-
 	/*
 	hero->position.x += frame_time * 0.25f * movementDirection.x * 0.01f;
 	hero->position.y += frame_time * 0.5f * movementDirection.y * 0.01f;
