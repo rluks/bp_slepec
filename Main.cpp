@@ -27,9 +27,7 @@
 #include "Hero.h"
 #include "Level.h"
 
-
-
-static const char *p_s_window_name = "OpenGL 3 window";
+static const char *p_s_window_name = "Slepec";
 static const char *p_s_class_name = "my_wndclass";
 // jmeno okna
 
@@ -499,11 +497,20 @@ int main(int n_arg_num, const char **p_arg_list)
  */
 LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_param)
 {
+	HDC hDC;
+	PAINTSTRUCT Ps;
+
 	switch(n_msg) {
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		b_running = false;
 		return 0;
+
+	case WM_PAINT:
+		hDC = BeginPaint(h_wnd, &Ps);
+		TextOut(hDC, 50, 42, "Johnny Carson", 13);
+		EndPaint(h_wnd, &Ps);
+		break;
 
 	case WM_SIZE:
 		{
