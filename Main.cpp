@@ -264,7 +264,7 @@ bool InitGLObjects()
 	levelExit.vMin.y = 20;
 	levelExit.vMax.x = levelExit.vMin.x+1;
 	levelExit.vMax.y = levelExit.vMin.y+1;
-	Level levelZero(glm::vec2(start_position_x, start_position_y), "Textures/dum.png", levelExit);
+	Level levelZero(glm::vec2(start_position_x, start_position_y), "Textures/0.png", levelExit);
 	levelZero.addSoundSource(glm::vec2(4, 4));
 	levels.push_back(levelZero);
 
@@ -619,34 +619,31 @@ Level changeLevel(){
 	Level currentLevel;
 
 	if(currentLevelIndex+1 > levels.size()){
-		std::cout << "dohrany vsechny urovne" << std::endl;
-		//system("PAUSE");
-		b_running = false;
-		system("menu.exe");
-		;
-	}else{
-
-		currentLevel = levels.at(currentLevelIndex);
-		
-		//fyzika
-		TBmp * bitmap;
-		if(!(bitmap = CPngCodec::p_Load_PNG(currentLevel.mapFilepath.c_str()))){
-			fprintf(stderr, "error: failed to load \'.png file\'\n");
-			//return false;
-		}
-		boxDebug.generate(bitmap);
-		depthmap = n_GLTextureFromBitmap(bitmap, GL_RGBA8);
-		bitmap->Delete();
-
-		//cisteni vln
-		clearTexture(0);
-		clearTexture(1);
-		clearTexture(2);
-
-		hero.position = currentLevel.heroStartPosition;
-
-		return currentLevel;
+		std::cout << "dohrany vsechny urovne, vracim na zacatek" << std::endl;
+		currentLevelIndex = 0;
 	}
+	
+	currentLevel = levels.at(currentLevelIndex);
+		
+	//fyzika
+	TBmp * bitmap;
+	if(!(bitmap = CPngCodec::p_Load_PNG(currentLevel.mapFilepath.c_str()))){
+		fprintf(stderr, "error: failed to load \'.png file\'\n");
+		//return false;
+	}
+	boxDebug.generate(bitmap);
+	depthmap = n_GLTextureFromBitmap(bitmap, GL_RGBA8);
+	bitmap->Delete();
+
+	//cisteni vln
+	clearTexture(0);
+	clearTexture(1);
+	clearTexture(2);
+
+	hero.position = currentLevel.heroStartPosition;
+
+	return currentLevel;
+	
 }
 
 /**

@@ -15,11 +15,12 @@ void main()
 	
 	/*
 	float depth = texture(depthmap, vec2(v_texcoord.x, 1 - v_texcoord.y)).r;
-	frag_color.g = 1-depth;
+	//frag_color.g = 1-depth;
 	if(depth == 1.0)
-		frag_color.b = 1.0;
+		frag_color = vec4(0.0, 0.0, 0.0, 1.0);
 	if(depth != 0.0)
-		frag_color.g = 1.0;
+		frag_color = vec4(1.0, 1.0, 1.0, 1.0);
 	*/
+	
 	
 }
