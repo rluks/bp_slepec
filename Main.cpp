@@ -14,6 +14,9 @@
 
 #include <glm/vec2.hpp> 
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 #include "OpenGL30Drv.h"
 #include "Transform.h"
 #include "Tga.h"
@@ -438,6 +441,13 @@ int main(int n_arg_num, const char **p_arg_list)
 		return -1;
 	}
 	// vyrobime objekty OpenGL, nutne ke kresleni
+
+	FT_Library library;
+	FT_Error error;
+	error = FT_Init_FreeType( &library );
+	if(error){
+		std::cerr << "Problem with FreeType library." << std::endl;
+	}
 
 	//inicializace promennych
 	srand (static_cast <unsigned> (time(0)));
