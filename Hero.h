@@ -9,38 +9,43 @@
 #include "Texture.h"
 #include "Box.h"
 
+/**
+ *	@brief funkce a promenne pro praci s herni postavou (vc. vykreslovani)
+ */
 struct Hero {
 public:
 	static const int height = 3;
 	static const int width = 2;
+	//vychozi rozmery pro Box
+
+	Box box;
+	//geometrie
 
 	ShaderHero heroShader;
 	GLuint heroVBO, heroVAO, heroIBO;
 	GLuint hero_tex, hero_tex2;
 	GLuint hero_tex_jump;
+	static float p_hero_vertices[];
+	static unsigned int p_hero_indices[];	
 	int cnt;
-
-	Box box;
+	//vykreslovani
 
 	glm::vec2 velocity;
 	glm::vec2 position;
-
 	static bool jumping;
 	static bool moving;
 	bool facingLeft;
-	
-	static float p_hero_vertices[];
-	static unsigned int p_hero_indices[];	
+	//ovladani a pohyb
 
 	void init();
 	void updateBox();
 	void draw();
 
-	//maze opengl objekty
 	void cleanupOpenGL();
+	//maze opengl objekty
 
 private:
-		static bool isInit;
+	static bool isInit;
 };
 
 #endif

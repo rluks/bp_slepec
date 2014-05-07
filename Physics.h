@@ -12,11 +12,16 @@
 #include "Box.h"
 #include "Collision.h"
 
+/**
+ *	@brief prace s geometrii, kolizemi a pohybem
+ */
 struct BoxDebug {
-public:
+
 	//geometrie
-	GLuint VBO, VAO, IBO;
 	std::vector<Box> boxes;
+
+	//vykreslovani
+	GLuint VBO, VAO, IBO;
 	ShaderBoxes boxesShader;
 	ShaderPointSimple pointSimpleShader;
 

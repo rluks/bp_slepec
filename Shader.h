@@ -5,19 +5,23 @@
 #define SHADER_H
 
 #include <GL/glew.h>
+
 #include <string>
 #include <iostream>
+
 #include "Transform.h"
 
 #include <glm/vec2.hpp> 
 #include <glm/vec3.hpp> 
-
 
 //pomocne funkce
 std::string getTextFileString(std::string);
 bool CheckShader(GLuint, const char *);
 bool CheckProgram(GLuint, const char *);
 
+/**
+ *	@brief prace s shadery
+ */
 struct Shader {
 protected:
 
@@ -25,20 +29,26 @@ protected:
 	std::string fragmentpath;
 
 public:
+
 	bool compile(GLuint *, GLuint *, GLuint *);
 	void deleteShader(GLuint *, GLuint *, GLuint *);
 };
 
+/**
+ *	@brief testovaci shader na rozmazavani
+ */
 struct ShaderBlur : public Shader {
 public:
 	GLuint n_vertex_shader, n_fragment_shader, n_program_object;
 	GLuint n_texture_sampler_uniform, pixel_size;
-	//GLuint n_mvp_matrix_uniform, n_time_uniform;
 	bool compile();
 	void bind(int, int);
 	void deleteShader();
 };
 
+/**
+ *	@brief vykresluje texturu vlneni
+ */
 struct ShaderPass : public Shader {
 public:
 	GLuint n_vertex_shader_pass, n_fragment_shader_pass, n_program_object_pass;
@@ -51,6 +61,9 @@ public:
 	void deleteShader();
 };
 
+/**
+ *	@brief vykresluje herni postavu
+ */
 struct ShaderHero : public Shader {
 public:
 	GLuint n_vertex_shader_hero, n_fragment_shader_hero, n_program_object_hero;
@@ -63,6 +76,9 @@ public:
 	void deleteShader();
 };
 
+/**
+ *	@brief pocita simulaci vlneni - rychlost vln
+ */
 struct ShaderVelocity : public Shader {
 public:
 	GLuint n_vertex_shader_velocity, n_fragment_shader_velocity, n_program_object_velocity;
@@ -72,6 +88,9 @@ public:
 	void deleteShader();
 };
 
+/**
+ *	@brief pocita simulaci vlneni - vysku hladiny
+ */
 struct ShaderHeight : public Shader {
 public:
 	GLuint n_vertex_shader_height, n_fragment_shader_height, n_program_object_height;
@@ -81,6 +100,9 @@ public:
 	void deleteShader();
 };
 
+/**
+ *	@brief pridani "kapky" zdroje zvuku
+ */
 struct ShaderPoint : public Shader {
 public:
 	GLuint n_vertex_shader_point, n_fragment_shader_point, n_program_object_point;
@@ -89,6 +111,9 @@ public:
 	void deleteShader();
 };
 
+/**
+ *	@brief testovaci shader na vykresleni bodu kolize
+ */
 struct ShaderPointSimple : public Shader {
 public:
 	GLuint n_vertex_shader_pointSimple, n_fragment_shader_pointSimple, n_program_object_pointSimple;
@@ -97,6 +122,9 @@ public:
 	void deleteShader();
 };
 
+/**
+ *	@brief testovaci shader na vykresleni geometrie
+ */
 struct ShaderBoxes : public Shader {
 public:
 	GLuint n_vertex_shader_boxes, n_fragment_shader_boxes, n_program_object_boxes;
@@ -106,6 +134,9 @@ public:
 	void deleteShader();
 };
 
+/**
+ *	@brief vykresluje hmatovy vjem
+ */
 struct ShaderSurface : public Shader {
 public:
 	GLuint n_vertex_shader_curve, n_fragment_shader_curve, n_program_object_curve;

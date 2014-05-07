@@ -8,16 +8,20 @@
 
 #include "Box.h"
 
+/**
+ *	@brief struktura udrzuje informace o hernich urovnich
+ */
 struct Level {
-public:
-	glm::vec2 heroStartPosition;
-	std::string mapFilepath;
-	Box exit;
 
-	std::vector<glm::vec2> soundSourcePositions;
+	glm::vec2 heroStartPosition;	//pocatecni souradnice pro herni postavu
+	std::string mapFilepath;		//cesta k texture
+	Box exit;						//geometrie vychodu z urovne
+
+	std::vector<glm::vec2> soundSourcePositions;	//souradnice pozic zvuku v urovni
 
 	Level();
 	Level(glm::vec2, std::string, Box);
+
 	void addSoundSource(glm::vec2);
 };
 

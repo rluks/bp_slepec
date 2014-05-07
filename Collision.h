@@ -5,14 +5,20 @@
 #include <glm/vec2.hpp> 
 #include "Surface.h"
 
+/**
+ *	@brief typ kolize (smer ve kterem objekty koliduji, kde A je hrac)
+ */
 enum collisionType {AB, BA, AoverB, AunderB};
 
+/**
+ *	@brief ulozeni informaci o vznikle kolizi
+ */
 struct Collision {
-public:
-	collisionType type;
-	glm::vec2 point1;
-	glm::vec2 point2;
-	Surface surface;
+
+	collisionType type;	//typ kolize
+	glm::vec2 point1;	//nejlevejsi, nejvyssi bod
+	glm::vec2 point2;	//nejpravejsi, nejnizsi bod
+	Surface surface;	//povrch kolidujiciho Box
 
 	Collision();
 	Collision(enum collisionType, glm::vec2, glm::vec2, Surface);

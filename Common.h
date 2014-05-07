@@ -10,6 +10,7 @@
 #define DEFAULT_GRAVITY 0.03f
 #define DEFAULT_JUMP_VELOCITY -0.33f
 #define DEFAULT_WALK_VELOCITY 0.1f
+// definice vychozich hodnot nekterych promennych
 
 /**
  *	@brief vraci "pointer" do VBO
@@ -17,15 +18,20 @@
  */
 #define p_OffsetInVBO(off) ((void*)(off))
 
+/**
+ *	@brief informace o stisklych klavesach
+ */
 struct Keys {
-public:
+
+	/* kurzorove sipky */
 	bool up;
 	bool down;
 	bool left;
 	bool right;
-	bool space;
 
-	bool reset;//num0
+	/* ostatni */
+	bool space;
+	bool reset;	//num0
 };
 
 #endif
