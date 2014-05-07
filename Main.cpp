@@ -601,6 +601,18 @@ void onResize(int n_x, int n_y, int n_new_width, int n_new_height)
 }
 
 
+void simulateSound(int textnum, int speed){
+
+	for(int i = 0; i < speed; i++){	
+
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, depthmap);
+		glActiveTexture(GL_TEXTURE0);
+
+		velocityShader.bind(datawidth, dataheight);	drawPingPong(textnum);
+		heightShader.bind(datawidth, dataheight);	drawPingPong(textnum);
+	}
+}
 
 void drawPingPong(int textnum){
 
@@ -682,41 +694,14 @@ void OnIdle(CGL30Driver &driver)
 {
 	glClearColor(0, 0, 0, 0); //barva pozadi
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//glEnable(GL_DEPTH_TEST);//vypnuto protoze kreslime podle poradi ne podle hloubek - vsechno na stejne Z
+	//glEnable(GL_DEPTH_TEST);//vypnuto protoze kreslime podle poradi (ne podle hloubek - vsechno na stejne Z)
 	// vycistime framebuffer
 
 	glBindTexture(GL_TEXTURE_2D, 0);//nechci omylem vykreslovat posledni bind. texturu
 	
-	//hrac - zdroj zvuku
-	for(int i = 0; i < 3; i++){	
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, depthmap);
-		glActiveTexture(GL_TEXTURE0);
-
-		velocityShader.bind(datawidth, dataheight);	drawPingPong(0);
-		heightShader.bind(datawidth, dataheight);	drawPingPong(0);
-	}
-
-	//prostredi - zdroj zvuku
-	for(int i = 0; i < 3; i++){	
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, depthmap);
-		glActiveTexture(GL_TEXTURE0);
-
-		velocityShader.bind(datawidth, dataheight);	drawPingPong(1);
-		heightShader.bind(datawidth, dataheight);	drawPingPong(1);
-	}
-
-	//prostredi - vychod
-	for(int i = 0; i < 15; i++){	
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, depthmap);
-		glActiveTexture(GL_TEXTURE0);
-
-		velocityShader.bind(datawidth, dataheight);	drawPingPong(2);
-		heightShader.bind(datawidth, dataheight);	drawPingPong(2);
-	}
-
+	simulateSound(0, 3);	//hrac - zdroj zvuku	
+	simulateSound(1, 3);	//prostredi - zdroj zvuku
+	simulateSound(2, 15);	//prostredi - vychod
 
 	glViewport(0, 0, n_width, n_height); // viewport na velikost okna
 	glClear ( GL_COLOR_BUFFER_BIT);
