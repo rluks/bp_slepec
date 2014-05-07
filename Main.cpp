@@ -38,9 +38,10 @@ static bool b_running = true;
 void OnIdle(CGL30Driver &driver);
 void onResize(int n_x, int n_y, int n_new_width, int n_new_height);
 LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_param);
+
 void drawPingPong(int);
 void drawDrop(bool, float, float);
-void drawDrop2(bool, float, float, int);
+void drawDropToTexture(bool, float, float, int);
 void clearTexture(int);
 // prototypy funkci
 
@@ -67,13 +68,14 @@ Keys key = {false, false, false, false, false, false};
 
 std::vector<POINTS> pointsQueue;
 
-//hero
+//herni postava
 Hero hero;
 
 //fyika
 BoxDebug boxDebug;
 static int cnt = 0;
 
+//herni urovne
 std::vector<Level> levels;
 unsigned int currentLevelIndex;
 
@@ -94,7 +96,7 @@ void clearTexture(int textnum){
 
 }
 
-void drawDrop2(bool clear, float x, float y, int textnum){
+void drawDropToTexture(bool clear, float x, float y, int textnum){
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[textnum][0], 0);
@@ -616,6 +618,44 @@ void paintSound(int textnum, glm::vec3 color){
 	DrawScene();
 }
 
+void levelAddDrop(Level currentLevel){
+
+	//vkladat "kapky" jen obcas
+	float flickering = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+
+	//vychod
+	if(flickering > 0.98f)
+		drawDropToTexture(false, currentLevel.exit.vMin.x+0.5f, currentLevel.exit.vMin.y+0.5f, 2);
+
+	//zdroj zvuku	
+	for(unsigned int i = 0; i < currentLevel.soundSourcePositions.size(); i++){
+		flickering = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+		if(flickering > 0.99f)
+			drawDropToTexture(false, currentLevel.soundSourcePositions.at(i).x, currentLevel.soundSourcePositions.at(i).y, 1);
+	}
+}
+
+/**
+ *	@brief pridani zdroje zvuku na zaklade akci hrace
+ *	@param[in] key je struktura Keys
+ *	@param[in] hero je struktura Hero
+ */
+void playerAddDrop(Keys key, Hero hero){
+
+	//tukani hulkou
+	if(key.space){
+		if(hero.facingLeft)
+			drawDropToTexture(false, hero.position.x, hero.position.y + hero.height, 0);
+		else
+			drawDropToTexture(false, hero.position.x + hero.width, hero.position.y + hero.height, 0);
+	}
+
+	//skok-vkladani kapek pro testovani
+	if(key.up){
+		drawDropToTexture(false, hero.position.x + hero.width/2.0f, hero.position.y + hero.height, 0);
+	}
+}
+
 void drawPingPong(int textnum){
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
@@ -712,7 +752,7 @@ void OnIdle(CGL30Driver &driver)
 	paintSound(1, glm::vec3(1.0, 0.2, 0.2));
 	paintSound(2, glm::vec3(0.4, 0.2, 1.0));
 	
-	//pridani kapek
+	//testovani - pridani kapek kliknutim mysi
 	while(pointsQueue.size() > 0){
 		POINTS p = pointsQueue.at(0);
 		pointsQueue.pop_back();
@@ -725,30 +765,9 @@ void OnIdle(CGL30Driver &driver)
 
 	Level currentLevel = levels.at(currentLevelIndex);
 
-	//vychod
-	float flickering = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-	if(flickering > 0.98f)
-		drawDrop2(false, currentLevel.exit.vMin.x+0.5f, currentLevel.exit.vMin.y+0.5f, 2);
-
-	//zdroj zvuku	
-	for(unsigned int i = 0; i < currentLevel.soundSourcePositions.size(); i++){
-		flickering = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-		if(flickering > 0.99f)
-			drawDrop2(false, currentLevel.soundSourcePositions.at(i).x, currentLevel.soundSourcePositions.at(i).y, 1);
-	}
-
-	//tukani hulkou
-	if(key.space){
-		if(hero.facingLeft)
-			drawDrop2(false, hero.position.x, hero.position.y + hero.height, 0);
-		else
-			drawDrop2(false, hero.position.x + hero.width, hero.position.y + hero.height, 0);
-	}
-
-	//skok-vkladani kapek pro testovani
-	if(key.up){
-		drawDrop2(false, hero.position.x + hero.width/2.0f, hero.position.y + hero.height, 0);
-	}
+	//pridani "kapek" zdroju zvuku
+	levelAddDrop(currentLevel);
+	playerAddDrop(key, hero);
 
 	//nastavit novy pohyb na zaklade stisknutych tlacitek
 	boxDebug.calculateTimeBasedMovement(frame_time, key, &hero);
@@ -758,7 +777,7 @@ void OnIdle(CGL30Driver &driver)
 	//poupravit novy pohyb, aby nedoslo ke kolizi
 	boxDebug.SeparatingAxisTheorem(&hero);
 
-	//vykreslit postavu
+	//vykreslit herni postavu
 	hero.draw();
 
 	//vykreslit geometrii - testovani
@@ -787,10 +806,7 @@ void OnIdle(CGL30Driver &driver)
 		hero.position = currentLevel.heroStartPosition;
 	}
 
-	std::cout << "hero.position.x: " << hero.position.x << "|y: " << hero.position.y << std::endl;
+	//std::cout << "hero.position.x: " << hero.position.x << "|y: " << hero.position.y << std::endl;
 	
-
-	
-
 	driver.Blit(); // preklopi buffery, zobrazi co jsme nakreslili
 }
