@@ -100,8 +100,8 @@ void clearTexture(int textnum){
 
 
 void drawDrop2(bool clear, float x, float y, int textnum){
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[textnum][0], 0);
 
 	glViewport(0, 0, datawidth, dataheight);
@@ -109,41 +109,37 @@ void drawDrop2(bool clear, float x, float y, int textnum){
 	if(clear)
 		glClear ( GL_COLOR_BUFFER_BIT);
 
-
 	glBindTexture(GL_TEXTURE_2D, n_texture[textnum][0]);
 
+	float s = (2.0f * x)/32.0f - 1.0f;
+	float t = 1.0f - (2.0f * y)/24.0f;
+	float bod[] = {s, t};
 
-	{//bod
+	//std::cout << "kapka hulkou na souradnicich - s(x): " << s << " |t(y): " << t << std::endl;
 
-		float s = (2.0f * x)/32.0f - 1.0f;
-		float t = 1.0f - (2.0f * y)/24.0f;
-		float bod[] = {s, t};
+	GLuint bodVBO, bodVAO;
+	glGenBuffers(1, &bodVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, bodVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(bod), bod, GL_STATIC_DRAW);
 
-		//std::cout << "kapka hulkou na souradnicich - s(x): " << s << " |t(y): " << t << std::endl;
-
-		GLuint bodVBO, bodVAO;
-		glGenBuffers(1, &bodVBO);
+	glGenVertexArrays(1, &bodVAO);
+	glBindVertexArray(bodVAO);
+	{
 		glBindBuffer(GL_ARRAY_BUFFER, bodVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(bod), bod, GL_STATIC_DRAW);
-
-		glGenVertexArrays(1, &bodVAO);
-		glBindVertexArray(bodVAO);
-		{
-			glBindBuffer(GL_ARRAY_BUFFER, bodVBO);
-			glEnableVertexAttribArray(1);//TODO nastavujem rucne na 1, nula compile shader upravit
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, p_OffsetInVBO(0));
-		}
-		glBindVertexArray(0);
-
-		pointShader.bind();
-		glBindVertexArray(bodVAO);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_ONE, GL_ONE);//vstup vystup barva
-		glDrawArrays(GL_POINTS, 0, 1);
-		glDisable(GL_BLEND);
-		glBindVertexArray(0);
+		glEnableVertexAttribArray(1);//TODO nastavujem rucne na 1, nula compile shader upravit
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, p_OffsetInVBO(0));
 	}
+	glBindVertexArray(0);
 
+	pointShader.bind();
+	glBindVertexArray(bodVAO);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE);//vstup vystup barva
+
+	glDrawArrays(GL_POINTS, 0, 1);
+
+	glDisable(GL_BLEND);
+	glBindVertexArray(0);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
@@ -157,32 +153,31 @@ void drawDrop(bool clear, float x, float y){
 	
 	glBindTexture(GL_TEXTURE_2D, n_texture[0][0]);
 
-	{//bod
-		float bod[] = {x, y};
+	float bod[] = {x, y};
 
-		GLuint bodVBO, bodVAO;
-		glGenBuffers(1, &bodVBO);
+	GLuint bodVBO, bodVAO;
+	glGenBuffers(1, &bodVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, bodVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(bod), bod, GL_STATIC_DRAW);
+
+	glGenVertexArrays(1, &bodVAO);
+	glBindVertexArray(bodVAO);
+	{
 		glBindBuffer(GL_ARRAY_BUFFER, bodVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(bod), bod, GL_STATIC_DRAW);
-
-		glGenVertexArrays(1, &bodVAO);
-		glBindVertexArray(bodVAO);
-		{
-			glBindBuffer(GL_ARRAY_BUFFER, bodVBO);
-			glEnableVertexAttribArray(1);//TODO nastavujem rucne na 1, nula compile shader upravit
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, p_OffsetInVBO(0));
-		}
-		glBindVertexArray(0);
-
-		pointShader.bind();
-		glBindVertexArray(bodVAO);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_ONE, GL_ONE);//vstup vystup barva
-		glDrawArrays(GL_POINTS, 0, 1);
-		glDisable(GL_BLEND);
-		glBindVertexArray(0);
+		glEnableVertexAttribArray(1);//TODO nastavujem rucne na 1, nula compile shader upravit
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, p_OffsetInVBO(0));
 	}
+	glBindVertexArray(0);
 
+	pointShader.bind();
+	glBindVertexArray(bodVAO);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE);//vstup vystup barva
+
+	glDrawArrays(GL_POINTS, 0, 1);
+
+	glDisable(GL_BLEND);
+	glBindVertexArray(0);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
