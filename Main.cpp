@@ -45,17 +45,16 @@ void drawDropToTexture(bool, float, float, int);
 void clearTexture(int);
 // prototypy funkci
 
-
+//vykreslovani
 GLuint fbo;
-int n_source_tex;
 static const GLenum p_draw_buffers[] = {GL_COLOR_ATTACHMENT0};
 static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_object;
 
 //textury
 static GLuint n_texture[3][2];//r-height,g-y velocity,b-x velocity
-static GLuint depthmap;
+static int source_texture_num;
 enum textureNumber {PLAYER_SOUND = 0, LEVEL_SOUND = 1, LEVEL_EXIT_SOUND = 2};
-
+static GLuint depthmap;
 
 //shadery
 ShaderBlur blurShader;
@@ -64,25 +63,27 @@ ShaderVelocity velocityShader;
 ShaderHeight heightShader;
 ShaderPoint pointShader;
 
-static DWORD frame_time;
+//ovladani
 Keys key = {false, false, false, false, false, false};
 
-
-
+//kliknuti mysi - testovani
 std::vector<POINTS> pointsQueue;
 
 //herni postava
 Hero hero;
 
 //fyika
+static DWORD frame_time;
 BoxDebug boxDebug;
-static int cnt = 0;
 
 //herni urovne
 std::vector<Level> levels;
 unsigned int currentLevelIndex;
 
-
+/**
+ *	@brief vynuluje danou texturu
+ *	@param[in] textnum cislo textury
+ */
 void clearTexture(int textnum){
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 
@@ -99,6 +100,13 @@ void clearTexture(int textnum){
 
 }
 
+/**
+ *	@brief vlozi kapku na dane souradnice, na danou texturu, moznost vycistit texturu
+ *	@param[in] clear jestli ma vycistit texturu
+ *	@param[in] x souradnice
+ *	@param[in] y souradnice
+ *	@param[in] textnum cislo textury
+ */
 void drawDropToTexture(bool clear, float x, float y, int textnum){
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
@@ -143,6 +151,12 @@ void drawDropToTexture(bool clear, float x, float y, int textnum){
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
+/**
+ *	@brief vlozi kapku na dane souradnice, moznost vycistit texturu - testovani
+ *	@param[in] clear jestli ma vycistit texturu
+ *	@param[in] x souradnice
+ *	@param[in] y souradnice
+ */
 void drawDrop(bool clear, float x, float y){
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[0][0], 0);
@@ -270,7 +284,6 @@ bool InitGLObjects()
 	levelExit.vMax.x = levelExit.vMin.x+1;
 	levelExit.vMax.y = levelExit.vMin.y+1;
 	Level levelOne(glm::vec2(3.5, 10), "Textures/1.png", levelExit);
-	//levelZero.addSoundSource(glm::vec2(levelExit.vMin.x+0.5, levelExit.vMin.y+0.5));
 	levelOne.addSoundSource(glm::vec2(4, 4));
 	levelOne.addSoundSource(glm::vec2(4, 8));
 	levels.push_back(levelOne);
@@ -284,8 +297,6 @@ bool InitGLObjects()
 		n_texture[i][0] = n_GLTextureRGBFloat();
 		std::cout << "i" << i << std::endl;
 	}
-	//n_texture[1][1] = n_GLTextureRGBFloat();
-	//n_texture[1][0] = n_GLTextureRGBFloat();
 
 	//fyzika
 	TBmp * bitmap;
@@ -303,13 +314,12 @@ bool InitGLObjects()
 	glDrawBuffers(1, p_draw_buffers);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
-	n_source_tex = 0;
+	source_texture_num = 0;
 
 	//cisteni vln
 	clearTexture(0);
 	clearTexture(1);
 	clearTexture(2);
-
 
 	return true;
 }
@@ -590,7 +600,11 @@ void onResize(int n_x, int n_y, int n_new_width, int n_new_height)
 	glViewport(n_x, n_y, n_new_width, n_new_height);
 }
 
-
+/**
+ *	@brief udela kroky simulace nad danou texturou
+ *	@param[in] textnum cislo textury
+ *	@param[in] speed pocet kroku simulace
+ */
 void simulateSound(int textnum, int speed){
 
 	for(int i = 0; i < speed; i++){	
@@ -604,6 +618,11 @@ void simulateSound(int textnum, int speed){
 	}
 }
 
+/**
+ *	@brief zobrazi texturu zvuku v dane barve
+ *	@param[in] textnum cislo textury
+ *	@param[in] color barva
+ */
 void paintSound(int textnum, glm::vec3 color){
 
 	Matrix4f t_mvp;
@@ -616,11 +635,15 @@ void paintSound(int textnum, glm::vec3 color){
 		t_mvp = t_projection * t_modelview;
 	}
 
-	glBindTexture(GL_TEXTURE_2D, n_texture[textnum][n_source_tex]);
+	glBindTexture(GL_TEXTURE_2D, n_texture[textnum][source_texture_num]);
 	passShader.bind(t_mvp, color); // ted kreslite do okna, chcete videt vysledek
 	DrawScene();
 }
 
+/**
+ *	@brief pridani zdroje zvuku herni urovni
+ *	@param[in] currentLevel aktualni herni uroven
+ */
 void levelAddDrop(Level currentLevel){
 
 	//vkladat "kapky" jen obcas
@@ -659,24 +682,32 @@ void playerAddDrop(Keys key, Hero hero){
 	}
 }
 
+/**
+ *	@brief provadi ping-pong algoritmus
+ *	@param[in] textnum cislo textury
+ */
 void drawPingPong(int textnum){
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[textnum][1 - n_source_tex], 0); // kresleni do nulte urovne textury
+	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[textnum][1 - source_texture_num], 0); // kresleni do nulte urovne textury
 
 	glViewport(0, 0, datawidth, dataheight); // viewport na velikost FBO
 	glClear ( GL_COLOR_BUFFER_BIT);
 
-	glBindTexture(GL_TEXTURE_2D, n_texture[textnum][n_source_tex]);
+	glBindTexture(GL_TEXTURE_2D, n_texture[textnum][source_texture_num]);
 	DrawScene();
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, n_texture[textnum][1 - n_source_tex]);
+	glBindTexture(GL_TEXTURE_2D, n_texture[textnum][1 - source_texture_num]);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
-	n_source_tex = 1 - n_source_tex; // ping-pong
+	source_texture_num = 1 - source_texture_num; // ping-pong
 }
 
+/**
+ *	@brief vraci true pokud se hrac nachazi u vychodu z urovne
+ *	@param[in] heroBox geometrie hrace
+ */
 bool reachedExit(Box heroBox){
 
 	Box levelExit = levels.at(currentLevelIndex).exit;
@@ -687,6 +718,9 @@ bool reachedExit(Box heroBox){
 		return false;
 }
 
+/**
+ *	@brief nacte dalsi herni uroven vc. geometrie, cisteni, atd.
+ */
 Level changeLevel(){
 	currentLevelIndex++;
 	Level currentLevel;
@@ -719,6 +753,10 @@ Level changeLevel(){
 	
 }
 
+/**
+ *	@brief obnovi pozici hrace, atd. pri restartovani herni urovne
+ *	@param[in] hero
+ */
 void resetLevel(Hero * hero){
 
 	hero->moving = false;
@@ -744,9 +782,9 @@ void OnIdle(CGL30Driver &driver)
 
 	glBindTexture(GL_TEXTURE_2D, 0);//nechci omylem vykreslovat posledni bind. texturu
 		
-	simulateSound(textureNumber::PLAYER_SOUND, 3);	//hrac - zdroj zvuku	
-	simulateSound(textureNumber::LEVEL_SOUND, 3);	//prostredi - zdroj zvuku
-	simulateSound(textureNumber::LEVEL_EXIT_SOUND, 15);	//prostredi - vychod
+	simulateSound(textureNumber::PLAYER_SOUND, 3);			//hrac - zdroj zvuku	
+	simulateSound(textureNumber::LEVEL_SOUND, 3);			//prostredi - zdroj zvuku
+	simulateSound(textureNumber::LEVEL_EXIT_SOUND, 15);		//prostredi - vychod
 
 	glViewport(0, 0, n_width, n_height); // viewport na velikost okna
 	glClear ( GL_COLOR_BUFFER_BIT);
