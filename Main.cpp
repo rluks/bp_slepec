@@ -92,7 +92,6 @@ void clearTexture(int textnum){
 
 	glBindTexture(GL_TEXTURE_2D, n_texture[textnum][0]);
 
-
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
 }
@@ -146,6 +145,7 @@ void drawDrop2(bool clear, float x, float y, int textnum){
 void drawDrop(bool clear, float x, float y){
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, n_texture[0][0], 0);
+
 	glViewport(0, 0, datawidth, dataheight);
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	if(clear)
@@ -436,13 +436,6 @@ int main(int n_arg_num, const char **p_arg_list)
 	}
 	// vyrobime objekty OpenGL, nutne ke kresleni
 
-	FT_Library library;
-	FT_Error error;
-	error = FT_Init_FreeType( &library );
-	if(error){
-		std::cerr << "Problem with FreeType library." << std::endl;
-	}
-
 	//inicializace promennych
 	srand (static_cast <unsigned> (time(0)));
 	hero.velocity.x = 0.0;
@@ -478,7 +471,6 @@ int main(int n_arg_num, const char **p_arg_list)
 	// uvolnime OpenGL objekty
 
 	std::cout << "...finished" << std::endl;
-	//system("PAUSE");
 	return 0;
 }
 
