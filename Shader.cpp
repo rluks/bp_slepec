@@ -1,5 +1,9 @@
 #include "Shader.h"
 
+/**
+ *	@brief vraci obsah souboru jako string
+ *	@param[in] name jmeno souboru
+ */
 std::string getTextFileString(std::string name){
 
 	FILE* fp = fopen(name.c_str(), "rt");

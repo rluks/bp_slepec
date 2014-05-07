@@ -6,6 +6,9 @@ bool Hero::isInit = false;
 bool Hero::jumping = false;
 bool Hero::moving = false;
 
+/**
+ *	@brief inicializacni funkce, musi byt zavolana pred pouzitim dalsich funkci!
+ */
 void Hero::init(){
 
 	box.vMin.x = 0;
@@ -14,6 +17,7 @@ void Hero::init(){
 	box.vMax.y = box.vMin.y + height;
 
 	heroShader.compile();
+
 	hero_tex = LoadTextureFromPNGFile("Textures/player1.png");
 	hero_tex2 = LoadTextureFromPNGFile("Textures/player0.png");
 	hero_tex_jump = LoadTextureFromPNGFile("Textures/player_jump.png");
@@ -43,6 +47,9 @@ void Hero::init(){
 	isInit = true;
 }
 
+/**
+ *	@brief obnovi hodnoty v geometrii podle aktualizovane pozice
+ */
 void Hero::updateBox(){
 	box.vMin.x = position.x;
 	box.vMin.y = position.y;
@@ -50,6 +57,9 @@ void Hero::updateBox(){
 	box.vMax.y = box.vMin.y + height;
 }
 
+/**
+ *	@brief vykresli herni postavu (pouzije se vhodna textura podle situace)
+ */
 void Hero::draw(){
 
 	try{	
@@ -83,6 +93,9 @@ void Hero::draw(){
 	glBindVertexArray(0);
 }
 
+/**
+ *	@brief cisteni
+ */
 void Hero::cleanupOpenGL(){
 	heroShader.deleteShader();
 }

@@ -2,6 +2,10 @@
 
 bool BoxDebug::standingOn = false;
 
+/**
+ *	@brief generovani geometrie a dalsi souvisejici inicializace
+ *	@param[in] bmpfile textura herni urovne
+ */
 void BoxDebug::generate(TBmp * bmpfile){
 	
 	boxes.resize(0);
@@ -125,6 +129,10 @@ void BoxDebug::generate(TBmp * bmpfile){
 	
 }
 
+/**
+ *	@brief nastavi smerovani vektor podle stisknutych klaves
+ *	@param[in] k stisknute klavesy
+ */
 void BoxDebug::setMovementDirection(Keys k){
 
 	if(k.up)
@@ -142,6 +150,12 @@ void BoxDebug::setMovementDirection(Keys k){
 		movementDirection.x = 0.0;
 }
 
+/**
+ *	@brief zpocita a aplikuje posun herni postavy podle casu snimku
+ *	@param[in] frame_time cas snimku
+ *	@param[in] key stisknute klavesy
+ *	@param[in] hero herni postava
+ */
 void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys key, Hero * hero)
 {
 	setMovementDirection(key);
@@ -189,6 +203,10 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys key, Hero * her
 	
 }
 
+/**
+ *	@brief implementuje separating axis theorem - detekci kolizi
+ *	@param[in] hero herni postava
+ */
 void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 
 	Box a = hero->box;
@@ -322,6 +340,9 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 	}//for boxes
 }
 
+/**
+ *	@brief vykresli krajni body kolize - testovani
+ */
 void BoxDebug::drawCollisionsPoints(){
 	//krajni body kolize
 	if(collisions.size() > 0){
@@ -359,6 +380,9 @@ void BoxDebug::drawCollisionsPoints(){
 	}
 }
 
+/**
+ *	@brief vykresli hmatovy vjem (tedy vhodne kolize)
+ */
 void BoxDebug::drawCollisions(){
 
 	//hmatovy vjem
@@ -407,6 +431,11 @@ void BoxDebug::drawCollisions(){
 	collisions.resize(0);
 }
 
+/**
+ *	@brief vykresli geometrii dane kostky testovani
+ *	@param[in] a instance Box
+  *	@param[in] color barva
+ */
 void BoxDebug::drawBox(Box a, glm::vec3 color){
 
 	float a_vertices[] = {a.vMin.x, a.vMin.y, 1, /**/a.vMax.x , a.vMin.y, 1,/**/a.vMax.x, a.vMax.y, 1,/**/a.vMin.x, a.vMax.y, 1};
@@ -437,6 +466,9 @@ void BoxDebug::drawBox(Box a, glm::vec3 color){
 	glBindVertexArray(0);
 }
 
+/**
+ *	@brief vykresli geometrii herni urovne
+ */
 void BoxDebug::draw(){
 
 	if(boxes.size() > 0){
@@ -477,6 +509,9 @@ void BoxDebug::draw(){
 	}
 }
 
+/**
+ *	@brief cisteni
+ */
 void BoxDebug::cleanupOpenGL(){
 	boxesShader.deleteShader();
 	pointSimpleShader.deleteShader();

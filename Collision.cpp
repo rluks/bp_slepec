@@ -1,13 +1,17 @@
 #include "Collision.h"
 
-Collision::Collision(){
-}
-
-Collision::Collision(enum collisionType collisType, glm::vec2 p1, glm::vec2 p2, Surface s) : type(collisType), point1(p1), point2(p2), surface(s)
+Collision::Collision()
 {
-
 }
 
+Collision::Collision(enum collisionType collisType, glm::vec2 p1, glm::vec2 p2, Surface s)
+:type(collisType), point1(p1), point2(p2), surface(s)
+{
+}
+
+/**
+ *	@brief vrati retezec odpovidajici danemu typu kolize
+ */
 std::string Collision::getTypeString(){
 
 	std::string typeString;
@@ -17,11 +21,11 @@ std::string Collision::getTypeString(){
 	else if(type == BA)
 		typeString = "BA";
 	else if(type == AoverB)
-		typeString = "A nadB";
+		typeString = "A nad B";
 	else if(type == AunderB)
-		typeString = "Apod B";
+		typeString = "A pod B";
 	else 
-		typeString = "A je nekde kolem B ale nevim type kolize";
+		typeString = "neznamy type kolize";
 
 	return typeString;
 }

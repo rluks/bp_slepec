@@ -29,7 +29,10 @@ GLuint n_GLTextureFromBitmap(const TBmp *p_bitmap, GLenum n_internal_format = GL
 	return n_tex;
 }
 
-
+/**
+ *	@brief vraci texturu nactenou ze souboru ve formatu png
+ *	@param[in] imagepath jmeno souboru
+ */
 GLuint LoadTextureFromPNGFile(const char * imagepath){
 	TBmp * bitmap;
 	if(!(bitmap = CPngCodec::p_Load_PNG(imagepath))){
@@ -52,6 +55,10 @@ GLuint LoadTextureFromPNGFile(const char * imagepath){
 	return texture;	
 }
 
+/**
+ *	@brief vraci texturu nactenou ze souboru ve formatu tga
+ *	@param[in] imagepath jmeno souboru
+ */
 GLuint LoadTextureFromTGAFile(const char * imagepath){
 	TBmp * bitmap;
 	if(!(bitmap = CTgaCodec::p_Load_TGA(imagepath))) {
@@ -65,6 +72,9 @@ GLuint LoadTextureFromTGAFile(const char * imagepath){
 	return texture;
 }
 
+/**
+ *	@brief testovaci funkce
+ */
 GLuint n_GLTextureRFloatFromData()
 {
 	GLuint n_tex_surface;
@@ -112,6 +122,9 @@ GLuint n_GLTextureRFloatFromData()
 	return n_tex_surface;
 }
 
+/**
+ *	@brief testovaci funkce
+ */
 GLuint n_GLTextureRFloatDepthTest()
 {
 	GLuint n_tex_surface;
@@ -167,6 +180,9 @@ GLuint n_GLTextureRFloatDepthTest()
 	return n_tex_surface;
 }
 
+/**
+ *	@brief vytvori texturu s float cervenym kanalem
+ */
 GLuint n_GLTextureRFloat()
 {
 	GLuint n_tex_surface;
@@ -182,6 +198,9 @@ GLuint n_GLTextureRFloat()
 	return n_tex_surface;
 }
 
+/**
+ *	@brief vytvori texturu s float cervenym a zelenym kanalem
+ */
 GLuint n_GLTextureRGFloat()
 {
 	GLuint n_tex_surface;
@@ -197,6 +216,9 @@ GLuint n_GLTextureRGFloat()
 	return n_tex_surface;
 }
 
+/**
+ *	@brief vytvori texturu s float cervenym,zelenym a modrym kanalem
+ */
 GLuint n_GLTextureRGBFloat()
 {
 	GLuint n_tex_surface;
@@ -212,6 +234,9 @@ GLuint n_GLTextureRGBFloat()
 	return n_tex_surface;
 }
 
+/**
+ *	@brief testovaci funkce
+ */
 GLuint n_GLTextureRGBFloatFromData()
 {
 	GLuint n_tex_surface;

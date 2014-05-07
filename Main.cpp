@@ -615,7 +615,7 @@ void simulateSound(int textnum, int speed){
 }
 
 /**
- *	@brief zobrazi texturu zvuku v dane barve
+ *	@brief zobrazi texturu zvuku v dane barve na obrazovku
  *	@param[in] textnum cislo textury
  *	@param[in] color barva
  */
