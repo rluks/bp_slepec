@@ -45,6 +45,7 @@ void drawDropToTexture(bool, float, float, int);
 void clearTexture(int);
 // prototypy funkci
 
+
 GLuint fbo;
 int n_source_tex;
 static const GLenum p_draw_buffers[] = {GL_COLOR_ATTACHMENT0};
@@ -53,6 +54,8 @@ static GLuint n_vertex_buffer_object, n_index_buffer_object, n_vertex_array_obje
 //textury
 static GLuint n_texture[3][2];//r-height,g-y velocity,b-x velocity
 static GLuint depthmap;
+enum textureNumber {PLAYER_SOUND = 0, LEVEL_SOUND = 1, LEVEL_EXIT_SOUND = 2};
+
 
 //shadery
 ShaderBlur blurShader;
@@ -740,17 +743,17 @@ void OnIdle(CGL30Driver &driver)
 	// vycistime framebuffer
 
 	glBindTexture(GL_TEXTURE_2D, 0);//nechci omylem vykreslovat posledni bind. texturu
-	
-	simulateSound(0, 3);	//hrac - zdroj zvuku	
-	simulateSound(1, 3);	//prostredi - zdroj zvuku
-	simulateSound(2, 15);	//prostredi - vychod
+		
+	simulateSound(textureNumber::PLAYER_SOUND, 3);	//hrac - zdroj zvuku	
+	simulateSound(textureNumber::LEVEL_SOUND, 3);	//prostredi - zdroj zvuku
+	simulateSound(textureNumber::LEVEL_EXIT_SOUND, 15);	//prostredi - vychod
 
 	glViewport(0, 0, n_width, n_height); // viewport na velikost okna
 	glClear ( GL_COLOR_BUFFER_BIT);
 
-	paintSound(0, glm::vec3(0.4, 1.0, 0.8));
-	paintSound(1, glm::vec3(1.0, 0.2, 0.2));
-	paintSound(2, glm::vec3(0.4, 0.2, 1.0));
+	paintSound(textureNumber::PLAYER_SOUND, glm::vec3(0.4, 1.0, 0.8));
+	paintSound(textureNumber::LEVEL_SOUND, glm::vec3(1.0, 0.2, 0.2));
+	paintSound(textureNumber::LEVEL_EXIT_SOUND, glm::vec3(0.4, 0.2, 1.0));
 	
 	//testovani - pridani kapek kliknutim mysi
 	while(pointsQueue.size() > 0){
