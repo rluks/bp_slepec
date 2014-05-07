@@ -145,7 +145,7 @@ bool ShaderBlur::compile(){
 	fragmentpath = "Shaders/blur.fr.shader";
 
 	if(!Shader::compile(&n_vertex_shader, &n_fragment_shader, &n_program_object))
-		return false;//TODO asi spis vyjimka
+		return false;
 
 	//n_mvp_matrix_uniform = glGetUniformLocation(n_program_object, "t_modelview_projection_matrix");
 	n_texture_sampler_uniform = glGetUniformLocation(n_program_object, "n_tex");

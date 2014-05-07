@@ -118,7 +118,7 @@ void BoxDebug::generate(TBmp * bmpfile){
 	glBindVertexArray(tactileVAO);
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, tactileVBO);
-		glEnableVertexAttribArray(1);//TODO nastavujem rucne na 1, nula compile shader upravit
+		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, p_OffsetInVBO(0));
 	}
 	glBindVertexArray(0);
@@ -342,7 +342,7 @@ void BoxDebug::drawCollisionsPoints(){
 			glBindVertexArray(testVAO);
 			{
 				glBindBuffer(GL_ARRAY_BUFFER, testVBO);
-				glEnableVertexAttribArray(1);//TODO nastavujem rucne na 1, nula compile shader upravit
+				glEnableVertexAttribArray(1);
 				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, p_OffsetInVBO(0));
 			}
 			glBindVertexArray(0);

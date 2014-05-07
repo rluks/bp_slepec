@@ -130,7 +130,7 @@ void drawDropToTexture(bool clear, float x, float y, int textnum){
 	glBindVertexArray(bodVAO);
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, bodVBO);
-		glEnableVertexAttribArray(1);//TODO nastavujem rucne na 1, nula compile shader upravit
+		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, p_OffsetInVBO(0));
 	}
 	glBindVertexArray(0);
@@ -175,7 +175,7 @@ void drawDrop(bool clear, float x, float y){
 	glBindVertexArray(bodVAO);
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, bodVBO);
-		glEnableVertexAttribArray(1);//TODO nastavujem rucne na 1, nula compile shader upravit
+		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, p_OffsetInVBO(0));
 	}
 	glBindVertexArray(0);
@@ -818,13 +818,12 @@ void OnIdle(CGL30Driver &driver)
 	hero.draw();
 
 	//vykreslit geometrii - testovani
-	/*
 	boxDebug.draw();
 	glm::vec3 heroBoxColor(1.0, 0.6, 0.4);
 	boxDebug.drawBox(hero.box, heroBoxColor);
 	glm::vec3 levelExitColor(0.4, 0.6, 0.8);
 	boxDebug.drawBox(currentLevel.exit, levelExitColor);
-	*/
+	
 
 	//vykreslit hmat
 	boxDebug.drawCollisions();

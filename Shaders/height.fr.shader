@@ -8,7 +8,7 @@ uniform sampler2D depthmap;
 uniform vec3 pixel_size; // pixel_size.z = 0
 
 const float delta_t = 0.01;
-const float delta_x = 30.0/600.0;//TODO posilat
+const float delta_x = 30.0/600.0;
 const float delta_y = 30.0/600.0;
 
 float c = 2.0;//dissipation const.
