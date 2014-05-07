@@ -38,11 +38,7 @@ static bool b_running = true;
 void OnIdle(CGL30Driver &driver);
 void onResize(int n_x, int n_y, int n_new_width, int n_new_height);
 LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_param);
-
 void drawPingPong(int);
-void drawDrop(bool, float, float);
-void drawDropToTexture(bool, float, float, int);
-void clearTexture(int);
 // prototypy funkci
 
 //vykreslovani
