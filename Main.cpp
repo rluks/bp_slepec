@@ -14,9 +14,6 @@
 
 #include <glm/vec2.hpp> 
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
 #include "OpenGL30Drv.h"
 #include "Transform.h"
 #include "Tga.h"
@@ -80,6 +77,7 @@ static int cnt = 0;
 std::vector<Level> levels;
 unsigned int currentLevelIndex;
 
+
 void clearTexture(int textnum){
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 
@@ -95,8 +93,6 @@ void clearTexture(int textnum){
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
 }
-
-
 
 void drawDrop2(bool clear, float x, float y, int textnum){
 
@@ -180,7 +176,6 @@ void drawDrop(bool clear, float x, float y){
 	glBindVertexArray(0);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
-
 
 
 /**
@@ -496,7 +491,7 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 	case WM_PAINT:
 		{
 		hDC = BeginPaint(h_wnd, &Ps);
-		std::string text = "Hello World!";
+		std::string text = "Loading...";
 		TextOut(hDC, 50, 42, text.c_str(), text.length());
 		EndPaint(h_wnd, &Ps);
 		break;
@@ -604,6 +599,23 @@ void simulateSound(int textnum, int speed){
 	}
 }
 
+void paintSound(int textnum, glm::vec3 color){
+
+	Matrix4f t_mvp;
+	{
+		Matrix4f t_projection;
+		CGLTransform::Perspective(t_projection, 90, float(n_width) / n_height, .01f, 1000);
+		Matrix4f t_modelview;
+		t_modelview.Identity();
+		t_modelview.Translate(0, 0, -2.5f);
+		t_mvp = t_projection * t_modelview;
+	}
+
+	glBindTexture(GL_TEXTURE_2D, n_texture[textnum][n_source_tex]);
+	passShader.bind(t_mvp, color); // ted kreslite do okna, chcete videt vysledek
+	DrawScene();
+}
+
 void drawPingPong(int textnum){
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
@@ -696,30 +708,9 @@ void OnIdle(CGL30Driver &driver)
 	glViewport(0, 0, n_width, n_height); // viewport na velikost okna
 	glClear ( GL_COLOR_BUFFER_BIT);
 
-	Matrix4f t_mvp;
-	{
-		Matrix4f t_projection;
-		CGLTransform::Perspective(t_projection, 90, float(n_width) / n_height, .01f, 1000);
-		Matrix4f t_modelview;
-		t_modelview.Identity();
-		t_modelview.Translate(0, 0, -2.5f);
-		t_mvp = t_projection * t_modelview;
-	}
-
-	glBindTexture(GL_TEXTURE_2D, n_texture[0][n_source_tex]);
-	glm::vec3 color = glm::vec3(0.4, 1.0, 0.8);
-	passShader.bind(t_mvp, color); // ted kreslite do okna, chcete videt vysledek
-	DrawScene();
-
-	glBindTexture(GL_TEXTURE_2D, n_texture[1][n_source_tex]);
-	glm::vec3 color2 = glm::vec3(1.0, 0.2, 0.2);
-	passShader.bind(t_mvp, color2);
-	DrawScene();
-
-	glBindTexture(GL_TEXTURE_2D, n_texture[2][n_source_tex]);
-	glm::vec3 color3 = glm::vec3(0.4, 0.2, 1.0);
-	passShader.bind(t_mvp, color3);
-	DrawScene();
+	paintSound(0, glm::vec3(0.4, 1.0, 0.8));
+	paintSound(1, glm::vec3(1.0, 0.2, 0.2));
+	paintSound(2, glm::vec3(0.4, 0.2, 1.0));
 	
 	//pridani kapek
 	while(pointsQueue.size() > 0){
@@ -770,12 +761,14 @@ void OnIdle(CGL30Driver &driver)
 	//vykreslit postavu
 	hero.draw();
 
-	//vykreslit geometrii
-	//boxDebug.draw();
+	//vykreslit geometrii - testovani
+	/*
+	boxDebug.draw();
 	glm::vec3 heroBoxColor(1.0, 0.6, 0.4);
-	//boxDebug.drawBox(hero.box, heroBoxColor);
+	boxDebug.drawBox(hero.box, heroBoxColor);
 	glm::vec3 levelExitColor(0.4, 0.6, 0.8);
-	//boxDebug.drawBox(currentLevel.exit, levelExitColor);
+	boxDebug.drawBox(currentLevel.exit, levelExitColor);
+	*/
 
 	//vykreslit hmat
 	boxDebug.drawCollisions();
@@ -793,5 +786,11 @@ void OnIdle(CGL30Driver &driver)
 		resetLevel(&hero);
 		hero.position = currentLevel.heroStartPosition;
 	}
+
+	std::cout << "hero.position.x: " << hero.position.x << "|y: " << hero.position.y << std::endl;
+	
+
+	
+
 	driver.Blit(); // preklopi buffery, zobrazi co jsme nakreslili
 }
