@@ -207,8 +207,7 @@ bool ShaderHero::compile(){
 	n_depthmap_sampler_uniform_hero = glGetUniformLocation(n_program_object_hero, "depthmap");
 	position_vector = glGetUniformLocation(n_program_object_hero, "position");
 	facing_left_uniform_hero = glGetUniformLocation(n_program_object_hero, "facing_left");
-
-
+	map_size_uniform_hero = glGetUniformLocation(n_program_object_hero, "map_size");
 
 	return true;
 }
@@ -220,6 +219,7 @@ void ShaderHero::bind(glm::vec2 position, bool facingLeft){
 		glUniform1i(n_depthmap_sampler_uniform_hero, 1);
 		glUniform2f(position_vector, position.x, position.y);
 		glUniform1i(facing_left_uniform_hero, facingLeft);
+		glUniform2f(map_size_uniform_hero, MAP_SIZE_X, MAP_SIZE_Y);
 	}
 }
 
@@ -309,12 +309,15 @@ bool ShaderPointSimple::compile(){
 	if(!Shader::compile(&n_vertex_shader_pointSimple, &n_fragment_shader_pointSimple, &n_program_object_pointSimple))
 		return false;
 
+	map_size_uniform_pointSimple = glGetUniformLocation(n_program_object_pointSimple, "map_size");
+
 	return true;
 }
 
 void ShaderPointSimple::bind(){
 	glUseProgram(n_program_object_pointSimple);
 	{
+		glUniform2f(map_size_uniform_pointSimple, MAP_SIZE_X, MAP_SIZE_Y);
 	}
 }
 
@@ -331,6 +334,7 @@ bool ShaderBoxes::compile(){
 		return false;
 
 	color_unifrom_boxes = glGetUniformLocation(n_program_object_boxes, "color");
+	map_size_uniform_boxes = glGetUniformLocation(n_program_object_boxes, "map_size");
 
 	return true;
 }
@@ -338,7 +342,8 @@ bool ShaderBoxes::compile(){
 void ShaderBoxes::bind(glm::vec3 color){
 	glUseProgram(n_program_object_boxes);
 	{
-			glUniform3f(color_unifrom_boxes, color.r, color.g, color.b);
+		glUniform3f(color_unifrom_boxes, color.r, color.g, color.b);
+		glUniform2f(map_size_uniform_boxes, MAP_SIZE_X, MAP_SIZE_Y);
 	}
 }
 
@@ -362,6 +367,8 @@ bool ShaderSurface::compile(std::string vertexfilepath, std::string fragmentfile
 
 	color_uniform_curve = glGetUniformLocation(n_program_object_curve, "color");
 
+	map_size_uniform = glGetUniformLocation(n_program_object_curve, "map_size");
+
 	return true;
 }
 
@@ -376,6 +383,7 @@ void ShaderSurface::bind(glm::vec2 point1, glm::vec2 point2, float amplitude, fl
 		glUniform1f(phase_uniform_curve, phase);
 
 		glUniform3f(color_uniform_curve, color.r, color.g, color.b);
+		glUniform2f(map_size_uniform, MAP_SIZE_X, MAP_SIZE_Y);
 	}
 }
 

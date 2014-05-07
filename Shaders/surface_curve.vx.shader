@@ -11,6 +11,8 @@ uniform float amplitude;
 uniform float frequency;
 uniform float phase;
 
+uniform vec2 map_size;
+
 void main()
 {
 	float s = point1.x + (point2.x-point1.x) * v_pos.x;
@@ -28,8 +30,8 @@ void main()
 
 	
 	//prepocet ze souradneho systemu fyziky(0 horni levy roh) na zobrazeni(0 ve stredu)
-	float s0 = (2.0 * s)/32.0 - 1.0;//TODO posilat velikost mapy 32
-	float t0 = 1.0 - (2.0 * t_new)/24.0;//TODO posilat velikost mapy 24
+	float s0 = (2.0 * s)/map_size.x - 1.0;
+	float t0 = 1.0 - (2.0 * t_new)/map_size.y;
 
 	gl_Position = vec4(s0, t0, 0.0, 1.0);
 	v_texcoord = v_tex;

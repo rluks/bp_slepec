@@ -9,6 +9,7 @@
 #include <string>
 #include <iostream>
 
+#include "Common.h"
 #include "Transform.h"
 
 #include <glm/vec2.hpp> 
@@ -70,7 +71,8 @@ public:
 	GLuint n_texture_sampler_uniform_hero,
 	n_depthmap_sampler_uniform_hero,
 	position_vector,
-	facing_left_uniform_hero;
+	facing_left_uniform_hero,
+	map_size_uniform_hero;
 	bool compile();
 	void bind(glm::vec2, bool);
 	void deleteShader();
@@ -117,6 +119,7 @@ public:
 struct ShaderPointSimple : public Shader {
 public:
 	GLuint n_vertex_shader_pointSimple, n_fragment_shader_pointSimple, n_program_object_pointSimple;
+	GLuint map_size_uniform_pointSimple;
 	bool compile();
 	void bind();
 	void deleteShader();
@@ -128,7 +131,7 @@ public:
 struct ShaderBoxes : public Shader {
 public:
 	GLuint n_vertex_shader_boxes, n_fragment_shader_boxes, n_program_object_boxes;
-	GLuint color_unifrom_boxes;
+	GLuint color_unifrom_boxes, map_size_uniform_boxes;
 	bool compile();
 	void bind(glm::vec3);
 	void deleteShader();
@@ -141,6 +144,7 @@ struct ShaderSurface : public Shader {
 public:
 	GLuint n_vertex_shader_curve, n_fragment_shader_curve, n_program_object_curve;
 	GLuint point1_uniform_curve, point2_uniform_curve, amplitude_uniform_curve, frequency_uniform_curve, phase_uniform_curve, color_uniform_curve;
+	GLuint map_size_uniform;
 	bool compile(std::string, std::string);
 	void bind(glm::vec2, glm::vec2, float, float, float, glm::vec3);
 	void deleteShader();
