@@ -502,11 +502,14 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 		return 0;
 
 	case WM_PAINT:
+		{
 		hDC = BeginPaint(h_wnd, &Ps);
-		TextOut(hDC, 50, 42, "Johnny Carson", 13);
+		std::string text = "Hello World!";
+		TextOut(hDC, 50, 42, text.c_str(), text.length());
 		EndPaint(h_wnd, &Ps);
 		break;
 
+		}
 	case WM_SIZE:
 		{
 			RECT t_wnd_area;
