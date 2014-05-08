@@ -8,6 +8,7 @@ bool BoxDebug::standingOn = false;
  */
 void BoxDebug::generate(TBmp * bmpfile){
 	
+	//najde kostky 1x1 v obrazku mapy
 	boxes.resize(0);
 	//std::cout << "prvni pixel +, 0x00 *, 0xFF mezera" << std::endl;
 	std::string line("+");
@@ -144,6 +145,7 @@ void BoxDebug::setMovementDirection(Keys k){
 	if(k.left)
 		movementDirection.x = -1.0;
 
+	//nebrat v potaz drzeni protichudnych klaves
 	if(k.up && k.down)
 		movementDirection.y = 0.0;
 	if((k.left && k.right) || (!k.left && !k.right))
@@ -165,11 +167,13 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys key, Hero * her
 
 	gravity = DEFAULT_GRAVITY;
 
+	//vyskok
 	if(hero->jumping == false && key.up){
 		hero->velocity.y = DEFAULT_JUMP_VELOCITY;
 		hero->jumping = true;
 	}
 
+	//padani
 	if(hero->jumping || !standingOn){
 		hero->position.y += hero->velocity.y;
 		hero->velocity.y += gravity;
@@ -178,6 +182,7 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys key, Hero * her
 			hero->velocity.y = 0.8f;
 	}
 
+	//chuze
 	if(hero->moving == false && movementDirection.x != 0.0){
 		hero->moving = true;
 		hero->velocity.x = DEFAULT_WALK_VELOCITY;
@@ -185,22 +190,14 @@ void BoxDebug::calculateTimeBasedMovement(DWORD frame_time, Keys key, Hero * her
 	else
 		hero->moving = false;
 
+	//zastaveni chuze
 	if((key.left && key.right) || (!key.left && !key.right))
 		hero->velocity.x = 0.0;
 
+	//pohyb podle casu snimku
 	if(hero->moving){
 		hero->position.x += (/*frame_time * 0.1f * */hero->velocity.x * movementDirection.x);
-		//hero->velocity.x = hero->velocity.x;
 	}
-
-	/*
-	hero->position.x += frame_time * 0.25f * movementDirection.x * 0.01f;
-	hero->position.y += frame_time * 0.5f * movementDirection.y * 0.01f;
-	*/
-
-	//position += velocity * dt;
-    //velocity += acceleration * dt;
-	
 }
 
 /**
@@ -234,6 +231,7 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 		//mira protnuti
 		float verticInter, horizInter;	
 		
+		//rozsirene podminky kvuli ladeni
 		if(aprojx.y < bprojx.x){
 			//std::cout << "A B" << std::endl;
 		}else if(bprojx.y < aprojx.x){
@@ -253,6 +251,7 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 			}
 		}
 		
+		//rozsirene podminky kvuli ladeni
 		if(aprojy.y < bprojy.x){
 			//std::cout << "A" << std::endl;
 			//std::cout << "B" << std::endl;
@@ -289,22 +288,23 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 
 			if(verticInter < horizInter){//protnuti ve vertikalni ose je mensi
 
+				//vyber nejlevejsiho a nejpravejsiho mista kolize
 				mostLeftX = (a.vMin.x < b.vMin.x) ? b.vMin.x : a.vMin.x;
 				mostRightX = (a.vMax.x > b.vMax.x) ? b.vMax.x : a.vMax.x;
 
-				if(verticOver){
-					hero->position.y = b.vMin.y - (a.vMax.y - a.vMin.y) - gap;
+				if(verticOver){//hrac stoji na prekazce
+					//hero->position.y = b.vMin.y - (a.vMax.y - a.vMin.y) - gap;
 					hero->jumping = false;
 					standingOn = true;
-					//hero->position.y -= verticInter;
+					hero->position.y -= verticInter;
 
 					mostTopY = bprojy.x;
 					mostBottomY = bprojy.x;
 					type = AoverB;
 
 				}else{
-					hero->position.y = b.vMax.y + gap;
-					//hero->position.y += verticInter;
+					//hero->position.y = b.vMax.y + gap;
+					hero->position.y += verticInter;
 
 					mostTopY = bprojy.y;
 					mostBottomY = bprojy.y;
@@ -312,26 +312,28 @@ void BoxDebug::SeparatingAxisTheorem(Hero * hero){
 				}
 			}else{
 
+				//vyber nejvyssiho a nejnizsiho mista kolize
 				mostTopY = (a.vMin.y < b.vMin.y) ? b.vMin.y : a.vMin.y;
 				mostBottomY = (a.vMax.y > b.vMax.y) ? b.vMax.y : a.vMax.y;
 
-				if(horizLeft){
-					hero->position.x = b.vMin.x - (a.vMax.x - a.vMin.x) - gap;
-					//hero->position.x -= horizInter;
+				if(horizLeft){//hrac stoji nalevo od prekazky
+					//hero->position.x = b.vMin.x - (a.vMax.x - a.vMin.x) - gap;
+					hero->position.x -= horizInter;
 
 					mostLeftX = bprojx.x;
 					mostRightX = bprojx.x;
 					type = AB;
 				}else{
-					hero->position.x = b.vMax.x + gap;
-					//hero->position.x += horizInter;
+					//hero->position.x = b.vMax.x + gap;
+					hero->position.x += horizInter;
 
 					mostLeftX = bprojx.y;
 					mostRightX = bprojx.y;
 					type = BA;
 				}
 			}
-	
+		
+			//pridani instance kolize do vektoru kolizi
 			glm::vec2 point1(mostLeftX, mostTopY);
 			glm::vec2 point2(mostRightX, mostBottomY);
 			collisions.push_back(Collision(type, point1, point2, b.surface));
@@ -391,38 +393,17 @@ void BoxDebug::drawCollisions(){
 		for(unsigned int i = 0; i < collisions.size(); i++){
 			Collision a = collisions.at(i);
 
-			if(a.type == AoverB){//hero stoji na prekazce
+			if(a.type == AoverB){//herni postava stoji na prekazce
 
-				//if(movementDirection.x != 0.0){
-					phase += a.surface.temperature;
-					if(phase == 1.0f)
-						phase = 0.0f;
-				//}
-	
-				//std::cout << i << ". type: " << a.getTypeString() << " p1: " << a.point1.x << ", " << a.point1.y << " p2: " << a.point2.x << ", " << a.point2.y << std::endl;
+				//posun faze cary hmatoveho vjemu podle teploty
+				phase += a.surface.temperature;
+				if(phase == 1.0f)
+					phase = 0.0f;
 
 				a.surface.surfaceShader.bind(a.point1, a.point2, a.surface.amplitude, a.surface.frequency, phase, a.surface.color);
 
-				/*
-				GLenum err;
-				while ((err = glGetError()) != GL_NO_ERROR) {
-				std::string error;
-					switch(err) {
-                        case GL_INVALID_OPERATION:      error="INVALID_OPERATION";      break;
-                        case GL_INVALID_ENUM:           error="INVALID_ENUM";           break;
-                        case GL_INVALID_VALUE:          error="INVALID_VALUE";          break;
-                        case GL_OUT_OF_MEMORY:          error="OUT_OF_MEMORY";          break;
-                        case GL_INVALID_FRAMEBUFFER_OPERATION:  error="INVALID_FRAMEBUFFER_OPERATION";  break;
-						default: error="gl error invalid"; break;
-					}
-					std::cerr << "OpenGL error: " << error << std::endl;
-				}*/
-
 				glBindVertexArray(tactileVAO);
-				//glEnable(GL_BLEND);
-				//glBlendFunc(GL_ONE, GL_ONE);
 				glDrawArrays(GL_LINES, 0, pozice1D.size() * 2);
-				//glDisable(GL_BLEND);
 				glBindVertexArray(0);
 			}
 		}
@@ -472,12 +453,18 @@ void BoxDebug::drawBox(Box a, glm::vec3 color){
 void BoxDebug::draw(){
 
 	if(boxes.size() > 0){
+
 		std::vector<float> p_box_vertices;
 		std::vector<int> p_box_indices;
+
+		//tvorba vektoru vrcholu a indicii
 		for(unsigned int i = 0; i < boxes.size(); i++){
+
 			Box a = boxes.at(i);
+
 			float a_vertices[] = {a.vMin.x, a.vMin.y, 1, /**/a.vMax.x , a.vMin.y, 1,/**/a.vMax.x, a.vMax.y, 1,/**/a.vMin.x, a.vMax.y, 1};
 			int a_indices[] = {0+i*4, 1+i*4, 1+i*4, 2+i*4, 2+i*4, 3+i*4, 3+i*4, 0+i*4, 0+i*4, 2+i*4, 1+i*4, 3+i*4};
+
 			p_box_vertices.insert(p_box_vertices.end(), a_vertices, a_vertices+12);
 			p_box_indices.insert(p_box_indices.end(), a_indices, a_indices+12);
 		}
@@ -502,9 +489,10 @@ void BoxDebug::draw(){
 
 		glm::vec3 color(1.0, 0.3, 0.6);
 		boxesShader.bind(color);
-
 		glBindVertexArray(VAO);
+
 		glDrawElements(GL_LINES, boxes.size()*12, GL_UNSIGNED_INT, p_OffsetInVBO(0));
+
 		glBindVertexArray(0);
 	}
 }
