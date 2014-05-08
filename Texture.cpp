@@ -224,6 +224,7 @@ GLuint n_GLTextureRGBFloatFromData()
 	}
 
 	//pocatecni data
+	/*
 	float r = 0.0;
 	srand (static_cast <unsigned> (time(0)));
 	for (int y = 0; y < dataheight; y++) {
@@ -231,6 +232,36 @@ GLuint n_GLTextureRGBFloatFromData()
 			checkImage[(x + datawidth * y) * 3] = (GLfloat) r;//red
 			checkImage[(x + datawidth * y) * 3 + 1] = 0.0;//(GLfloat) static_cast <float> (rand()) / static_cast <float> (RAND_MAX);; //green
 			checkImage[(x + datawidth * y) * 3 + 2] = 0.0;//(GLfloat) static_cast <float> (rand()) / static_cast <float> (RAND_MAX);; //blue
+		}
+	}
+	*/
+
+	//pridani zdroje zvuku - CPU verze
+	int dropletRadius = 40;
+	float da = (float)0.7;
+	const int dim = 161;//4*dropletRadius+1;
+    float xd[dim][dim];
+    float yd[dim][dim];
+    for(int i=0; i<dim; i++) {
+		for(int j=-2*dropletRadius; j<=2*dropletRadius; j++){
+			xd[i][j+2*dropletRadius] = (float)j;
+			yd[j+2*dropletRadius][i] = (float)j;
+        }
+    }
+    float m_Zd[dim][dim];
+    for(int i=0; i<dim; i++) {
+		for(int j=0; j<dim; j++) {
+			m_Zd[i][j] = -da*exp(-pow(xd[i][j]/dropletRadius,2)-pow(yd[i][j]/dropletRadius,2));
+			}
+    }
+	//m_Zd[0][0] = -1;
+	
+	//pridani kapky
+	for(int i=0; i<dim; i++) {
+        for(int j=0; j<dim; j++) {
+			int x = datawidth/2 - dim/2 + i;
+			int y = dataheight/2 - dim/2 + j;
+			checkImage[(x + datawidth * y) * 3] +=  m_Zd[i][j];
 		}
 	}
 
