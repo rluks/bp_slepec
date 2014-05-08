@@ -115,11 +115,10 @@ void drawDropToTexture(bool clear, float x, float y, int textnum){
 
 	glBindTexture(GL_TEXTURE_2D, n_texture[textnum][0]);
 
-	float s = (2.0f * x)/32.0f - 1.0f;
-	float t = 1.0f - (2.0f * y)/24.0f;
+	//prepocet souradnic na opengl souradnice
+	float s = (2.0f * x)/MAP_SIZE_X - 1.0f;
+	float t = 1.0f - (2.0f * y)/MAP_SIZE_Y;
 	float bod[] = {s, t};
-
-	//std::cout << "kapka hulkou na souradnicich - s(x): " << s << " |t(y): " << t << std::endl;
 
 	GLuint bodVBO, bodVAO;
 	glGenBuffers(1, &bodVBO);
@@ -202,9 +201,7 @@ bool InitGLObjects()
 
 	const float p_box_vertices[] = {
 
-	//0, 1, -1, -1, 1, /**/1, 1, 1, -1, 1,/**/1, 0, 1, 1, 1,/**/0, 0, -1, 1, 1};//textura spravne, simulace nefunguje
-	0, 0, -1, -1, 1, /**/1, 0, 1, -1, 1,/**/ 1, 1, 1, 1, 1,/**/ 0, 1, -1, 1, 1};//puvodne - textura vzhuru nohama, simulace funguje
-	// vrcholy krychle, vzdy 2 souradnice textury, pak 3 souradnice vrcholu; vrcholy jsou usporadane poporade po ctvericich, tvoricich polygony jednotlivych sten
+	0, 0, -1, -1, 1, /**/1, 0, 1, -1, 1,/**/ 1, 1, 1, 1, 1,/**/ 0, 1, -1, 1, 1};
 
 	const unsigned int p_box_indices[] = {	
 		0, 1, 2, 0, 2, 3};
@@ -542,6 +539,7 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 		if(n_w_param == VK_DOWN)
 			key.down = false;
 
+		//ostatni
 		if(n_w_param == VK_SPACE)
 			key.space = false;
 
@@ -568,6 +566,7 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT n_msg, WPARAM n_w_param, LPARAM n_l_pa
 		if(n_w_param == VK_DOWN)
 			key.down = true;
 
+		//ostatni
 		if(n_w_param == VK_SPACE)
 			key.space = true;
 
@@ -823,7 +822,6 @@ void OnIdle(CGL30Driver &driver)
 	boxDebug.drawBox(hero.box, heroBoxColor);
 	glm::vec3 levelExitColor(0.4, 0.6, 0.8);
 	boxDebug.drawBox(currentLevel.exit, levelExitColor);
-	
 
 	//vykreslit hmat
 	boxDebug.drawCollisions();
