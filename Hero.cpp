@@ -1,8 +1,13 @@
 #include "Hero.h"
 
+//vykreslovani
 float Hero::p_hero_vertices[20] = {0, 0, 0, 0, 1, /**/1, 0, width, 0, 1,/**/ 1, 1, width, height, 1,/**/ 0, 1, 0, height, 1};
 unsigned int Hero::p_hero_indices[6] = {0, 1, 2, 0, 3, 2};	
+
+//kontrola inicializace
 bool Hero::isInit = false;
+
+//pohyb
 bool Hero::jumping = false;
 bool Hero::moving = false;
 
@@ -11,17 +16,21 @@ bool Hero::moving = false;
  */
 void Hero::init(){
 
+	//Box
 	box.vMin.x = 0;
 	box.vMin.y = 0;
 	box.vMax.x = box.vMin.x + width;
 	box.vMax.y = box.vMin.y + height;
 
+	//shader
 	heroShader.compile();
 
+	//textury
 	hero_tex = LoadTextureFromPNGFile("Textures/player1.png");
 	hero_tex2 = LoadTextureFromPNGFile("Textures/player0.png");
 	hero_tex_jump = LoadTextureFromPNGFile("Textures/player_jump.png");
 
+	//inicializace vbo, vao, ibo
 	glGenBuffers(1, &heroVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, heroVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(p_hero_vertices), p_hero_vertices, GL_STATIC_DRAW);
@@ -62,6 +71,7 @@ void Hero::updateBox(){
  */
 void Hero::draw(){
 
+	//kontrola inicializace
 	try{	
 		if(!isInit) throw "Error - Hero:: not initialized";		
 	} catch (const char* msg){
@@ -69,6 +79,7 @@ void Hero::draw(){
 		return;
 	}
 
+	//jednoducha animace pohybu
 	if(velocity.x > 0.0 || velocity.x < 0.0){
 		cnt++;
 		if(cnt < 20)
@@ -83,6 +94,7 @@ void Hero::draw(){
 	if(jumping)
 		glBindTexture(GL_TEXTURE_2D, hero_tex_jump);
 
+	//vykresleni
 	heroShader.bind(box.vMin, facingLeft);
 
 	glBindVertexArray(heroVAO);
