@@ -115,6 +115,8 @@ void drawDropToTexture(bool clear, float x, float y, int textnum){
 
 	glBindTexture(GL_TEXTURE_2D, n_texture[textnum][0]);
 
+	std::cout << "x: " << x << " |y: " << y << std::endl;
+
 	//prepocet souradnic na opengl souradnice
 	float s = (2.0f * x)/MAP_SIZE_X - 1.0f;
 	float t = 1.0f - (2.0f * y)/MAP_SIZE_Y;
@@ -261,7 +263,19 @@ bool InitGLObjects()
 	pointShader.compile();
 
 	//urovne
+	//test
+	Box levelExit;
+	levelExit.vMin.x = 26;
+	levelExit.vMin.y = 20;
+	levelExit.vMax.x = levelExit.vMin.x+1;
+	levelExit.vMax.y = levelExit.vMin.y+1;
+	Level levelZero(glm::vec2(3.5, 20), "Textures/test.png", levelExit);
+	levelZero.addSoundSource(glm::vec2(4, 4));
+	levels.push_back(levelZero);
+
+	//urovne
 	//0
+	/*
 	Box levelExit;
 	levelExit.vMin.x = 28;
 	levelExit.vMin.y = 20;
@@ -270,6 +284,7 @@ bool InitGLObjects()
 	Level levelZero(glm::vec2(3.5, 20), "Textures/0.png", levelExit);
 	levelZero.addSoundSource(glm::vec2(4, 4));
 	levels.push_back(levelZero);
+	*/
 
 	//1
 	levelExit.vMin.x = 28;
@@ -765,6 +780,15 @@ void resetLevel(Hero * hero){
 }
 
 /**
+ *	@brief pomocna funkce na ladeni
+ *	@param[in] text
+ */
+void printMsg(std::string text){
+	//if(DEBUG)
+	std::cout << "msg: " << text << std::endl;
+}
+
+/**
  *	@brief tato funkce se vola ve smycce pokazde kdyz nejsou zadne nove zpravy; lze vyuzit ke kresleni animace
  *	@param[in] driver je reference na OpenGL driver
  */
@@ -814,17 +838,17 @@ void OnIdle(CGL30Driver &driver)
 	boxDebug.SeparatingAxisTheorem(&hero);
 
 	//vykreslit herni postavu
-	hero.draw();
+	//hero.draw();
 
 	//vykreslit geometrii - testovani
-	boxDebug.draw();
+	//boxDebug.draw();
 	glm::vec3 heroBoxColor(1.0, 0.6, 0.4);
-	boxDebug.drawBox(hero.box, heroBoxColor);
+	//boxDebug.drawBox(hero.box, heroBoxColor);
 	glm::vec3 levelExitColor(0.4, 0.6, 0.8);
-	boxDebug.drawBox(currentLevel.exit, levelExitColor);
+	//boxDebug.drawBox(currentLevel.exit, levelExitColor);
 
 	//vykreslit hmat
-	boxDebug.drawCollisions();
+	//boxDebug.drawCollisions();
 
 	boxDebug.movementDirection.x = 0.0;
 	boxDebug.movementDirection.y = 0.0;
