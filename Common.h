@@ -7,8 +7,8 @@
 #define dataheight 480
 // velikost dat
 
-#define MAP_SIZE_X 32.0
-#define MAP_SIZE_Y 24.0
+#define MAP_SIZE_X 32.0f
+#define MAP_SIZE_Y 24.0f
 
 #define DEFAULT_GRAVITY 0.03f
 #define DEFAULT_JUMP_VELOCITY -0.33f
