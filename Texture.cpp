@@ -12,10 +12,6 @@ GLuint n_GLTextureFromBitmap(const TBmp *p_bitmap, GLenum n_internal_format = GL
 	glGenTextures(1, &n_tex);
 	glBindTexture(GL_TEXTURE_2D, n_tex);
 
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// nastavime filtrovani
-
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
 
@@ -34,20 +30,13 @@ GLuint n_GLTextureFromBitmap(const TBmp *p_bitmap, GLenum n_internal_format = GL
  *	@param[in] imagepath jmeno souboru
  */
 GLuint LoadTextureFromPNGFile(const char * imagepath){
+
 	TBmp * bitmap;
 	if(!(bitmap = CPngCodec::p_Load_PNG(imagepath))){
 		fprintf(stderr, "error: failed to load \'.png file\'\n");
 		system("PAUSE");
 		return false;
 	}
-	
-	/*
-	std::cout << "n_former_bpp " << bitmap->n_former_bpp<< std::endl;
-	std::cout << "b_grayscale " << bitmap->b_grayscale<< std::endl;
-	std::cout << "b_alpha " << bitmap->b_alpha<< std::endl;
-	std::cout << "n_width " << bitmap->n_width<< std::endl;
-	std::cout << "n_height " << bitmap->n_height<< std::endl;
-	*/
 
 	GLuint texture = n_GLTextureFromBitmap(bitmap, GL_RGBA8);
 	bitmap->Delete();
@@ -141,14 +130,6 @@ GLuint n_GLTextureRFloatDepthTest()
 	}
 
 	//pocatecni data
-	/*
-	float r = 1.0f;
-	for (int i = 0; i < dataheight * datawidth; i++) {
-			//r = r + 0.0001f;
-			checkImage[i] = (GLfloat) r;
-	}*/
-
-	
 	float r = 7.0;
 	for (int y = 0; y < hei; y++) {
 		for (int x = 0; x < wid; x++) {		
@@ -157,12 +138,6 @@ GLuint n_GLTextureRFloatDepthTest()
 				checkImage[x + wid * y] = -5.0;
 		}
 	}
-
-	/*
-	for (int y = 0; y < dataheight; y++)
-		for (int x = 0; x < datawidth; x++)	
-			checkImage[x + datawidth * y] = 7.0;
-	*/
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &n_tex_surface);
@@ -174,8 +149,6 @@ GLuint n_GLTextureRFloatDepthTest()
 
 	//uvolneni pameti
 	delete[] checkImage;
-
-	//glBindTexture(GL_TEXTURE_2D,0);
 
 	return n_tex_surface;
 }
@@ -251,70 +224,6 @@ GLuint n_GLTextureRGBFloatFromData()
 	}
 
 	//pocatecni data
-	/*
-	float r = 1.0f;
-	for (int i = 0; i < dataheight * datawidth * 3; i++) {
-		checkImage[i] = (GLfloat) r;
-	}*/
-
-	/*
-	srand (static_cast <unsigned> (time(0)));
-	for (int i = 0; i < dataheight * datawidth * 3; i++) {
-		checkImage[i] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-	}*/
-
-	/*
-	for (int i = 400; i < dataheight * datawidth; i++) {
-		checkImage[i] = 0.7;
-	}*/
-
-	/*
-	//rgbrgbrgbrgb...
-	float r = 1.0f;
-	int cnt = 0;
-	for (int i = 0; i < dataheight * datawidth * 3; i++) {
-		checkImage[i] = (GLfloat) r;
-
-		if(r == 1.0f){
-			r = 0.5f;
-			if(cnt % 100 == 0)
-				checkImage[i] = 0.2f;;
-		}
-		else if(r == 0.5f)
-			r = 0.0f;
-		else
-			r = 1.0f;
-
-		cnt++;
-	}*/
-
-	/*
-	//rgbrgbrgbrgb...
-	float r = 1.0f;
-	for (int i = 0; i < dataheight * datawidth * 3; i++) {
-		checkImage[i] = (GLfloat) r;
-
-		if(r == 1.0f)
-			r = 0.5f;
-		else if(r == 0.5f)
-			r = 0.0f;
-		else
-			r = 1.0f;
-	}*/
-
-	/*
-	// vlajka >:->
-	for (int i = 0; i < dataheight * datawidth; i++)
-		checkImage[i] = 1.0f;
-
-	for (int i = dataheight * datawidth; i < dataheight * datawidth * 2; i++)
-		checkImage[i] = 0.5f;
-
-	for (int i = dataheight * datawidth * 2; i < dataheight * datawidth * 3; i++)
-		checkImage[i] = 0.1f;
-		*/
-	
-
 	float r = 0.0;
 	srand (static_cast <unsigned> (time(0)));
 	for (int y = 0; y < dataheight; y++) {
@@ -324,98 +233,6 @@ GLuint n_GLTextureRGBFloatFromData()
 			checkImage[(x + datawidth * y) * 3 + 2] = 0.0;//(GLfloat) static_cast <float> (rand()) / static_cast <float> (RAND_MAX);; //blue
 		}
 	}
-	
-	/*
-	int dropletRadius = 40;
-	float da = (float)0.7;
-	const int dim = 161;//4*dropletRadius+1;
-    float xd[dim][dim];
-    float yd[dim][dim];
-    for(int i=0; i<dim; i++) {
-		for(int j=-2*dropletRadius; j<=2*dropletRadius; j++){
-			xd[i][j+2*dropletRadius] = (float)j;
-			yd[j+2*dropletRadius][i] = (float)j;
-        }
-    }
-    float m_Zd[dim][dim];
-    for(int i=0; i<dim; i++) {
-		for(int j=0; j<dim; j++) {
-			m_Zd[i][j] = -da*exp(-pow(xd[i][j]/dropletRadius,2)-pow(yd[i][j]/dropletRadius,2));
-			}
-    }
-	//m_Zd[0][0] = -1;
-	
-	//pridani kapky
-	for(int i=0; i<dim; i++) {
-        for(int j=0; j<dim; j++) {
-			int x = datawidth/2 - dim/2 + i;
-			int y = dataheight/2 - dim/2 + j;
-			checkImage[(x + datawidth * y) * 3] +=  m_Zd[i][j];
-		}
-	}*/
-
-	/* do jedne datawidth pruh dole
-	for (int i = 0; i < datawidth * 3; i+=3) {
-		float r = 0.2;
-		checkImage[i] = (GLfloat) r;	
-	}*/
-
-	/* funguje
-	for (int y = 0; y < dataheight; y++) {
-		for (int x = 0; x < datawidth; x++) {
-			float r = 0.2;
-			checkImage[(x + datawidth * y)*3] = (GLfloat) r;
-		}
-	}*/
-
-	/* taky funguje
-	for (int y = 0; y < dataheight; y++) {
-		for (int x = 0; x < datawidth * 3; x+=3) {
-			float r = 0.2;
-			checkImage[x + datawidth * 3 * y] = (GLfloat) r;
-		}
-	}*/
-	
-	/*
-	srand (static_cast <unsigned> (time(0)));
-	for (int i = 0; i < dataheight * datawidth * 3; i+=3) {
-		float r;
-		//red
-		r= static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-		checkImage[i] = (GLfloat) r;	
-		//green
-		r=0.0;
-		checkImage[i+1] = (GLfloat) r;
-		//blue
-		r=0.0;
-		checkImage[i+2] = (GLfloat) r;
-	}*/
-
-	/*
-	for (int i = 0; i < dataheight * datawidth * 3; i+=3) {
-		float r=0.8;;
-		//red
-		checkImage[i] = (GLfloat) r;	
-		//green
-		checkImage[i+1] = (GLfloat) r;
-		//blue
-		checkImage[i+2] = (GLfloat) r;
-	}*/
-
-	/*
-	int x = datawidth/2;
-	int y = dataheight/2;
-	for(int i = 0; i < 50; i++){
-		checkImage[x + datawidth * y] = 5.0f;
-		checkImage[x+1 + datawidth * y] = 5.0f;
-		checkImage[x+1 + datawidth * y+1] = 5.0f;
-		checkImage[x+1 + datawidth * y-1] = 5.0f;
-		checkImage[x-1 + datawidth * y] = 5.0f;
-		checkImage[x-1 + datawidth * y+1] = 5.0f;
-		checkImage[x-1 + datawidth * y-1] = 5.0f;
-		checkImage[x + datawidth * y+1] = 5.0f;
-		checkImage[x + datawidth * y-1] = 5.0f;
-	}*/
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &n_tex_surface);
