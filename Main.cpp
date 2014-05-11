@@ -76,6 +76,9 @@ BoxDebug boxDebug;
 std::vector<Level> levels;
 unsigned int currentLevelIndex;
 
+//mereni simulace
+bool firstRun;
+
 /**
  *	@brief vynuluje danou texturu
  *	@param[in] textnum cislo textury
@@ -115,7 +118,7 @@ void drawDropToTexture(bool clear, float x, float y, int textnum){
 
 	glBindTexture(GL_TEXTURE_2D, n_texture[textnum][0]);
 
-	std::cout << "x: " << x << " |y: " << y << std::endl;
+	//std::cout << "x: " << x << " |y: " << y << std::endl;
 
 	//prepocet souradnic na opengl souradnice
 	float s = (2.0f * x)/MAP_SIZE_X - 1.0f;
@@ -464,6 +467,9 @@ int main(int n_arg_num, const char **p_arg_list)
 	DWORD end_time;
 	frame_time = 15; //0.015 tj cca 1/60
 
+	//mereni
+	firstRun = true;
+
 	MSG t_msg;
 	while(b_running) {
 		if(PeekMessage(&t_msg, h_wnd, 0, 0, PM_REMOVE)) {
@@ -626,6 +632,33 @@ void simulateSound(int textnum, int speed){
 		velocityShader.bind(datawidth, dataheight);	drawPingPong(textnum);
 		heightShader.bind(datawidth, dataheight);	drawPingPong(textnum);
 	}
+}
+
+/**
+ *	@brief mereni casu simulace - udela dany pocet iteraci simulace nad danou texturou
+ *	@param[in] textnum cislo textury
+ *	@param[in] repeat pocet iteraci simulace
+ */
+void simulateSoundMeasurement(int textnum, int repeat){
+
+	std::cout << "Zacinam " << repeat << " opakovani mereni..." << std::endl;
+	glFinish();
+	DWORD time = GetTickCount();
+
+	for(int i = 0; i < repeat; i++){	
+
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, depthmap);
+		glActiveTexture(GL_TEXTURE0);
+
+		velocityShader.bind(datawidth, dataheight);	drawPingPong(textnum);
+		heightShader.bind(datawidth, dataheight);	drawPingPong(textnum);
+	}
+
+	glFinish();
+	time = GetTickCount() - time;
+
+	std::cout << "Mereni dokonceno, " << repeat << " opakovani trvalo " << time << " ms." << std::endl;
 }
 
 /**
@@ -799,19 +832,38 @@ void OnIdle(CGL30Driver &driver)
 	//glEnable(GL_DEPTH_TEST);//vypnuto protoze kreslime podle poradi (ne podle hloubek - vsechno na stejne Z)
 	// vycistime framebuffer
 
+	if(firstRun){
+		std::cout << "Prvni spusteni..." << std::endl;
+		firstRun = false;
+
+		/* Mereni rychlosti simulace */
+		/*
+		//priprava
+		unsigned int numberOfSimulationSteps = 10000;
+		Level currentLevel = levels.at(currentLevelIndex);
+		drawDropToTexture(false, currentLevel.soundSourcePositions.at(0).x, currentLevel.soundSourcePositions.at(0).y, textureNumber::PLAYER_SOUND);
+
+		//vlastni mereni
+		simulateSoundMeasurement(textureNumber::PLAYER_SOUND, numberOfSimulationSteps);
+
+		//cisteni
+		clearTexture(textureNumber::PLAYER_SOUND);
+		*/
+	}
+
 	glBindTexture(GL_TEXTURE_2D, 0);//nechci omylem vykreslovat posledni bind. texturu
-		
+
 	simulateSound(textureNumber::PLAYER_SOUND, 3);			//hrac - zdroj zvuku	
 	simulateSound(textureNumber::LEVEL_SOUND, 3);			//prostredi - zdroj zvuku
 	simulateSound(textureNumber::LEVEL_EXIT_SOUND, 15);		//prostredi - vychod
-
+	
 	glViewport(0, 0, n_width, n_height); // viewport na velikost okna
 	glClear ( GL_COLOR_BUFFER_BIT);
 
 	paintSound(textureNumber::PLAYER_SOUND, glm::vec3(0.4, 1.0, 0.8));
 	paintSound(textureNumber::LEVEL_SOUND, glm::vec3(1.0, 0.2, 0.2));
 	paintSound(textureNumber::LEVEL_EXIT_SOUND, glm::vec3(0.4, 0.2, 1.0));
-	
+
 	//testovani - pridani kapek kliknutim mysi
 	while(pointsQueue.size() > 0){
 		POINTS p = pointsQueue.at(0);
@@ -838,7 +890,7 @@ void OnIdle(CGL30Driver &driver)
 	boxDebug.SeparatingAxisTheorem(&hero);
 
 	//vykreslit herni postavu
-	//hero.draw();
+	hero.draw();
 
 	//vykreslit geometrii - testovani
 	//boxDebug.draw();
@@ -848,7 +900,7 @@ void OnIdle(CGL30Driver &driver)
 	//boxDebug.drawBox(currentLevel.exit, levelExitColor);
 
 	//vykreslit hmat
-	//boxDebug.drawCollisions();
+	boxDebug.drawCollisions();
 
 	boxDebug.movementDirection.x = 0.0;
 	boxDebug.movementDirection.y = 0.0;
@@ -865,6 +917,6 @@ void OnIdle(CGL30Driver &driver)
 	}
 
 	//std::cout << "hero.position.x: " << hero.position.x << "|y: " << hero.position.y << std::endl;
-	
+
 	driver.Blit(); // preklopi buffery, zobrazi co jsme nakreslili
 }
