@@ -393,6 +393,8 @@ void BoxDebug::drawCollisions(){
 		for(unsigned int i = 0; i < collisions.size(); i++){
 			Collision a = collisions.at(i);
 
+			std::cout << a << std::endl;
+
 			if(a.type == AoverB){//herni postava stoji na prekazce
 
 				//posun faze cary hmatoveho vjemu podle teploty

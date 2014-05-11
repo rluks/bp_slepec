@@ -2,6 +2,10 @@
 #define COLLISION_H
 
 #include <string>
+
+#include <iostream>
+#include <fstream>
+
 #include <glm/vec2.hpp> 
 #include "Surface.h"
 
@@ -23,6 +27,8 @@ struct Collision {
 	Collision();
 	Collision(enum collisionType, glm::vec2, glm::vec2, Surface);
 	std::string getTypeString();
+
+	friend std::ostream& operator<<(std::ostream& os, const Collision& a);
 };
 
 #endif

@@ -29,3 +29,9 @@ std::string Collision::getTypeString(){
 
 	return typeString;
 }
+
+std::ostream& operator<<(std::ostream&os, const Collision& a)
+{
+  os << "p1(" << a.point1.x << ", " << a.point1.y << "), p2(" << a.point2.x << ", " << a.point2.y << ")";
+  return os;
+}
