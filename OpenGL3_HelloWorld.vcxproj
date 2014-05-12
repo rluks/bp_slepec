@@ -94,6 +94,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Box.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Hero.cpp" />
     <ClCompile Include="Level.cpp" />
