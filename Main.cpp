@@ -893,11 +893,15 @@ void OnIdle(CGL30Driver &driver)
 	hero.draw();
 
 	//vykreslit geometrii - testovani
-	//boxDebug.draw();
+	boxDebug.draw();
+	boxDebug.drawKills();
+	boxDebug.drawCollisionsPoints();
 	glm::vec3 heroBoxColor(1.0, 0.6, 0.4);
 	//boxDebug.drawBox(hero.box, heroBoxColor);
 	glm::vec3 levelExitColor(0.4, 0.6, 0.8);
-	//boxDebug.drawBox(currentLevel.exit, levelExitColor);
+	boxDebug.drawBox(currentLevel.exit, levelExitColor);
+
+	bool death = boxDebug.checkCollisions();
 
 	//vykreslit hmat
 	boxDebug.drawCollisions();
@@ -910,8 +914,8 @@ void OnIdle(CGL30Driver &driver)
 		currentLevel = changeLevel();
 	}
 
-	if(key.reset){
-		std::cout << " RESET " << std::endl;
+	if(key.reset || death){
+		std::cout << " RESET, death(" << death  << ")" << std::endl;
 		resetLevel(&hero);
 		hero.position = currentLevel.heroStartPosition;
 	}
