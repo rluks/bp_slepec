@@ -20,6 +20,8 @@ struct Surface {
 
 	Surface();
 	Surface(glm::vec3, float, float, ShaderSurface, float, bool);
+
+	friend std::ostream& operator<<(std::ostream& os, const Surface& a);
 };
 
 #endif
