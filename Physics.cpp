@@ -82,6 +82,8 @@ void BoxDebug::generate(TBmp * bmpfile){
 	Surface zigzagSurface(glm::vec3(0.0, 0.7, 0.7), 0.2f, 2.2f, surfaceZigzag, 0.1f, false);
 	Surface digitalSurface(glm::vec3(0.5, 0.8, 0.5), 2.0f, 0.5, surfaceShader, 0.2f, false);
 
+	Surface killSurface(glm::vec3(1.0, 0.1, 0.1), 0.2f, 2.2f, surfaceZigzag, 0.2f, true);
+
 	for(unsigned int i = 0; i < boxes.size(); i++){
 		Box a = boxes.at(i);
 
@@ -92,16 +94,19 @@ void BoxDebug::generate(TBmp * bmpfile){
 		else
 			a.surface = sinusSurface;
 
+		if(a.vMin.x == 0 && a.vMax.x == 1)
+			a.surface = killSurface;
+
 		boxes.at(i) = a;
 	}
 
 	phase = 0.0f;
 
-	/*
+	
 	for(unsigned int i = 0; i < boxes.size(); i++){	
 		Box a = boxes.at(i);
-		std::cout << i << ". f:" << a.surface.frequency  << "a: "  <<  a.surface.amplitude << std::endl;
-	}*/
+		std::cout << i << ". " << a << std::endl;
+	}
 
 	//pripravit shadery
 	boxesShader.compile();
@@ -384,6 +389,7 @@ void BoxDebug::drawCollisionsPoints(){
 
 /**
  *	@brief vykresli hmatovy vjem (tedy vhodne kolize)
+ *  maze vektor kolizi !!!
  */
 void BoxDebug::drawCollisions(){
 
@@ -393,7 +399,7 @@ void BoxDebug::drawCollisions(){
 		for(unsigned int i = 0; i < collisions.size(); i++){
 			Collision a = collisions.at(i);
 
-			std::cout << a << std::endl;
+			//std::cout << a << std::endl;
 
 			if(a.type == AoverB){//herni postava stoji na prekazce
 
@@ -415,7 +421,47 @@ void BoxDebug::drawCollisions(){
 }
 
 /**
- *	@brief vykresli geometrii dane kostky testovani
+ *	@brief zkontroluje kolize
+ */
+bool BoxDebug::checkCollisions(){
+
+	if(collisions.size() > 0){
+
+		for(unsigned int i = 0; i < collisions.size(); i++){
+			Collision a = collisions.at(i);
+
+			if(a.surface.kills){
+				std::cout << "SMRT" << std::endl;
+				std::cout << a << std::endl;
+
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+/**
+ *	@brief vykresli jinou barvou kostky, ktere zabiji - testovani
+ */
+void BoxDebug::drawKills(){
+
+	if(boxes.size() > 0){
+
+		glm::vec3 killBoxColor(0.5, 0.5, 0.5);
+		for(unsigned int i = 0; i < boxes.size(); i++){
+
+			Box a = boxes.at(i);
+
+			if(a.surface.kills)
+				drawBox(a, killBoxColor);
+		}
+	}
+}
+
+/**
+ *	@brief vykresli geometrii dane kostky - testovani
  *	@param[in] a instance Box
   *	@param[in] color barva
  */

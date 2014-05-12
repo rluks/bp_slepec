@@ -44,9 +44,11 @@ struct BoxDebug {
 	void setMovementDirection(Keys);
 	void calculateTimeBasedMovement(DWORD, Keys, Hero *);
 	void SeparatingAxisTheorem(Hero *);
+	bool checkCollisions();
 
 	//vykreslovaci funkce
 	void draw();
+	void drawKills();
 	void drawBox(Box, glm::vec3);
 	void drawCollisions();
 	void drawCollisionsPoints();
