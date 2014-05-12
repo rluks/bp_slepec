@@ -12,7 +12,7 @@ Collision::Collision(enum collisionType collisType, glm::vec2 p1, glm::vec2 p2, 
 /**
  *	@brief vrati retezec odpovidajici danemu typu kolize
  */
-std::string Collision::getTypeString(){
+std::string Collision::getTypeString() const {
 
 	std::string typeString;
 
@@ -30,8 +30,15 @@ std::string Collision::getTypeString(){
 	return typeString;
 }
 
+/**
+ *	@brief pretizeni << operatoru
+ */
 std::ostream& operator<<(std::ostream&os, const Collision& a)
 {
-  os << "p1(" << a.point1.x << ", " << a.point1.y << "), p2(" << a.point2.x << ", " << a.point2.y << ")";
+  os << "collision: p1(" << a.point1.x << ", " << a.point1.y << 
+		"), p2(" << a.point2.x << ", " << a.point2.y <<
+		"), surface(" << a.surface <<
+		"), type(" << a.getTypeString() << 
+		").";
   return os;
 }
