@@ -267,6 +267,7 @@ bool InitGLObjects()
 
 	//urovne
 	//test
+	/*
 	Box levelExit;
 	levelExit.vMin.x = 26;
 	levelExit.vMin.y = 20;
@@ -274,20 +275,18 @@ bool InitGLObjects()
 	levelExit.vMax.y = levelExit.vMin.y+1;
 	Level levelZero(glm::vec2(3.5, 20), "Textures/test.png", levelExit);
 	levelZero.addSoundSource(glm::vec2(4, 4));
-	levels.push_back(levelZero);
+	levels.push_back(levelZero);*/
 
 	//urovne
-	//0
-	/*
+	//0	
 	Box levelExit;
 	levelExit.vMin.x = 28;
 	levelExit.vMin.y = 20;
 	levelExit.vMax.x = levelExit.vMin.x+1;
 	levelExit.vMax.y = levelExit.vMin.y+1;
-	Level levelZero(glm::vec2(3.5, 20), "Textures/0.png", levelExit);
+	Level levelZero(glm::vec2(3.5, 19), "Textures/0.png", levelExit);
 	levelZero.addSoundSource(glm::vec2(4, 4));
-	levels.push_back(levelZero);
-	*/
+	//levels.push_back(levelZero);
 
 	//1
 	levelExit.vMin.x = 28;
@@ -297,10 +296,22 @@ bool InitGLObjects()
 	Level levelOne(glm::vec2(3.5, 10), "Textures/1.png", levelExit);
 	levelOne.addSoundSource(glm::vec2(4, 4));
 	levelOne.addSoundSource(glm::vec2(4, 8));
-	levels.push_back(levelOne);
+	//levels.push_back(levelOne);
+
+	//2
+	levelExit.vMin.x = 28;
+	levelExit.vMin.y = 20;
+	levelExit.vMax.x = levelExit.vMin.x+1;
+	levelExit.vMax.y = levelExit.vMin.y+1;
+	Level levelTwo(glm::vec2(3.5, 0), "Textures/2.png", levelExit);
+	levelTwo.addSoundSource(glm::vec2(4, 4));
+	levelTwo.addSoundSource(glm::vec2(4, 8));
+	levels.push_back(levelTwo);
 
 	hero.init();
-	hero.position = levelZero.heroStartPosition;
+
+	Level currentLevel = levels.at(0);
+	hero.position = currentLevel.heroStartPosition;
 	
 	//textury
 	for(unsigned int i = 0; i < 3; i++){
@@ -311,7 +322,7 @@ bool InitGLObjects()
 
 	//fyzika
 	TBmp * bitmap;
-	if(!(bitmap = CPngCodec::p_Load_PNG(levelZero.mapFilepath.c_str()))){
+	if(!(bitmap = CPngCodec::p_Load_PNG(currentLevel.mapFilepath.c_str()))){
 		fprintf(stderr, "error: failed to load \'.png file\'\n");
 		return false;
 	}
