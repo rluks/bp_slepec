@@ -94,7 +94,8 @@ void BoxDebug::generate(TBmp * bmpfile){
 		else
 			a.surface = sinusSurface;
 
-		if(a.vMin.x == 0 && a.vMax.x == 1)
+		//dole je "lava" (ala mario)
+		if(a.vMin.x == 0 && a.vMax.x == MAP_SIZE_X && a.vMin.y == MAP_SIZE_Y-1 && a.vMax.y == MAP_SIZE_Y)
 			a.surface = killSurface;
 
 		boxes.at(i) = a;
