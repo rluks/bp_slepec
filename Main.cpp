@@ -196,6 +196,65 @@ void drawDrop(bool clear, float x, float y){
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
+/**
+ *	@brief vytvori vektor vsech hernich urovni
+ */
+std::vector<Level> loadLevels(){
+
+	Box levelExit;
+
+	//test
+	levelExit.vMin.x = 26;
+	levelExit.vMin.y = 20;
+	levelExit.vMax.x = levelExit.vMin.x+1;
+	levelExit.vMax.y = levelExit.vMin.y+1;
+	Level levelTest(glm::vec2(3.5, 20), "Textures/test.png", levelExit);
+	levelTest.addSoundSource(glm::vec2(4, 4));
+	//levels.push_back(levelTest);
+
+	//urovne
+	//0	
+	levelExit.vMin.x = 28;
+	levelExit.vMin.y = 20;
+	levelExit.vMax.x = levelExit.vMin.x+1;
+	levelExit.vMax.y = levelExit.vMin.y+1;
+	Level levelZero(glm::vec2(3.5, 19), "Textures/0.png", levelExit);
+	levelZero.addSoundSource(glm::vec2(4, 4));
+	//levels.push_back(levelZero);
+
+	//1
+	levelExit.vMin.x = 28;
+	levelExit.vMin.y = 20;
+	levelExit.vMax.x = levelExit.vMin.x+1;
+	levelExit.vMax.y = levelExit.vMin.y+1;
+	Level levelOne(glm::vec2(3.5, 10), "Textures/1.png", levelExit);
+	levelOne.addSoundSource(glm::vec2(4, 4));
+	levelOne.addSoundSource(glm::vec2(4, 8));
+	//levels.push_back(levelOne);
+
+	//2
+	levelExit.vMin.x = 28;
+	levelExit.vMin.y = 20;
+	levelExit.vMax.x = levelExit.vMin.x+1;
+	levelExit.vMax.y = levelExit.vMin.y+1;
+	Level levelTwo(glm::vec2(3.5, 0), "Textures/2.png", levelExit);
+	levelTwo.addSoundSource(glm::vec2(4, 4));
+	levelTwo.addSoundSource(glm::vec2(4, 8));
+	//levels.push_back(levelTwo);
+
+	//3
+	levelExit.vMin.x = 28;
+	levelExit.vMin.y = 20;
+	levelExit.vMax.x = levelExit.vMin.x+1;
+	levelExit.vMax.y = levelExit.vMin.y+1;
+	Level levelThree(glm::vec2(3.5, 0), "Textures/3.png", levelExit);
+	levelThree.addSoundSource(glm::vec2(4, 4));
+	levelThree.addSoundSource(glm::vec2(10, 20));
+	levelThree.addSoundSource(glm::vec2(15, 21));
+	levels.push_back(levelThree);
+
+	return levels;
+}
 
 /**
  *	@brief vytvori vsechny OpenGL objekty, potrebne pro kresleni
@@ -266,50 +325,12 @@ bool InitGLObjects()
 	pointShader.compile();
 
 	//urovne
-	//test
-	/*
-	Box levelExit;
-	levelExit.vMin.x = 26;
-	levelExit.vMin.y = 20;
-	levelExit.vMax.x = levelExit.vMin.x+1;
-	levelExit.vMax.y = levelExit.vMin.y+1;
-	Level levelZero(glm::vec2(3.5, 20), "Textures/test.png", levelExit);
-	levelZero.addSoundSource(glm::vec2(4, 4));
-	levels.push_back(levelZero);*/
+	levels = loadLevels();
 
-	//urovne
-	//0	
-	Box levelExit;
-	levelExit.vMin.x = 28;
-	levelExit.vMin.y = 20;
-	levelExit.vMax.x = levelExit.vMin.x+1;
-	levelExit.vMax.y = levelExit.vMin.y+1;
-	Level levelZero(glm::vec2(3.5, 19), "Textures/0.png", levelExit);
-	levelZero.addSoundSource(glm::vec2(4, 4));
-	//levels.push_back(levelZero);
-
-	//1
-	levelExit.vMin.x = 28;
-	levelExit.vMin.y = 20;
-	levelExit.vMax.x = levelExit.vMin.x+1;
-	levelExit.vMax.y = levelExit.vMin.y+1;
-	Level levelOne(glm::vec2(3.5, 10), "Textures/1.png", levelExit);
-	levelOne.addSoundSource(glm::vec2(4, 4));
-	levelOne.addSoundSource(glm::vec2(4, 8));
-	//levels.push_back(levelOne);
-
-	//2
-	levelExit.vMin.x = 28;
-	levelExit.vMin.y = 20;
-	levelExit.vMax.x = levelExit.vMin.x+1;
-	levelExit.vMax.y = levelExit.vMin.y+1;
-	Level levelTwo(glm::vec2(3.5, 0), "Textures/2.png", levelExit);
-	levelTwo.addSoundSource(glm::vec2(4, 4));
-	levelTwo.addSoundSource(glm::vec2(4, 8));
-	levels.push_back(levelTwo);
-
+	//herni postava
 	hero.init();
 
+	//nacitani
 	Level currentLevel = levels.at(0);
 	hero.position = currentLevel.heroStartPosition;
 	
@@ -904,13 +925,14 @@ void OnIdle(CGL30Driver &driver)
 	hero.draw();
 
 	//vykreslit geometrii - testovani
-	boxDebug.draw();
-	boxDebug.drawKills();
-	boxDebug.drawCollisionsPoints();
 	glm::vec3 heroBoxColor(1.0, 0.6, 0.4);
-	//boxDebug.drawBox(hero.box, heroBoxColor);
 	glm::vec3 levelExitColor(0.4, 0.6, 0.8);
-	boxDebug.drawBox(currentLevel.exit, levelExitColor);
+
+	//boxDebug.draw();
+	boxDebug.drawKills();
+	//boxDebug.drawCollisionsPoints();
+	//boxDebug.drawBox(hero.box, heroBoxColor);
+	//boxDebug.drawBox(currentLevel.exit, levelExitColor);
 
 	bool death = boxDebug.checkCollisions();
 
