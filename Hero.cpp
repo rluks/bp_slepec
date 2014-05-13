@@ -1,5 +1,9 @@
 #include "Hero.h"
 
+//vychozi rozmery pro Box
+const int Hero::height = 3;
+const float Hero::width = 1.5f;
+
 //vykreslovani
 float Hero::p_hero_vertices[20] = {0, 0, 0, 0, 1, /**/1, 0, width, 0, 1,/**/ 1, 1, width, height, 1,/**/ 0, 1, 0, height, 1};
 unsigned int Hero::p_hero_indices[6] = {0, 1, 2, 0, 3, 2};	

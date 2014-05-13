@@ -14,8 +14,8 @@
  */
 struct Hero {
 public:
-	static const int height = 3;
-	static const int width = 2;
+	static const int height;
+	static const float width;
 	//vychozi rozmery pro Box
 
 	Box box;
