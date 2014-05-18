@@ -220,7 +220,7 @@ std::vector<Level> loadLevels(){
 	levelExit.vMax.y = levelExit.vMin.y+1;
 	Level levelZero(glm::vec2(3.5, 19), "Textures/0.png", levelExit);
 	levelZero.addSoundSource(glm::vec2(4, 4));
-	//levels.push_back(levelZero);
+	levels.push_back(levelZero);
 
 	//1
 	levelExit.vMin.x = 28;
@@ -230,7 +230,7 @@ std::vector<Level> loadLevels(){
 	Level levelOne(glm::vec2(3.5, 10), "Textures/1.png", levelExit);
 	levelOne.addSoundSource(glm::vec2(4, 4));
 	levelOne.addSoundSource(glm::vec2(4, 8));
-	//levels.push_back(levelOne);
+	levels.push_back(levelOne);
 
 	//2
 	levelExit.vMin.x = 28;
@@ -240,7 +240,7 @@ std::vector<Level> loadLevels(){
 	Level levelTwo(glm::vec2(3.5, 0), "Textures/2.png", levelExit);
 	levelTwo.addSoundSource(glm::vec2(4, 4));
 	levelTwo.addSoundSource(glm::vec2(4, 8));
-	//levels.push_back(levelTwo);
+	levels.push_back(levelTwo);
 
 	//3
 	levelExit.vMin.x = 28;
@@ -931,7 +931,7 @@ void OnIdle(CGL30Driver &driver)
 	//boxDebug.draw();
 	boxDebug.drawKills();
 	//boxDebug.drawCollisionsPoints();
-	//boxDebug.drawBox(hero.box, heroBoxColor);
+	boxDebug.drawBox(hero.box, heroBoxColor);
 	//boxDebug.drawBox(currentLevel.exit, levelExitColor);
 
 	bool death = boxDebug.checkCollisions();
