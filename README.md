@@ -1,6 +1,7 @@
 These are source codes for my Bachelor's thesis: Visualization of tactile and aural sensations (2D game in C++/OpenGL)
 
 README in czech follows:
+
 Zdrojové kódy jsou ve složce /src
 
 Projekt vyžaduje následující (nachází se ve složce /src/libs):
