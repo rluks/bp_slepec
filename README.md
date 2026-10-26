@@ -21,3 +21,5 @@ Přeložený spustitelný soubor je ve složce /bin
 K běhu je vyžadována dynamická knihovna Msvcp110.dll, nejsnažší řešení je instalace
 Visual C++ Redistributable for Visual Studio 2012 Update 4 x86
 ke stažení zde http://www.microsoft.com/en-us/download/details.aspx?id=30679
+
+More: [BP Slepec](https://romanluks.eu/blog/bp_slepec/)
